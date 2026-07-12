@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.superpowers/
+dev-server.log
+dev-server-error.log
+*.local
+*.tsbuildinfo
