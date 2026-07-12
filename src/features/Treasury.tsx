@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft, Minus, Plus } from 'lucide-react';
 import itemSprite from '../assets/treasury-items.png';
 import treasuryBackground from '../assets/treasury-background.png';
+import type { GiftState } from '../game/gifts';
 
 const categories = ['全部', '书籍', '珍宝', '金银', '玉器', '服饰', '器物', '丹药', '其他'] as const;
 const items = [
@@ -10,12 +11,13 @@ const items = [
   ['织云锦袍', '服饰', 9], ['缂花鞋', '服饰', 15], ['名家画卷', '书籍', 6], ['青花瓷瓶', '器物', 10], ['千年灵芝', '丹药', 3],
 ] as const;
 
-export function Treasury({ onBack }: { onBack: () => void }) {
+export function Treasury({ onBack, giftState }: { onBack: () => void; giftState: GiftState }) {
   const [category, setCategory] = useState<(typeof categories)[number]>('全部');
   const [selected, setSelected] = useState(7);
   const [amount, setAmount] = useState(1);
   const visible = items.map((item, index) => ({ item, index })).filter(({ item }) => category === '全部' || item[1] === category);
-  const [name, type, quantity] = items[selected];
+  const [name, type, baseQuantity] = items[selected];
+  const quantity = selected === 7 ? giftState.inventory['gold-ingot'] : baseQuantity;
 
   return <section className="treasury-page" aria-label="国库" style={{ backgroundImage: `linear-gradient(#120d0ad9, #120d0af0), url(${treasuryBackground})` }}>
     <header className="treasury-header"><h2>国库</h2><button className="treasury-back" aria-label="返回前朝" onClick={onBack}><ChevronLeft /></button></header>

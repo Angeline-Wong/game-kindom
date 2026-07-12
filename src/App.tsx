@@ -38,6 +38,10 @@ import { CharacterSheet } from './components/CharacterSheet';
 import { CourtSession } from './features/CourtSession';
 import { HouseholdOffice } from './features/HouseholdOffice';
 import { Treasury } from './features/Treasury';
+import { WeatherEffects, type WeatherKind } from './components/WeatherEffects';
+import { initialPeopleState } from './game/people';
+import { initialGiftState } from './game/gifts';
+import { initialResidenceState } from './game/residences';
 import { demoConsort, demoEmperor, type Character } from './game/characters';
 import { advanceClock, formatShichen, type GameClock, type TimeSpeed } from './game/clock';
 import { palaceScenes, type PalaceScene } from './game/palaceMap';
@@ -152,6 +156,10 @@ export default function App() {
   const [zoom, setZoom] = useState(1);
   const [detail, setDetail] = useState<DetailScene | null>(null);
   const [palaceRoom, setPalaceRoom] = useState<'主殿' | '东侧殿' | '西侧殿' | '庭院' | null>(null);
+  const [peopleState, setPeopleState] = useState(initialPeopleState);
+  const [giftState, setGiftState] = useState(initialGiftState);
+  const [residenceState, setResidenceState] = useState(initialResidenceState);
+  const [personRanks, setPersonRanks] = useState<Record<string, string>>({ 'consort-001': '贵人', 'minister-001': '正五品', empress: '皇后' });
 
   useEffect(() => {
     let last = performance.now();
@@ -169,29 +177,38 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
+  const weather: WeatherKind = '雪';
   const date = useMemo(() => `永和${clock.year}年 十月${clock.day}日 · ${formatShichen(clock.minuteOfDay)} · 初雪`, [clock]);
 
   if (view === 'court') {
-    return <PhoneFrame emperor={emperor} date={date} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}><CourtSession onBack={() => setView('front')} />{character && <CharacterSheet character={character} onClose={() => setCharacter(null)} onUpdate={setEmperor} />}</PhoneFrame>;
+    return <PhoneFrame emperor={emperor} date={date} weather={weather} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}><CourtSession onBack={() => setView('front')} />{character && <CharacterSheet character={character} onClose={() => setCharacter(null)} onUpdate={setEmperor} />}</PhoneFrame>;
   }
 
   if (view === 'household') {
-    return <PhoneFrame emperor={emperor} date={date} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}><HouseholdOffice onBack={() => setView('front')} />{character && <CharacterSheet character={character} onClose={() => setCharacter(null)} onUpdate={setEmperor} />}</PhoneFrame>;
+    return <PhoneFrame emperor={emperor} date={date} weather={weather} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}><HouseholdOffice onBack={() => setView('front')} />{character && <CharacterSheet character={character} onClose={() => setCharacter(null)} onUpdate={setEmperor} />}</PhoneFrame>;
   }
 
   if (view === 'treasury') {
-    return <PhoneFrame emperor={emperor} date={date} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}><Treasury onBack={() => setView('front')} /><BottomNav view={view} setView={(next) => setView(next)} /></PhoneFrame>;
+    return <PhoneFrame emperor={emperor} date={date} weather={weather} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}><Treasury onBack={() => setView('front')} giftState={giftState} /><BottomNav view={view} setView={(next) => setView(next)} /></PhoneFrame>;
   }
 
   if (detail) {
     return (
-      <PhoneFrame emperor={emperor} date={date} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}>
+      <PhoneFrame emperor={emperor} date={date} weather={weather} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}>
         <DetailSceneView
           scene={detail}
           activeRoom={palaceRoom}
           onBack={() => { if (palaceRoom) setPalaceRoom(null); else setDetail(null); }}
           onOpenRoom={setPalaceRoom}
           onNotice={setToast}
+          peopleState={peopleState}
+          onPeopleChange={setPeopleState}
+          giftState={giftState}
+          onGiftChange={setGiftState}
+          residenceState={residenceState}
+          onResidenceChange={setResidenceState}
+          personRanks={personRanks}
+          onRankChange={(personId, rank) => setPersonRanks((current) => ({ ...current, [personId]: rank }))}
         />
         {toast && <button className="toast" onClick={() => setToast('')}>{toast}</button>}
       </PhoneFrame>
@@ -201,7 +218,7 @@ export default function App() {
   const structuredScene = view === 'yangxin' ? palaceScenes.yangxin : view === 'yikun' ? palaceScenes.yikun : null;
 
   return (
-    <PhoneFrame emperor={emperor} date={date} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}>
+    <PhoneFrame emperor={emperor} date={date} weather={weather} speed={speed} setSpeed={setSpeed} onEmperor={() => setCharacter(emperor)}>
       {structuredScene ? (
         <StructuredScene
           scene={structuredScene}
@@ -254,7 +271,7 @@ function PalaceOverview({ kind, onGate, onCharacter }: { kind: 'front' | 'inner'
   );
 }
 
-function DetailSceneView({ scene, activeRoom, onBack, onOpenRoom, onNotice }: { scene: DetailScene; activeRoom: '主殿' | '东侧殿' | '西侧殿' | '庭院' | null; onBack: () => void; onOpenRoom: (room: '主殿' | '东侧殿' | '西侧殿' | '庭院') => void; onNotice: (message: string) => void }) {
+function DetailSceneView({ scene, activeRoom, onBack, onOpenRoom, onNotice, peopleState, onPeopleChange, giftState, onGiftChange, residenceState, onResidenceChange, personRanks, onRankChange }: { scene: DetailScene; activeRoom: '主殿' | '东侧殿' | '西侧殿' | '庭院' | null; onBack: () => void; onOpenRoom: (room: '主殿' | '东侧殿' | '西侧殿' | '庭院') => void; onNotice: (message: string) => void; peopleState: import('./game/people').PeopleState; onPeopleChange: (state: import('./game/people').PeopleState) => void; giftState: import('./game/gifts').GiftState; onGiftChange: (state: import('./game/gifts').GiftState) => void; residenceState: import('./game/residences').ResidenceState; onResidenceChange: (state: import('./game/residences').ResidenceState) => void; personRanks: Record<string, string>; onRankChange: (personId: string, rank: string) => void }) {
   const isCompound = scene.isPalaceCompound && !activeRoom;
   const art = isCompound ? scene.art : activeRoom === '主殿' ? scene.mainArt ?? innerPalaceMainScene : activeRoom === '东侧殿' ? innerEastHallScene : activeRoom === '西侧殿' ? innerWestHallScene : activeRoom === '庭院' ? innerCourtyardScene : scene.art;
 
@@ -272,7 +289,7 @@ function DetailSceneView({ scene, activeRoom, onBack, onOpenRoom, onNotice }: { 
         <button className="map-plaque vertical palace-room-label east-room" onClick={() => onOpenRoom('东侧殿')}>东侧殿</button>
         <button className="map-plaque horizontal palace-room-label courtyard-room" onClick={() => onOpenRoom('庭院')}>庭院</button>
       </>}
-      {!activeRoom && <ScenePeople sceneId={scene.id} sceneTitle={scene.title} />}
+      {!activeRoom && <ScenePeople sceneId={scene.id} sceneTitle={scene.title} peopleState={peopleState} onNotice={onNotice} giftState={giftState} onGiftChange={onGiftChange} residenceState={residenceState} onResidenceChange={onResidenceChange} personRanks={personRanks} onRankChange={onRankChange} />}
     </section>
   );
 }
@@ -335,7 +352,7 @@ function Procession({ label, routeClass, onClick }: { label: string; routeClass:
   );
 }
 
-function PhoneFrame({ children, emperor, date, speed, setSpeed, onEmperor }: { children: React.ReactNode; emperor: Character; date: string; speed: TimeSpeed; setSpeed: (speed: TimeSpeed) => void; onEmperor: () => void }) {
+function PhoneFrame({ children, emperor, date, weather, speed, setSpeed, onEmperor }: { children: React.ReactNode; emperor: Character; date: string; weather: WeatherKind; speed: TimeSpeed; setSpeed: (speed: TimeSpeed) => void; onEmperor: () => void }) {
   return (
     <main className="app">
       <h1 className="sr-only">紫宸纪</h1>
@@ -348,6 +365,7 @@ function PhoneFrame({ children, emperor, date, speed, setSpeed, onEmperor }: { c
         <button className="time-control" aria-label="切换时间速度" onClick={() => setSpeed(speed === 0 ? 1 : speed === 1 ? 2 : speed === 2 ? 4 : speed === 4 ? 0 : 1)}>{speed === 0 ? <Play /> : <Pause />}<span>{speed === 0 ? '暂停' : `${speed}×`}</span></button>
       </header>
       {children}
+      <WeatherEffects weather={weather} />
     </main>
   );
 }

@@ -1,0 +1,342 @@
+!DOCTYPE html
+html lang=zh-CN
+head
+meta charset=UTF-8 
+meta name=viewport content=width=device-width, initial-scale=1, viewport-fit=cover 
+title古风剧情对话弹窗（含选项）title
+style
+  root{
+    --gold-1#f2d98f;
+    --gold-2#c79a43;
+    --gold-3#7a5421;
+    --paper#fbf5e8;
+    --paper-2#f4ead5;
+    --ink#3b2717;
+    --line#c8aa72;
+  }
+
+  {box-sizingborder-box}
+  html,body{height100%;margin0}
+  body{
+    overflowhidden;
+    font-familySTKaiti,KaiTi,Noto Serif SC,serif;
+    background
+      linear-gradient(rgba(28,20,15,.28),rgba(28,20,15,.50)),
+      url(63d4e35165937c8f75348e61c32e33d1.jpg) centercover no-repeat;
+    colorvar(--ink);
+  }
+
+  .stage{
+    min-height100%;
+    displayflex;
+    align-itemsflex-end;
+    justify-contentcenter;
+    padding24px 18px max(32px,env(safe-area-inset-bottom));
+  }
+
+  .dialog-system{
+    widthmin(760px,100%);
+    animationdialogIn .35s ease-out both;
+  }
+
+  .dialog-box{
+    positionrelative;
+    min-height150px;
+    padding38px 28px 44px;
+    border2px solid #b8955d;
+    border-radius16px;
+    background
+      linear-gradient(rgba(255,255,255,.74),rgba(255,255,255,.40)),
+      radial-gradient(circle at 15% 10%,rgba(221,194,135,.16),transparent 30%),
+      linear-gradient(135deg,var(--paper),var(--paper-2));
+    box-shadow
+      0 10px 28px rgba(45,28,15,.28),
+      inset 0 0 0 5px rgba(255,252,241,.75),
+      inset 0 0 0 7px rgba(139,103,50,.16);
+  }
+
+  .dialog-boxbefore,
+  .dialog-boxafter{
+    content;
+    positionabsolute;
+    width22px;height22px;
+    border-color#9f7838;
+    opacity.7;
+  }
+  .dialog-boxbefore{
+    left10px;top10px;
+    border-left2px solid;border-top2px solid;
+    border-radius8px 0 0 0;
+  }
+  .dialog-boxafter{
+    right10px;bottom10px;
+    border-right2px solid;border-bottom2px solid;
+    border-radius0 0 8px 0;
+  }
+
+  .nameplate{
+    positionabsolute;
+    top-26px;
+    left26px;
+    min-width170px;
+    height48px;
+    padding0 32px;
+    displayflex;
+    align-itemscenter;
+    justify-contentcenter;
+    border2px solid #79531f;
+    border-radius24px 8px 8px 24px;
+    color#4b2e12;
+    font-size23px;
+    font-weight700;
+    letter-spacing.16em;
+    text-indent.16em;
+    background
+      linear-gradient(180deg,rgba(255,255,255,.42),transparent 38%),
+      linear-gradient(90deg,#f0d78d,#d0a24c 58%,#b17b2e);
+    box-shadow
+      0 4px 10px rgba(74,42,13,.25),
+      inset 0 0 0 2px rgba(255,238,180,.5);
+  }
+
+  .nameplateafter{
+    content◆;
+    positionabsolute;
+    right12px;
+    font-size11px;
+    color#78501e;
+    opacity.75;
+  }
+
+  .dialog-text{
+    min-height68px;
+    font-sizeclamp(20px,3.2vw,28px);
+    line-height1.75;
+    letter-spacing.06em;
+    text-shadow0 1px 0 rgba(255,255,255,.65);
+  }
+
+  .next-btn{
+    positionabsolute;
+    right16px;
+    bottom10px;
+    width24px;
+    height22px;
+    padding0;
+    border0;
+    backgroundnone;
+    cursorpointer;
+    color#9d742f;
+    font-size21px;
+    line-height1;
+    text-shadow0 1px 0 #fff3cd;
+    animationfloatNext 1.25s ease-in-out infinite;
+  }
+
+  .next-btnhover{color#c2943c}
+  .next-btnactive{transformtranslateY(2px)}
+
+  .options{
+    displaygrid;
+    gap12px;
+    margin-top18px;
+  }
+
+  .option-btn{
+    width100%;
+    min-height54px;
+    padding10px 54px;
+    positionrelative;
+    border2px solid #a77a3f;
+    border-radius14px;
+    cursorpointer;
+    color#4d2d16;
+    font700 clamp(18px,2.8vw,24px)1.3 STKaiti,KaiTi,serif;
+    letter-spacing.12em;
+    background
+      linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,.18)),
+      linear-gradient(90deg,#f8f1df,#efe2c4 50%,#f8f1df);
+    box-shadow
+      0 5px 13px rgba(52,31,14,.22),
+      inset 0 0 0 4px rgba(255,252,242,.7),
+      inset 0 0 0 6px rgba(139,101,48,.12);
+    transition.16s ease;
+  }
+
+  .option-btnbefore,
+  .option-btnafter{
+    content;
+    positionabsolute;
+    top50%;
+    width18px;height18px;
+    transformtranslateY(-50%) rotate(45deg);
+    border2px solid #b28a4d;
+    background#f2e4c3;
+  }
+  .option-btnbefore{left18px}
+  .option-btnafter{right18px}
+
+  .option-btnhover{
+    transformtranslateY(-2px);
+    filterbrightness(1.04);
+    border-color#c0934b;
+    box-shadow
+      0 8px 16px rgba(52,31,14,.25),
+      inset 0 0 0 4px rgba(255,252,242,.78),
+      inset 0 0 0 6px rgba(139,101,48,.14);
+  }
+
+  .option-btnactive{
+    transformtranslateY(1px);
+    box-shadow
+      0 2px 6px rgba(52,31,14,.20),
+      inset 0 2px 8px rgba(85,53,22,.12);
+  }
+
+  .skip-btn{
+    positionabsolute;
+    right18px;
+    top12px;
+    z-index3;
+    padding4px 9px;
+    border0;
+    border-radius12px;
+    backgroundrgba(239,220,173,.48);
+    color#89652d;
+    font600 13px1.1 STKaiti,KaiTi,serif;
+    letter-spacing.08em;
+    cursorpointer;
+    box-shadownone;
+  }
+
+  .skip-btnhover{
+    backgroundrgba(239,220,173,.72);
+    color#6f4c1f;
+  }
+
+  .hidden{displaynone!important}
+  .fade-out{animationfadeOut .24s ease forwards}
+
+  @keyframes floatNext{
+    0%,100%{transformtranslateY(0)}
+    50%{transformtranslateY(3px)}
+  }
+  @keyframes dialogIn{
+    from{opacity0;transformtranslateY(24px)}
+    to{opacity1;transformtranslateY(0)}
+  }
+  @keyframes fadeOut{
+    to{opacity0;transformtranslateY(18px)}
+  }
+
+  @media (max-width600px){
+    .stage{padding-left14px;padding-right14px}
+    .dialog-box{padding34px 20px 40px;min-height138px}
+    .nameplate{
+      left18px;
+      min-width145px;
+      height43px;
+      top-23px;
+      font-size20px;
+    }
+    .options{gap10px;margin-top14px}
+    .option-btn{min-height50px;padding9px 44px}
+  }
+style
+head
+body
+  main class=stage
+    section class=dialog-system id=dialogSystem
+      div class=dialog-box
+        button class=skip-btn id=skipBtn跳过button
+        div class=nameplate id=speaker太后div
+        div class=dialog-text id=dialogText皇帝，你说什么？div
+        button class=next-btn id=nextBtn aria-label=下一句⌄button
+      div
+
+      div class=options id=optionsdiv
+    section
+  main
+
+script
+   每段剧情最多配置四个选项。
+  const story = [
+    {
+      speaker 太后,
+      text 皇帝，你说什么？,
+      options [
+        { text 儿臣一时口误，还望母后宽恕。, reply 太后, result 既是口误，往后言行便需更加谨慎。 },
+        { text 儿臣所言句句出自真心。, reply 太后, result 既是真心，那便说清楚你的打算。 },
+        { text 此事关系朝局，容儿臣稍后禀明。, reply 太后, result 也罢，待朝议结束后再来见哀家。 },
+        { text 儿臣还有要事，先行告退。, reply 太后, result 站住。哀家的话还没有说完。 }
+      ]
+    }
+  ];
+
+  const speakerEl = document.getElementById(speaker);
+  const textEl = document.getElementById(dialogText);
+  const optionsEl = document.getElementById(options);
+  const nextBtn = document.getElementById(nextBtn);
+  const dialogSystem = document.getElementById(dialogSystem);
+  const skipBtn = document.getElementById(skipBtn);
+
+  let selected = false;
+
+  function renderOptions(items){
+    optionsEl.innerHTML = ;
+    items.slice(0,4).forEach((item,index)={
+      const button = document.createElement(button);
+      button.className = option-btn;
+      button.textContent = item.text;
+      button.addEventListener(click,()=chooseOption(item,index));
+      optionsEl.appendChild(button);
+    });
+  }
+
+  function chooseOption(item,index){
+    if(selected) return;
+    selected = true;
+
+    [...optionsEl.children].forEach((btn,i)={
+      btn.disabled = true;
+      if(i !== index) btn.style.opacity = .48;
+    });
+
+    setTimeout(()={
+      optionsEl.classList.add(hidden);
+      speakerEl.textContent = item.reply;
+      typeText(item.result);
+      nextBtn.classList.remove(hidden);
+    },180);
+  }
+
+  function typeText(text){
+    textEl.textContent = ;
+    let i = 0;
+    const timer = setInterval(()={
+      textEl.textContent += text[i++];
+      if(i = text.length) clearInterval(timer);
+    },38);
+  }
+
+  nextBtn.addEventListener(click,()={
+    if(!selected){
+      nextBtn.classList.add(hidden);
+      renderOptions(story[0].options);
+    }else{
+      dialogSystem.classList.add(fade-out);
+      setTimeout(()=dialogSystem.classList.add(hidden),240);
+    }
+  });
+
+  skipBtn.addEventListener(click,()={
+    dialogSystem.classList.add(fade-out);
+    setTimeout(()=dialogSystem.classList.add(hidden),240);
+  });
+
+   初始状态直接展示四个选项，便于查看效果。
+  nextBtn.classList.add(hidden);
+  renderOptions(story[0].options);
+script
+body
+html
