@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>位份调整滑轮</title>
+<style>
+  :root{
+    --gold:#e8bf5d;
+    --gold-hi:#ffe8a8;
+    --gold-mid:#bf8b32;
+    --gold-deep:#734819;
+    --red:#8c2d25;
+    --red-deep:#4e130f;
+    --paper:#f1dfb5;
+    --paper-2:#d5b676;
+    --ink:#452a14;
+    --muted:#866940;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#120b08;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  }
+
+  body{display:grid;place-items:center}
+
+  .stage{
+    position:relative;
+    width:min(100vw,430px);
+    height:min(100vh,932px);
+    min-height:720px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 28%,rgba(220,169,66,.12),transparent 34%),
+      linear-gradient(#2d2116,#130d09);
+  }
+
+  .mask{
+    position:absolute;
+    inset:0;
+    background:rgba(8,5,3,.69);
+    backdrop-filter:blur(2px);
+  }
+
+  .panel{
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:50%;
+    height:min(82vh,760px);
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border:1px solid #8e6123;
+    border-radius:20px 20px 15px 15px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.035),transparent 16%),
+      linear-gradient(#2b1a10,#140d09);
+    box-shadow:
+      0 20px 48px rgba(0,0,0,.52),
+      inset 0 0 0 2px rgba(239,201,95,.05);
+    animation:panelIn .28s ease-out;
+  }
+
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid rgba(224,178,76,.15);
+    border-radius:15px 15px 11px 11px;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  .header{
+    flex:0 0 auto;
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    border-bottom:1px solid #75501d;
+    background:
+      radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),
+      linear-gradient(180deg,#422714,#21140d);
+  }
+
+  .header h1{
+    margin:0;
+    color:#f3d176;
+    font-size:25px;
+    letter-spacing:.23em;
+    text-indent:.23em;
+  }
+
+  .header small{
+    position:absolute;
+    bottom:8px;
+    color:#aa8c56;
+    font-size:10px;
+    letter-spacing:.18em;
+  }
+
+  .close{
+    position:absolute;
+    right:13px;
+    top:15px;
+    width:36px;
+    height:36px;
+    border:1px solid #996a24;
+    border-radius:50%;
+    background:linear-gradient(#332012,#18100b);
+    color:#efcf72;
+    font-size:21px;
+    cursor:pointer;
+  }
+
+  .person-summary{
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:62px 1fr auto;
+    gap:10px;
+    align-items:center;
+    padding:10px 12px;
+    background:#130c09;
+    border-bottom:1px solid #5d3c14;
+  }
+
+  .portrait{
+    width:58px;
+    height:66px;
+    border-radius:28px 28px 12px 12px;
+    display:grid;
+    place-items:center;
+    color:#f3d88f;
+    font-size:26px;
+    background:
+      radial-gradient(circle at 50% 25%,rgba(255,239,190,.48),transparent 23%),
+      linear-gradient(145deg,#8b6047,#43241b);
+    border:2px solid #bf8932;
+    box-shadow:0 6px 13px rgba(0,0,0,.28);
+  }
+
+  .person-copy h2{
+    margin:0;
+    color:#f0cf72;
+    font-size:19px;
+  }
+
+  .person-copy p{
+    margin:4px 0 0;
+    color:#aa8d58;
+    font-size:10px;
+  }
+
+  .current-rank{
+    min-width:56px;
+    padding:5px 9px;
+    border-radius:12px;
+    text-align:center;
+    color:#ffe49a;
+    background:linear-gradient(#8b2d25,#53140f);
+    border:1px solid #b67f2c;
+    font-size:11px;
+  }
+
+  .picker-area{
+    flex:1 1 auto;
+    display:grid;
+    grid-template-columns:1fr 130px;
+    gap:12px;
+    padding:15px 13px;
+    overflow:hidden;
+  }
+
+  .wheel-shell{
+    position:relative;
+    overflow:hidden;
+    border:1px solid #76501d;
+    border-radius:17px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.03),transparent 25%),
+      linear-gradient(#1d120c,#100a07);
+    box-shadow:
+      inset 0 0 24px rgba(0,0,0,.40);
+  }
+
+  .wheel-shell::before,
+  .wheel-shell::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    height:72px;
+    z-index:5;
+    pointer-events:none;
+  }
+
+  .wheel-shell::before{
+    top:0;
+    background:linear-gradient(#140c08,transparent);
+  }
+
+  .wheel-shell::after{
+    bottom:0;
+    background:linear-gradient(transparent,#140c08);
+  }
+
+  .selection-frame{
+    position:absolute;
+    left:10px;
+    right:10px;
+    top:50%;
+    height:58px;
+    transform:translateY(-50%);
+    z-index:4;
+    border:1px solid #c79639;
+    border-radius:13px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.08),transparent 35%),
+      linear-gradient(90deg,rgba(116,42,28,.52),rgba(65,22,16,.58));
+    box-shadow:
+      0 0 0 3px rgba(213,167,69,.08),
+      inset 0 0 0 1px rgba(255,227,148,.06);
+    pointer-events:none;
+  }
+
+  .wheel{
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    transition:transform .32s cubic-bezier(.2,.78,.2,1);
+  }
+
+  .rank-item{
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:#796240;
+    font-size:16px;
+    letter-spacing:.12em;
+    opacity:.42;
+    transform:scale(.88);
+    transition:.28s ease;
+    cursor:pointer;
+  }
+
+  .rank-item.near{
+    color:#b99a60;
+    opacity:.72;
+    transform:scale(.96);
+  }
+
+  .rank-item.active{
+    color:#ffe39a;
+    opacity:1;
+    transform:scale(1.12);
+    font-size:20px;
+    text-shadow:0 2px 5px rgba(0,0,0,.45);
+  }
+
+  .rank-item.current::after{
+    content:"当前";
+    padding:2px 6px;
+    border-radius:8px;
+    color:#f4d98b;
+    background:#4c1a14;
+    border:1px solid #824327;
+    font-size:8px;
+    letter-spacing:0;
+  }
+
+  .wheel-hint{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:9px;
+    text-align:center;
+    color:#8e754c;
+    font-size:9px;
+    z-index:6;
+  }
+
+  .change-card{
+    display:flex;
+    flex-direction:column;
+    padding:12px 10px;
+    border:1px solid #896127;
+    border-radius:16px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.10),transparent 36%),
+      linear-gradient(145deg,var(--paper),var(--paper-2));
+    color:var(--ink);
+    box-shadow:
+      0 8px 17px rgba(0,0,0,.25),
+      inset 0 0 0 2px rgba(255,248,216,.20);
+  }
+
+  .change-type{
+    width:max-content;
+    margin:0 auto 9px;
+    padding:4px 10px;
+    border-radius:11px;
+    color:#ffe49a;
+    background:linear-gradient(#8b2d25,#53140f);
+    border:1px solid #b67f2c;
+    font-size:10px;
+  }
+
+  .change-type.demote{
+    background:linear-gradient(#6a4131,#382018);
+    border-color:#8c6b42;
+  }
+
+  .change-type.same{
+    background:linear-gradient(#6e5a3c,#3d301f);
+    border-color:#8f7448;
+  }
+
+  .rank-flow{
+    text-align:center;
+    margin-bottom:10px;
+  }
+
+  .rank-flow b{
+    display:block;
+    color:#4a2d14;
+    font-size:18px;
+  }
+
+  .rank-flow span{
+    display:block;
+    margin:5px 0;
+    color:#9b6e28;
+    font-size:18px;
+  }
+
+  .effects-title{
+    margin:0 0 7px;
+    color:#6e431c;
+    font-size:12px;
+  }
+
+  .effect-list{
+    display:grid;
+    gap:6px;
+  }
+
+  .effect{
+    padding:6px 7px;
+    border-radius:9px;
+    color:#765a36;
+    background:rgba(255,248,220,.42);
+    border:1px solid rgba(126,83,28,.24);
+    font-size:10px;
+  }
+
+  .effect.positive b{color:#8c2d25}
+  .effect.negative b{color:#6e4631}
+  .effect.neutral b{color:#776343}
+
+  .warning{
+    margin-top:auto;
+    padding-top:9px;
+    color:#856b45;
+    font-size:9px;
+    line-height:1.5;
+    text-align:center;
+  }
+
+  .footer{
+    flex:0 0 auto;
+    padding:10px 12px 12px;
+    display:grid;
+    grid-template-columns:1fr 1.4fr;
+    gap:9px;
+    background:#100b08;
+    border-top:1px solid #684617;
+  }
+
+  .btn{
+    height:42px;
+    border:1px solid #7c5520;
+    border-radius:15px;
+    background:linear-gradient(#2b1a10,#17100b);
+    color:#c6a55f;
+    font-family:inherit;
+    font-size:14px;
+    cursor:pointer;
+  }
+
+  .btn.primary{
+    color:#ffe49a;
+    border-color:#b48330;
+    background:linear-gradient(#8b2d25,#4f130f);
+    box-shadow:0 5px 12px rgba(0,0,0,.26);
+  }
+
+  .btn.demote{
+    color:#ead1a0;
+    border-color:#82613d;
+    background:linear-gradient(#65402f,#332016);
+  }
+
+  .btn:disabled{
+    opacity:.38;
+    cursor:not-allowed;
+  }
+
+  .confirm-layer{
+    position:absolute;
+    inset:0;
+    z-index:30;
+    display:grid;
+    place-items:center;
+    background:rgba(7,4,3,.58);
+    opacity:0;
+    pointer-events:none;
+    transition:.25s ease;
+  }
+
+  .confirm-layer.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .confirm-card{
+    width:82%;
+    padding:21px 18px 18px;
+    border:1px solid #946524;
+    border-radius:18px;
+    text-align:center;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.04),transparent 35%),
+      linear-gradient(#2d1b10,#160e0a);
+    box-shadow:0 16px 34px rgba(0,0,0,.45);
+  }
+
+  .confirm-icon{
+    width:74px;
+    height:74px;
+    margin:0 auto 11px;
+    border-radius:18px;
+    display:grid;
+    place-items:center;
+    color:#ffe49a;
+    font-size:25px;
+    background:
+      radial-gradient(circle at 34% 28%,rgba(255,255,255,.10),transparent 18%),
+      linear-gradient(145deg,#8b2d25,#4b130f);
+    border:2px solid #c28e34;
+  }
+
+  .confirm-icon.demote{
+    background:linear-gradient(145deg,#65402f,#332016);
+    border-color:#8c6b42;
+  }
+
+  .confirm-card h2{
+    margin:0;
+    color:#f1cf72;
+    font-size:21px;
+  }
+
+  .confirm-card p{
+    margin:7px 0 14px;
+    color:#aa8e58;
+    font-size:12px;
+    line-height:1.6;
+  }
+
+  .confirm-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+
+  .toast{
+    position:absolute;
+    left:50%;
+    bottom:18px;
+    z-index:50;
+    transform:translate(-50%,14px);
+    opacity:0;
+    padding:8px 14px;
+    border:1px solid #8b6123;
+    border-radius:16px;
+    background:rgba(18,11,8,.94);
+    color:#edce79;
+    font-size:12px;
+    transition:.2s ease;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  @keyframes panelIn{
+    from{opacity:0;transform:translateY(-47%) scale(.97)}
+    to{opacity:1;transform:translateY(-50%) scale(1)}
+  }
+
+  @media(max-height:760px){
+    .panel{height:89vh}
+    .picker-area{padding-top:11px}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="mask"></div>
+
+  <section class="panel" id="panel">
+    <header class="header">
+      <h1>位份调整</h1>
+      <small>可晋可黜 · 圣意裁定</small>
+      <button class="close" id="closeBtn">×</button>
+    </header>
+
+    <section class="person-summary">
+      <div class="portrait">淑</div>
+      <div class="person-copy">
+        <h2>徐珍淑</h2>
+        <p>翊坤宫 · 宠爱92 · 皇嗣2 · 德行86</p>
+      </div>
+      <div class="current-rank">贵人</div>
+    </section>
+
+    <section class="picker-area">
+      <div class="wheel-shell" id="wheelShell">
+        <div class="selection-frame"></div>
+        <div class="wheel" id="wheel"></div>
+        <div class="wheel-hint">上下滑动选择目标位份</div>
+      </div>
+
+      <aside class="change-card">
+        <div class="change-type" id="changeType">晋升</div>
+
+        <div class="rank-flow">
+          <b id="fromRank">贵人</b>
+          <span>↓</span>
+          <b id="toRank">嫔</b>
+        </div>
+
+        <h3 class="effects-title">调整影响</h3>
+        <div class="effect-list" id="effectList"></div>
+
+        <div class="warning" id="warning">
+          位份变更后将立即更新俸禄、宫权与居住权限。
+        </div>
+      </aside>
+    </section>
+
+    <footer class="footer">
+      <button class="btn" id="cancelBtn">取消</button>
+      <button class="btn primary" id="confirmBtn">颁旨晋升</button>
+    </footer>
+  </section>
+
+  <section class="confirm-layer" id="confirmLayer">
+    <div class="confirm-card">
+      <div class="confirm-icon" id="confirmIcon">嫔</div>
+      <h2 id="confirmTitle">晋封徐珍淑为嫔</h2>
+      <p id="confirmText">晋升后将立即更新位份、俸禄、宫权和居住权限，是否确认？</p>
+
+      <div class="confirm-actions">
+        <button class="btn" id="backBtn">再想想</button>
+        <button class="btn primary" id="executeBtn">颁旨晋升</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const ranks = [
+  {name:"皇后",salary:100,power:100,favor:100,home:"坤宁宫",special:"统摄六宫"},
+  {name:"皇贵妃",salary:90,power:90,favor:95,home:"高位主殿",special:"副后之尊"},
+  {name:"贵妃",salary:80,power:75,favor:90,home:"主殿",special:"协理六宫"},
+  {name:"妃",salary:65,power:55,favor:80,home:"主殿",special:"参与宫务"},
+  {name:"嫔",salary:50,power:35,favor:70,home:"主殿或配殿",special:"一宫主位"},
+  {name:"贵人",salary:35,power:20,favor:60,home:"配殿",special:"普通妃嫔"},
+  {name:"常在",salary:24,power:10,favor:50,home:"配殿",special:"低位妃嫔"},
+  {name:"答应",salary:15,power:4,favor:40,home:"偏殿",special:"初入宫闱"},
+  {name:"官女子",salary:8,power:0,favor:30,home:"宫女所",special:"候选身份"}
+];
+
+const currentIndex = ranks.findIndex(item=>item.name==="贵人");
+let selectedIndex = currentIndex - 1;
+let startY = null;
+
+const wheel = document.getElementById("wheel");
+const wheelShell = document.getElementById("wheelShell");
+const confirmBtn = document.getElementById("confirmBtn");
+const toast = document.getElementById("toast");
+
+function renderWheel(){
+  wheel.innerHTML = ranks.map((rank,index)=>`
+    <div class="rank-item ${index===currentIndex?"current":""}" data-index="${index}">
+      ${rank.name}
+    </div>
+  `).join("");
+
+  document.querySelectorAll(".rank-item").forEach(item=>{
+    item.addEventListener("click",()=>{
+      selectedIndex = Number(item.dataset.index);
+      update();
+    });
+  });
+
+  update();
+}
+
+function update(){
+  const itemHeight = 58;
+  wheel.style.transform =
+    `translateY(calc(-50% + ${(ranks.length/2 - selectedIndex - .5)*itemHeight}px))`;
+
+  document.querySelectorAll(".rank-item").forEach((item,index)=>{
+    item.classList.toggle("active",index===selectedIndex);
+    item.classList.toggle("near",Math.abs(index-selectedIndex)===1);
+  });
+
+  const current = ranks[currentIndex];
+  const target = ranks[selectedIndex];
+
+  document.getElementById("fromRank").textContent = current.name;
+  document.getElementById("toRank").textContent = target.name;
+
+  const type = selectedIndex < currentIndex
+    ? "promote"
+    : selectedIndex > currentIndex
+      ? "demote"
+      : "same";
+
+  const changeType = document.getElementById("changeType");
+  changeType.className = `change-type ${type==="demote"?"demote":type==="same"?"same":""}`;
+  changeType.textContent =
+    type==="promote" ? "晋升" :
+    type==="demote" ? "贬黜" : "当前位份";
+
+  const effects = [
+    {
+      label:"俸禄",
+      value:target.salary-current.salary,
+      unit:"%"
+    },
+    {
+      label:"宫权",
+      value:target.power-current.power,
+      unit:""
+    },
+    {
+      label:"宠爱上限",
+      value:target.favor-current.favor,
+      unit:""
+    }
+  ];
+
+  document.getElementById("effectList").innerHTML =
+    type==="same"
+    ? `
+      <div class="effect neutral"><b>无变化</b><br>当前已经是${current.name}</div>
+      <div class="effect neutral"><b>居所</b><br>${current.home}</div>
+      <div class="effect neutral"><b>权限</b><br>${current.special}</div>
+    `
+    : effects.map(effect=>{
+        const cls = effect.value >= 0 ? "positive" : "negative";
+        const sign = effect.value > 0 ? "+" : "";
+        return `
+          <div class="effect ${cls}">
+            ${effect.label} <b>${sign}${effect.value}${effect.unit}</b>
+          </div>
+        `;
+      }).join("") + `
+        <div class="effect ${type==="promote"?"positive":"negative"}">
+          居所 <b>${target.home}</b>
+        </div>
+        <div class="effect ${type==="promote"?"positive":"negative"}">
+          权限 <b>${target.special}</b>
+        </div>
+      `;
+
+  confirmBtn.disabled = type==="same";
+  confirmBtn.className = `btn ${type==="demote"?"demote":"primary"}`;
+  confirmBtn.textContent =
+    type==="promote" ? "颁旨晋升" :
+    type==="demote" ? "颁旨贬黜" : "当前位份";
+
+  document.getElementById("warning").textContent =
+    type==="promote"
+      ? "晋升将提高俸禄、宫权，并可能变更居所。"
+      : type==="demote"
+        ? "贬黜将降低俸禄、宫权，并可能迁出当前宫殿。"
+        : "请选择其他目标位份。";
+}
+
+function moveSelection(delta){
+  selectedIndex = Math.max(0,Math.min(ranks.length-1,selectedIndex+delta));
+  update();
+}
+
+wheelShell.addEventListener("wheel",event=>{
+  event.preventDefault();
+  moveSelection(event.deltaY>0 ? 1 : -1);
+},{passive:false});
+
+wheelShell.addEventListener("pointerdown",event=>{
+  startY = event.clientY;
+  wheelShell.setPointerCapture(event.pointerId);
+});
+
+wheelShell.addEventListener("pointerup",event=>{
+  if(startY===null) return;
+  const diff = event.clientY-startY;
+  if(Math.abs(diff)>18){
+    moveSelection(diff<0 ? 1 : -1);
+  }
+  startY = null;
+});
+
+confirmBtn.addEventListener("click",()=>{
+  if(selectedIndex===currentIndex) return;
+
+  const current = ranks[currentIndex];
+  const target = ranks[selectedIndex];
+  const promote = selectedIndex < currentIndex;
+  const action = promote ? "晋封" : "贬为";
+
+  const icon = document.getElementById("confirmIcon");
+  icon.textContent = target.name.slice(0,1);
+  icon.className = `confirm-icon ${promote?"":"demote"}`;
+
+  document.getElementById("confirmTitle").textContent =
+    `${action}徐珍淑为${target.name}`;
+
+  document.getElementById("confirmText").textContent =
+    `${promote?"晋升":"贬黜"}后将立即更新位份、俸禄、宫权及居住权限，是否确认？`;
+
+  const execute = document.getElementById("executeBtn");
+  execute.textContent = promote ? "颁旨晋升" : "颁旨贬黜";
+  execute.className = `btn ${promote?"primary":"demote"}`;
+
+  document.getElementById("confirmLayer").classList.add("show");
+});
+
+document.getElementById("backBtn").addEventListener("click",()=>{
+  document.getElementById("confirmLayer").classList.remove("show");
+});
+
+document.getElementById("executeBtn").addEventListener("click",()=>{
+  const promote = selectedIndex < currentIndex;
+  const target = ranks[selectedIndex];
+
+  document.getElementById("confirmLayer").classList.remove("show");
+  showToast(
+    promote
+      ? `已颁旨：晋封徐珍淑为${target.name}`
+      : `已颁旨：贬徐珍淑为${target.name}`
+  );
+});
+
+document.getElementById("cancelBtn").addEventListener("click",()=>{
+  showToast("已取消位份调整");
+});
+
+document.getElementById("closeBtn").addEventListener("click",()=>{
+  document.getElementById("panel").style.display = "none";
+});
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove("show"),1200);
+}
+
+renderWheel();
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>黑金宫廷对话框</title>
+<style>
+:root{
+  --gold:#e6bd54;
+  --gold-bright:#ffd873;
+  --gold-dark:#8a5b16;
+  --red:#8e281d;
+  --red-dark:#3d0d0a;
+  --black:rgba(13,8,6,.92);
+  --black-soft:rgba(24,13,9,.84);
+  --paper:#f5df9f;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;background:transparent!important}
+body{overflow:hidden;font-family:"STKaiti","KaiTi","Noto Serif SC",serif;color:var(--paper)}
+.game-ui{
+  position:relative;
+  width:min(100vw,645px);
+  height:100dvh;
+  min-height:640px;
+  margin:auto;
+  overflow:hidden;
+  background:transparent;
+}
+
+/* 左右人物立绘层 */
+.character-layer{position:absolute;inset:0;z-index:2;pointer-events:none}
+.character-slot{position:absolute;top:10%;width:55%;height:62%;overflow:hidden}
+.character-slot.left{left:-9%}
+.character-slot.right{right:-9%}
+.character-slot img{width:100%;height:100%;object-fit:contain;object-position:center bottom;display:block}
+.character-placeholder{
+  position:absolute;inset:8% 8% 0;
+  border:1px dashed rgba(230,189,84,.28);
+  border-radius:46% 46% 12% 12%/28% 28% 8% 8%;
+  background:linear-gradient(180deg,rgba(230,189,84,.06),transparent 75%);
+}
+.character-placeholder::after{
+  position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);
+  width:max-content;max-width:90%;font-size:14px;letter-spacing:.08em;
+  color:rgba(242,205,113,.46);text-align:center;
+}
+.left .character-placeholder::after{content:"左侧 · 对话角色立绘"}
+.right .character-placeholder::after{content:"右侧 · 自己立绘"}
+
+.skip-btn{
+  position:absolute;z-index:80;
+  top:max(18px,env(safe-area-inset-top));right:15px;
+  height:34px;padding:0 13px;
+  border:1px solid rgba(230,189,84,.82);
+  border-radius:3px;color:var(--gold-bright);
+  background:linear-gradient(180deg,rgba(32,19,12,.92),rgba(10,7,5,.94));
+  box-shadow:inset 0 0 0 1px rgba(255,220,127,.1),0 2px 8px rgba(0,0,0,.28);
+  font:15px/32px "STKaiti","KaiTi",serif;letter-spacing:.16em;cursor:pointer;
+}
+.skip-btn::before,.skip-btn::after{content:"";position:absolute;width:5px;height:5px;border-color:var(--gold);opacity:.7}
+.skip-btn::before{left:3px;top:3px;border-left:1px solid;border-top:1px solid}
+.skip-btn::after{right:3px;bottom:3px;border-right:1px solid;border-bottom:1px solid}
+
+/* 正常文档流：对白与选项绝不重叠 */
+.story-stack{
+  position:absolute;z-index:40;left:0;right:0;
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:12px;
+  padding:0 18px;pointer-events:none;
+}
+.dialogue-section,.choice-panel{pointer-events:auto}
+.dialogue-wrap{position:relative;padding-top:31px}
+
+.nameplate{
+  position:absolute;z-index:4;left:14px;top:0;
+  min-width:185px;height:42px;padding:0 38px 0 43px;
+  display:flex;align-items:center;
+  color:var(--gold-bright);font-size:22px;font-weight:700;letter-spacing:.16em;
+  background:linear-gradient(90deg,#260b08 0%,#6f1b14 48%,rgba(111,27,20,.95) 68%,rgba(111,27,20,0) 100%);
+  border-left:2px solid var(--gold);border-top:1px solid rgba(230,189,84,.7);
+  text-shadow:0 1px 2px #000;
+}
+.nameplate::before{content:"◆";position:absolute;left:17px;color:var(--gold);font-size:13px}
+.nameplate::after{content:"";position:absolute;left:0;bottom:-4px;width:74%;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+
+.dialogue-box{
+  position:relative;min-height:132px;padding:31px 54px 36px 28px;
+  color:#f7df9a;
+  background:
+    linear-gradient(180deg,rgba(25,14,10,.95),rgba(8,6,5,.94)),
+    repeating-linear-gradient(90deg,transparent 0 22px,rgba(230,189,84,.025) 22px 23px);
+  border:1px solid var(--gold-dark);border-radius:2px;
+  box-shadow:inset 0 0 0 2px rgba(230,189,84,.08),inset 0 0 24px rgba(0,0,0,.45),0 7px 18px rgba(0,0,0,.28);
+}
+.dialogue-box::before{
+  content:"";position:absolute;inset:7px;border:1px solid rgba(230,189,84,.34);pointer-events:none;
+  clip-path:polygon(0 0,calc(100% - 13px) 0,100% 13px,100% 100%,13px 100%,0 calc(100% - 13px));
+}
+.dialogue-box::after{
+  content:"";position:absolute;left:18px;right:18px;bottom:8px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dark),transparent);opacity:.55;
+}
+.dialogue-text{position:relative;z-index:2;margin:0;font-size:22px;line-height:1.65;letter-spacing:.045em;text-shadow:0 1px 1px #000}
+.next-btn{position:absolute;z-index:5;right:20px;bottom:15px;width:24px;height:22px;border:0;background:transparent;cursor:pointer;animation:nextFloat 1.2s ease-in-out infinite}
+.next-btn::before,.next-btn::after{content:"";position:absolute;left:50%;width:10px;height:10px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateX(-50%) rotate(45deg)}
+.next-btn::before{top:0}.next-btn::after{top:7px}
+@keyframes nextFloat{50%{transform:translateY(2px)}}
+
+.choice-panel{display:flex;flex-direction:column;gap:9px;padding:0 12px}
+.choice-btn{
+  position:relative;width:100%;min-height:46px;padding:8px 26px;
+  color:#f3d47f;
+  border:1px solid #8f641e;border-radius:2px;
+  background:linear-gradient(180deg,rgba(31,18,12,.94),rgba(10,7,5,.96));
+  box-shadow:inset 0 0 0 1px rgba(255,213,105,.08),0 3px 8px rgba(0,0,0,.22);
+  font:19px/1.25 "STKaiti","KaiTi",serif;letter-spacing:.13em;cursor:pointer;
+  transition:transform .12s ease,filter .12s ease,border-color .12s ease;
+}
+.choice-btn::before,.choice-btn::after{content:"";position:absolute;top:50%;width:18px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dark))}
+.choice-btn::before{left:8px}.choice-btn::after{right:8px;transform:rotate(180deg)}
+.choice-btn:hover{filter:brightness(1.15);border-color:var(--gold)}
+.choice-btn:active{transform:translateY(1px)}
+.choice-btn.selected{color:#ffe49b;border-color:var(--gold-bright);background:linear-gradient(180deg,#742117,#2d0c09)}
+.choice-btn:disabled{opacity:.62;cursor:default}
+.hidden{display:none!important}
+
+@media(max-height:760px){
+  .character-slot{top:7%;height:54%}
+  .story-stack{bottom:calc(8px + env(safe-area-inset-bottom));gap:8px}
+  .dialogue-wrap{padding-top:27px}
+  .nameplate{height:38px;font-size:19px}
+  .dialogue-box{min-height:108px;padding:27px 48px 31px 24px}
+  .dialogue-text{font-size:18px}
+  .choice-panel{gap:6px}
+  .choice-btn{min-height:38px;font-size:16px;padding:5px 20px}
+}
+</style>
+</head>
+<body>
+<main class="game-ui" id="gameUi">
+  <button class="skip-btn" id="skipBtn">跳过</button>
+
+  <div class="character-layer" aria-hidden="true">
+    <div class="character-slot left" id="leftCharacter">
+      <!-- 接入时可替换为：<img src="对话角色.png" alt=""> -->
+      <div class="character-placeholder"></div>
+    </div>
+    <div class="character-slot right" id="rightCharacter">
+      <!-- 接入时可替换为：<img src="自己.png" alt=""> -->
+      <div class="character-placeholder"></div>
+    </div>
+  </div>
+
+  <div class="story-stack" id="storyStack">
+    <section class="dialogue-section">
+      <div class="dialogue-wrap">
+        <div class="nameplate" id="speaker">太后</div>
+        <div class="dialogue-box">
+          <p class="dialogue-text" id="dialogText">皇帝，你说什么？</p>
+          <button class="next-btn" id="nextBtn" aria-label="下一句"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="choice-panel" id="choicePanel" aria-label="剧情选项"></section>
+  </div>
+</main>
+<script>
+const choices=[
+  {text:'口误',speaker:'你',reply:'朕方才一时口误，母后莫要见怪。'},
+  {text:'坦白',speaker:'你',reply:'朕确有一事，想向母后如实说明。'},
+  {text:'沉默',speaker:'太后',reply:'你既不愿开口，哀家便不再逼问。'},
+  {text:'转移话题',speaker:'你',reply:'今日御花园景色正好，不如陪朕走走。'}
+].slice(0,4);
+const panel=document.getElementById('choicePanel');
+const speaker=document.getElementById('speaker');
+const text=document.getElementById('dialogText');
+function renderChoices(){
+  panel.innerHTML='';
+  choices.forEach((item,index)=>{
+    const button=document.createElement('button');
+    button.className='choice-btn';button.textContent=item.text;
+    button.onclick=()=>{
+      speaker.textContent=item.speaker;text.textContent=item.reply;
+      [...panel.children].forEach((el,i)=>{el.disabled=true;el.classList.toggle('selected',i===index)});
+    };
+    panel.appendChild(button);
+  });
+}
+renderChoices();
+document.getElementById('nextBtn').onclick=()=>panel.classList.toggle('hidden');
+document.getElementById('skipBtn').onclick=()=>{
+  document.getElementById('gameUi').animate([{opacity:1},{opacity:0}],{duration:260,fill:'forwards'});
+};
+</script>
+</body>
+</html>

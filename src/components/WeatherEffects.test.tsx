@@ -1,10 +1,19 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { WeatherEffects } from './WeatherEffects';
+import { getTimePhase, WeatherEffects } from './WeatherEffects';
 
 describe('WeatherEffects', () => {
   it('renders a non-interactive snow layer for snowy weather', () => {
     render(<WeatherEffects weather="雪" />);
     expect(screen.getByLabelText('雪景特效')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('derives morning, noon, evening, and moonlit night from game time', () => {
+    expect(getTimePhase(480)).toBe('morning');
+    expect(getTimePhase(720)).toBe('noon');
+    expect(getTimePhase(1020)).toBe('evening');
+    expect(getTimePhase(1260)).toBe('night');
+    render(<WeatherEffects weather="晴" minuteOfDay={1260} />);
+    expect(screen.getByLabelText('月夜氛围')).toContainElement(document.querySelector('.night-moon'));
   });
 });

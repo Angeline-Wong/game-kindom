@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>大臣调任</title>
+<style>
+:root{
+  --gold:#e8bf5d;--gold-hi:#ffe8a8;--red:#8c2d25;--red-dark:#4e130f;
+  --paper:#f1dfb5;--paper2:#d5b676;--ink:#452a14;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;background:#120b08;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+}
+body{display:grid;place-items:center}
+.stage{
+  position:relative;width:min(100vw,430px);height:min(100vh,932px);min-height:720px;
+  overflow:hidden;background:
+    radial-gradient(circle at 50% 25%,rgba(220,169,66,.12),transparent 34%),
+    linear-gradient(#2d2116,#130d09);
+}
+.mask{position:absolute;inset:0;background:rgba(8,5,3,.69);backdrop-filter:blur(2px)}
+.panel{
+  position:absolute;left:12px;right:12px;top:50%;height:min(88vh,820px);
+  transform:translateY(-50%);display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #8e6123;border-radius:20px 20px 15px 15px;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 16%),linear-gradient(#2b1a10,#140d09);
+  box-shadow:0 20px 48px rgba(0,0,0,.52),inset 0 0 0 2px rgba(239,201,95,.05);
+}
+.panel::before{
+  content:"";position:absolute;inset:7px;border:1px solid rgba(224,178,76,.15);
+  border-radius:15px 15px 11px 11px;pointer-events:none;z-index:2;
+}
+.header{
+  flex:0 0 74px;display:flex;align-items:center;justify-content:center;position:relative;
+  border-bottom:1px solid #75501d;
+  background:radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),linear-gradient(#422714,#21140d);
+}
+.header h1{margin:0;color:#f3d176;font-size:25px;letter-spacing:.23em;text-indent:.23em}
+.header small{position:absolute;bottom:7px;color:#aa8c56;font-size:10px;letter-spacing:.16em}
+.close{
+  position:absolute;right:13px;top:14px;width:36px;height:36px;border:1px solid #996a24;
+  border-radius:50%;background:linear-gradient(#332012,#18100b);color:#efcf72;font-size:21px;cursor:pointer;
+}
+.minister{
+  flex:0 0 auto;display:grid;grid-template-columns:60px 1fr auto;gap:10px;align-items:center;
+  padding:10px 12px;background:#130c09;border-bottom:1px solid #5d3c14;
+}
+.avatar{
+  width:56px;height:62px;border-radius:14px 14px 11px 11px;display:grid;place-items:center;
+  color:#f3d88f;font-size:24px;background:linear-gradient(145deg,#78604d,#352019);
+  border:2px solid #bf8932;box-shadow:0 6px 13px rgba(0,0,0,.28);
+}
+.minister h2{margin:0;color:#f0cf72;font-size:19px}
+.minister p{margin:4px 0 0;color:#aa8d58;font-size:10px;line-height:1.45}
+.rank-badge{
+  padding:5px 9px;border-radius:12px;color:#ffe49a;background:linear-gradient(#8b2d25,#53140f);
+  border:1px solid #b67f2c;font-size:10px;white-space:nowrap;
+}
+.current-office{
+  flex:0 0 auto;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;
+  background:#18100b;border-bottom:1px solid #5d3c14;color:#9f8350;font-size:10px;
+}
+.current-office b{color:#e9c76e;font-size:12px}
+.filters{
+  flex:0 0 auto;padding:8px 9px;background:#130c09;border-bottom:1px solid #5d3c14;
+}
+.tabs{display:flex;gap:6px;overflow:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;height:29px;padding:0 12px;border:1px solid #73501d;border-radius:14px;
+  background:#21150e;color:#b5975b;font-family:inherit;cursor:pointer;
+}
+.tab.active{color:#ffe49b;border-color:#c79839;background:linear-gradient(#90312c,#561612)}
+.search-row{display:grid;grid-template-columns:1fr 92px;gap:7px;margin-top:7px}
+.search{
+  height:32px;border:1px solid #73501e;border-radius:16px;background:#0f0a07;color:#efd68e;
+  padding:0 11px;outline:none;font-family:inherit;
+}
+.vacancy-toggle{
+  border:1px solid #805820;border-radius:16px;background:#21150e;color:#c8a45e;font-family:inherit;cursor:pointer;
+}
+.vacancy-toggle.active{color:#ffe49a;background:#532019;border-color:#ad7629}
+.office-list{
+  flex:1 1 auto;overflow:auto;padding:11px 12px 15px;display:grid;gap:9px;
+  scrollbar-width:thin;scrollbar-color:#896226 transparent;
+}
+.office-card{
+  position:relative;display:grid;grid-template-columns:48px 1fr auto;gap:9px;align-items:center;
+  min-height:105px;padding:10px;border:1px solid #886127;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 36%),linear-gradient(145deg,var(--paper),var(--paper2));
+  color:var(--ink);cursor:pointer;transition:.17s ease;
+  box-shadow:0 7px 14px rgba(0,0,0,.23),inset 0 0 0 2px rgba(255,248,216,.18);
+}
+.office-card:hover{transform:translateY(-2px)}
+.office-card.selected{
+  border-color:#d2a547;box-shadow:0 0 0 3px rgba(236,191,81,.15),0 10px 20px rgba(0,0,0,.29);
+}
+.office-card.disabled{opacity:.42;cursor:not-allowed;filter:saturate(.5)}
+.office-icon{
+  width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:#7b2f20;
+  background:linear-gradient(145deg,#f2dfae,#c99b4a);border:2px solid #a66f24;font-size:19px;font-weight:bold;
+}
+.office-name{font-size:16px;font-weight:700;color:#4b2d14}
+.office-meta{margin-top:3px;color:#795f3b;font-size:9px}
+.office-desc{margin-top:5px;color:#745a37;font-size:10px;line-height:1.4}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.tag{
+  padding:2px 6px;border-radius:8px;background:rgba(255,248,220,.46);
+  border:1px solid rgba(126,83,28,.24);color:#79552c;font-size:8px;
+}
+.office-side{text-align:right;color:#82663d;font-size:9px;line-height:1.55}
+.office-side b{display:block;color:#8b2d25;font-size:10px}
+.check{
+  position:absolute;right:7px;top:7px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;
+  color:#ffe49a;background:#8b2d25;border:1px solid #c79538;opacity:0;transform:scale(.6);transition:.18s;
+}
+.office-card.selected .check{opacity:1;transform:scale(1)}
+.empty{text-align:center;color:#9e8351;padding:38px 0}
+.footer{
+  flex:0 0 auto;padding:10px 12px 12px;display:grid;grid-template-columns:1fr 1.4fr;gap:9px;
+  background:#100b08;border-top:1px solid #684617;
+}
+.btn{
+  height:42px;border:1px solid #7c5520;border-radius:15px;background:linear-gradient(#2b1a10,#17100b);
+  color:#c6a55f;font-family:inherit;font-size:14px;cursor:pointer;
+}
+.btn.primary{color:#ffe49a;border-color:#b48330;background:linear-gradient(#8b2d25,#4f130f)}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.confirm-layer{
+  position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(7,4,3,.58);
+  opacity:0;pointer-events:none;transition:.25s;
+}
+.confirm-layer.show{opacity:1;pointer-events:auto}
+.confirm-card{
+  width:85%;padding:20px 17px 17px;border:1px solid #946524;border-radius:18px;text-align:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 35%),linear-gradient(#2d1b10,#160e0a);
+  box-shadow:0 16px 34px rgba(0,0,0,.45);
+}
+.transfer-flow{
+  display:grid;grid-template-columns:1fr 32px 1fr;gap:5px;align-items:center;margin:12px 0;
+}
+.flow-office{
+  min-height:65px;padding:8px 5px;border:1px solid #684718;border-radius:11px;background:#100b08;
+  display:grid;place-items:center;color:#d4b466;font-size:12px;
+}
+.flow-office small{display:block;color:#876f49;font-size:8px;margin-top:3px}
+.flow-arrow{color:#d7aa49;font-size:23px}
+.confirm-card h2{margin:0;color:#f1cf72;font-size:21px}
+.confirm-card p{margin:7px 0 12px;color:#aa8e58;font-size:11px;line-height:1.55}
+.confirm-effects{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:13px;
+}
+.confirm-effect{
+  padding:6px 3px;border-radius:9px;background:#100b08;border:1px solid #5f4018;
+  color:#92784d;font-size:8px;
+}
+.confirm-effect b{display:block;color:#e1be67;font-size:11px;margin-bottom:2px}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.toast{
+  position:absolute;left:50%;bottom:18px;z-index:50;transform:translate(-50%,14px);opacity:0;
+  padding:8px 14px;border:1px solid #8b6123;border-radius:16px;background:rgba(18,11,8,.94);
+  color:#edce79;font-size:12px;transition:.2s;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-height:760px){.panel{height:92vh}.office-card{min-height:96px}}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="mask"></div>
+
+<section class="panel" id="panel">
+  <header class="header">
+    <h1>大臣调任</h1>
+    <small>品秩相符 · 量才授职</small>
+    <button class="close" id="closeBtn">×</button>
+  </header>
+
+  <section class="minister">
+    <div class="avatar">张</div>
+    <div>
+      <h2>张居正</h2>
+      <p>忠诚92 · 政务96 · 谋略88 · 军事54</p>
+    </div>
+    <div class="rank-badge">正三品</div>
+  </section>
+
+  <div class="current-office">
+    <span>现任官职：<b>户部右侍郎</b></span>
+    <span>中央 · 文职</span>
+  </div>
+
+  <section class="filters">
+    <div class="tabs">
+      <button class="tab active" data-filter="全部">全部</button>
+      <button class="tab" data-filter="中央">中央</button>
+      <button class="tab" data-filter="地方">地方</button>
+      <button class="tab" data-filter="文职">文职</button>
+      <button class="tab" data-filter="武职">武职</button>
+    </div>
+    <div class="search-row">
+      <input class="search" id="searchInput" placeholder="搜索官职或衙门">
+      <button class="vacancy-toggle active" id="vacancyBtn">仅看空缺</button>
+    </div>
+  </section>
+
+  <main class="office-list" id="officeList"></main>
+
+  <footer class="footer">
+    <button class="btn" id="cancelBtn">取消</button>
+    <button class="btn primary" id="confirmBtn" disabled>确认调任</button>
+  </footer>
+</section>
+
+<section class="confirm-layer" id="confirmLayer">
+  <div class="confirm-card">
+    <h2>确认调任</h2>
+    <div class="transfer-flow">
+      <div class="flow-office">户部右侍郎<small>中央 · 正三品</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-office" id="targetOffice">吏部左侍郎<small>中央 · 正三品</small></div>
+    </div>
+    <p id="confirmText">调任后将立即变更职责、权势和所属衙门。</p>
+    <div class="confirm-effects">
+      <div class="confirm-effect"><b id="powerEffect">+5</b>权势</div>
+      <div class="confirm-effect"><b id="salaryEffect">不变</b>俸禄</div>
+      <div class="confirm-effect"><b id="fitEffect">极高</b>适任度</div>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn" id="backBtn">再想想</button>
+      <button class="btn primary" id="executeBtn">颁旨调任</button>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const MINISTER = {
+  name:"张居正",
+  rank:"正三品",
+  rankLevel:5,
+  currentOffice:"户部右侍郎",
+  skills:{政务:96,谋略:88,军事:54,学识:91,监察:78,外交:70}
+};
+
+/*
+ rankLevel 越小品级越高。
+ 默认严格显示同品级官职；allowLowerRank=true 时可兼任低一级官职。
+*/
+const SETTINGS = { allowLowerRank:false };
+
+const offices = [
+  {name:"吏部左侍郎",agency:"吏部",rank:"正三品",rankLevel:5,area:"中央",type:"文职",vacant:true,
+   duty:"协助尚书掌管官员铨选、考课与升降。",skill:"政务",need:85,power:5,salary:0,fit:"极高"},
+  {name:"礼部左侍郎",agency:"礼部",rank:"正三品",rankLevel:5,area:"中央",type:"文职",vacant:true,
+   duty:"掌礼制、科举、朝会及外藩礼仪。",skill:"学识",need:82,power:2,salary:0,fit:"极高"},
+  {name:"刑部右侍郎",agency:"刑部",rank:"正三品",rankLevel:5,area:"中央",type:"文职",vacant:true,
+   duty:"复核刑狱，协理重大案件与律例修订。",skill:"监察",need:80,power:3,salary:0,fit:"较高"},
+  {name:"都察院左副都御史",agency:"都察院",rank:"正三品",rankLevel:5,area:"中央",type:"文职",vacant:true,
+   duty:"纠察百官，巡按地方，参与重大弹劾。",skill:"监察",need:88,power:8,salary:3,fit:"较高"},
+  {name:"通政使",agency:"通政司",rank:"正三品",rankLevel:5,area:"中央",type:"文职",vacant:false,
+   duty:"收受内外章奏，通达下情并封驳奏疏。",skill:"政务",need:80,power:4,salary:0,fit:"极高"},
+  {name:"顺天府尹",agency:"顺天府",rank:"正三品",rankLevel:5,area:"地方",type:"文职",vacant:true,
+   duty:"治理京畿，掌民政、司法、治安与赋役。",skill:"政务",need:88,power:6,salary:4,fit:"极高"},
+  {name:"布政使",agency:"山东承宣布政使司",rank:"从二品",rankLevel:4,area:"地方",type:"文职",vacant:true,
+   duty:"总理一省民政、赋税与官员考核。",skill:"政务",need:92,power:12,salary:12,fit:"品级不足"},
+  {name:"按察使",agency:"浙江提刑按察使司",rank:"正三品",rankLevel:5,area:"地方",type:"文职",vacant:true,
+   duty:"主管一省刑名监察，整饬吏治。",skill:"监察",need:84,power:7,salary:5,fit:"较高"},
+  {name:"参将",agency:"京营",rank:"正三品",rankLevel:5,area:"中央",type:"武职",vacant:true,
+   duty:"统领营兵，参与京师防务与操练。",skill:"军事",need:75,power:8,salary:6,fit:"不足"},
+  {name:"总兵官",agency:"蓟州镇",rank:"正二品",rankLevel:3,area:"地方",type:"武职",vacant:true,
+   duty:"镇守边疆，统辖一镇兵马。",skill:"军事",need:88,power:18,salary:15,fit:"品级不足"},
+  {name:"太常寺卿",agency:"太常寺",rank:"正三品",rankLevel:5,area:"中央",type:"文职",vacant:true,
+   duty:"掌宗庙祭祀、礼乐与国家典礼。",skill:"学识",need:78,power:-2,salary:-2,fit:"极高"},
+  {name:"鸿胪寺卿",agency:"鸿胪寺",rank:"正三品",rankLevel:5,area:"中央",type:"文职",vacant:true,
+   duty:"掌朝会仪节、外使接待与册封礼仪。",skill:"外交",need:78,power:0,salary:-1,fit:"较高"}
+];
+
+let filter="全部";
+let vacancyOnly=true;
+let selected=null;
+
+const list=document.getElementById("officeList");
+const confirmBtn=document.getElementById("confirmBtn");
+const searchInput=document.getElementById("searchInput");
+const toast=document.getElementById("toast");
+
+function canTake(office){
+  const rankAllowed = SETTINGS.allowLowerRank
+    ? office.rankLevel >= MINISTER.rankLevel && office.rankLevel <= MINISTER.rankLevel + 1
+    : office.rankLevel === MINISTER.rankLevel;
+  const skillValue = MINISTER.skills[office.skill] || 0;
+  return rankAllowed && skillValue >= office.need && office.vacant;
+}
+
+function render(){
+  const keyword=searchInput.value.trim();
+  const rows=offices.filter(o=>{
+    const category=filter==="全部" || o.area===filter || o.type===filter;
+    const vacancy=!vacancyOnly || o.vacant;
+    const search=!keyword || o.name.includes(keyword) || o.agency.includes(keyword);
+    return category && vacancy && search;
+  });
+
+  list.innerHTML="";
+  if(!rows.length){
+    list.innerHTML='<div class="empty">暂无符合条件的官职</div>';
+    return;
+  }
+
+  rows.forEach(o=>{
+    const eligible=canTake(o);
+    const skillValue=MINISTER.skills[o.skill] || 0;
+    const rankMismatch=o.rankLevel!==MINISTER.rankLevel;
+    const reason=!o.vacant?"暂无空缺":rankMismatch?`需${o.rank}`:skillValue<o.need?`${o.skill}需${o.need}`:"可调任";
+
+    const card=document.createElement("article");
+    card.className=`office-card ${eligible?"":"disabled"} ${selected===o?"selected":""}`;
+    card.innerHTML=`
+      <span class="check">✓</span>
+      <div class="office-icon">${o.agency.slice(0,1)}</div>
+      <div>
+        <div class="office-name">${o.name}</div>
+        <div class="office-meta">${o.agency} · ${o.area} · ${o.type} · ${o.rank}</div>
+        <div class="office-desc">${o.duty}</div>
+        <div class="tags">
+          <span class="tag">${o.skill} ${skillValue}/${o.need}</span>
+          <span class="tag">${o.vacant?"有空缺":"已任满"}</span>
+        </div>
+      </div>
+      <div class="office-side">
+        <b>${reason}</b>
+        权势 ${signed(o.power)}<br>
+        俸禄 ${signed(o.salary)}
+      </div>
+    `;
+    card.onclick=()=>{
+      if(!eligible){
+        showToast(reason);
+        return;
+      }
+      selected=o;
+      confirmBtn.disabled=false;
+      render();
+    };
+    list.appendChild(card);
+  });
+}
+
+function signed(value){
+  if(value===0)return "不变";
+  return value>0?`+${value}`:`${value}`;
+}
+
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    filter=btn.dataset.filter;
+    selected=null;
+    confirmBtn.disabled=true;
+    render();
+  };
+});
+
+document.getElementById("vacancyBtn").onclick=e=>{
+  vacancyOnly=!vacancyOnly;
+  e.currentTarget.classList.toggle("active",vacancyOnly);
+  e.currentTarget.textContent=vacancyOnly?"仅看空缺":"显示全部";
+  selected=null;
+  confirmBtn.disabled=true;
+  render();
+};
+
+searchInput.oninput=render;
+
+confirmBtn.onclick=()=>{
+  if(!selected)return;
+  document.getElementById("targetOffice").innerHTML=
+    `${selected.name}<small>${selected.area} · ${selected.rank}</small>`;
+  document.getElementById("confirmText").textContent=
+    `张居正将由户部右侍郎调任${selected.name}，所属衙门变更为${selected.agency}。`;
+  document.getElementById("powerEffect").textContent=signed(selected.power);
+  document.getElementById("salaryEffect").textContent=signed(selected.salary);
+  document.getElementById("fitEffect").textContent=selected.fit;
+  document.getElementById("confirmLayer").classList.add("show");
+};
+
+document.getElementById("backBtn").onclick=()=>document.getElementById("confirmLayer").classList.remove("show");
+document.getElementById("executeBtn").onclick=()=>{
+  document.getElementById("confirmLayer").classList.remove("show");
+  showToast(`已颁旨：调任张居正为${selected.name}`);
+};
+document.getElementById("cancelBtn").onclick=()=>showToast("已取消调任");
+document.getElementById("closeBtn").onclick=()=>document.getElementById("panel").style.display="none";
+
+function showToast(text){
+  toast.textContent=text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>toast.classList.remove("show"),1300);
+}
+render();
+</script>
+</body>
+</html>

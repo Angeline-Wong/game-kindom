@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>清制皇嗣册封</title>
+<style>
+:root{
+  --gold:#e8bf5d;--gold-hi:#ffe8a8;--red:#8c2d25;--red-deep:#4e130f;
+  --paper:#f1dfb5;--paper-2:#d5b676;--ink:#452a14;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;background:#120b08;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+}
+body{display:grid;place-items:center}
+.stage{
+  position:relative;width:min(100vw,430px);height:min(100vh,932px);min-height:720px;
+  overflow:hidden;background:
+    radial-gradient(circle at 50% 28%,rgba(220,169,66,.12),transparent 34%),
+    linear-gradient(#2d2116,#130d09);
+}
+.mask{position:absolute;inset:0;background:rgba(8,5,3,.69);backdrop-filter:blur(2px)}
+.panel{
+  position:absolute;left:12px;right:12px;top:50%;height:min(86vh,800px);
+  transform:translateY(-50%);display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #8e6123;border-radius:20px 20px 15px 15px;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 16%),linear-gradient(#2b1a10,#140d09);
+  box-shadow:0 20px 48px rgba(0,0,0,.52),inset 0 0 0 2px rgba(239,201,95,.05);
+}
+.panel::before{
+  content:"";position:absolute;inset:7px;border:1px solid rgba(224,178,76,.15);
+  border-radius:15px 15px 11px 11px;pointer-events:none;z-index:2;
+}
+.header{
+  flex:0 0 auto;height:76px;display:flex;align-items:center;justify-content:center;
+  position:relative;border-bottom:1px solid #75501d;
+  background:radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),linear-gradient(180deg,#422714,#21140d);
+}
+.header h1{margin:0;color:#f3d176;font-size:25px;letter-spacing:.23em;text-indent:.23em}
+.header small{position:absolute;bottom:8px;color:#aa8c56;font-size:10px;letter-spacing:.18em}
+.close{
+  position:absolute;right:13px;top:15px;width:36px;height:36px;border:1px solid #996a24;
+  border-radius:50%;background:linear-gradient(#332012,#18100b);color:#efcf72;font-size:21px;cursor:pointer;
+}
+.person-summary{
+  flex:0 0 auto;display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;
+  padding:11px 12px;background:#130c09;border-bottom:1px solid #5d3c14;
+}
+.portrait{
+  width:58px;height:66px;border-radius:16px 16px 12px 12px;display:grid;place-items:center;
+  color:#f3d88f;font-size:25px;background:linear-gradient(145deg,#7f624d,#352019);
+  border:2px solid #bf8932;box-shadow:0 6px 13px rgba(0,0,0,.28);
+}
+.person-copy h2{margin:0;color:#f0cf72;font-size:19px}
+.person-copy p{margin:4px 0 0;color:#aa8d58;font-size:10px}
+.status{
+  min-width:60px;padding:5px 8px;border-radius:12px;text-align:center;color:#ffe49a;
+  background:linear-gradient(#584329,#2c2115);border:1px solid #8c6e3e;font-size:10px;
+}
+.content{
+  flex:1 1 auto;overflow:auto;padding:12px;display:grid;gap:12px;
+  scrollbar-width:thin;scrollbar-color:#896226 transparent;
+}
+.section{padding:11px;border:1px solid #76501d;border-radius:15px;background:#18100b}
+.section-title{margin:0 0 9px;color:#e4c16b;font-size:14px;letter-spacing:.08em}
+.rank-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.rank-card{
+  position:relative;min-height:120px;padding:10px 8px;border:1px solid #856027;border-radius:13px;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 36%),linear-gradient(145deg,var(--paper),var(--paper-2));
+  color:var(--ink);cursor:pointer;text-align:center;transition:.18s ease;
+}
+.rank-card:hover{transform:translateY(-2px)}
+.rank-card.selected{
+  border-color:#d2a547;box-shadow:0 0 0 3px rgba(236,191,81,.15),0 8px 17px rgba(0,0,0,.28);
+}
+.rank-card.locked{opacity:.42;cursor:not-allowed}
+.rank-name{font-size:17px;font-weight:700;color:#4c2d14}
+.rank-desc{margin-top:4px;color:#745a36;font-size:9px;line-height:1.45}
+.rank-cost{
+  margin:7px auto 0;width:max-content;padding:2px 7px;border-radius:8px;
+  background:rgba(255,248,220,.45);border:1px solid rgba(126,83,28,.24);color:#8b2d25;font-size:9px;
+}
+.check{
+  position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  color:#ffe49a;background:#8b2d25;border:1px solid #c79538;opacity:0;transform:scale(.6);transition:.18s ease;
+}
+.rank-card.selected .check{opacity:1;transform:scale(1)}
+.name-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.name-input{
+  height:40px;border:1px solid #76501d;border-radius:12px;background:#100b08;color:#f0d481;
+  padding:0 12px;outline:none;font-family:inherit;font-size:15px;letter-spacing:.08em;
+}
+.random-btn{
+  min-width:74px;border:1px solid #8b6124;border-radius:12px;background:linear-gradient(#312014,#18100b);
+  color:#d8b768;font-family:inherit;cursor:pointer;
+}
+.tip{margin-top:7px;color:#92784e;font-size:9px;line-height:1.5}
+.tip.error{color:#cf7469}
+.preview{
+  padding:13px 12px;border:1px solid #8d6427;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.11),transparent 38%),linear-gradient(145deg,var(--paper),var(--paper-2));
+  text-align:center;color:var(--ink);
+}
+.preview-label{color:#84663c;font-size:10px}
+.full-title{margin-top:6px;color:#7f2d23;font-size:22px;font-weight:700;letter-spacing:.08em}
+.meta{
+  margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+}
+.meta-item{
+  padding:6px 3px;border-radius:9px;background:rgba(255,248,220,.42);
+  border:1px solid rgba(126,83,28,.24);color:#745936;font-size:9px;
+}
+.meta-item b{display:block;color:#4a2d14;font-size:11px;margin-bottom:2px}
+.footer{
+  flex:0 0 auto;padding:10px 12px 12px;display:grid;grid-template-columns:1fr 1.4fr;gap:9px;
+  background:#100b08;border-top:1px solid #684617;
+}
+.btn{
+  height:42px;border:1px solid #7c5520;border-radius:15px;background:linear-gradient(#2b1a10,#17100b);
+  color:#c6a55f;font-family:inherit;font-size:14px;cursor:pointer;
+}
+.btn.primary{color:#ffe49a;border-color:#b48330;background:linear-gradient(#8b2d25,#4f130f)}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.confirm-layer{
+  position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(7,4,3,.58);
+  opacity:0;pointer-events:none;transition:.25s ease;
+}
+.confirm-layer.show{opacity:1;pointer-events:auto}
+.confirm-card{
+  width:84%;padding:21px 18px 18px;border:1px solid #946524;border-radius:18px;text-align:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 35%),linear-gradient(#2d1b10,#160e0a);
+  box-shadow:0 16px 34px rgba(0,0,0,.45);
+}
+.confirm-icon{
+  width:76px;height:76px;margin:0 auto 11px;border-radius:18px;display:grid;place-items:center;
+  color:#ffe49a;font-size:23px;background:linear-gradient(145deg,#8b2d25,#4b130f);border:2px solid #c28e34;
+}
+.confirm-card h2{margin:0;color:#f1cf72;font-size:20px}
+.confirm-card p{margin:7px 0 14px;color:#aa8e58;font-size:12px;line-height:1.6}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.toast{
+  position:absolute;left:50%;bottom:18px;z-index:50;transform:translate(-50%,14px);opacity:0;
+  padding:8px 14px;border:1px solid #8b6123;border-radius:16px;background:rgba(18,11,8,.94);
+  color:#edce79;font-size:12px;transition:.2s ease;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="mask"></div>
+
+  <section class="panel" id="panel">
+    <header class="header">
+      <h1 id="pageTitle">皇子封爵</h1>
+      <small id="pageSubtitle">宗室列爵 · 恩封有序</small>
+      <button class="close" id="closeBtn">×</button>
+    </header>
+
+    <section class="person-summary">
+      <div class="portrait" id="portrait"></div>
+      <div class="person-copy">
+        <h2 id="personName"></h2>
+        <p id="personInfo"></p>
+      </div>
+      <div class="status">未封爵</div>
+    </section>
+
+    <main class="content">
+      <section class="section">
+        <h3 class="section-title" id="rankTitle"></h3>
+        <div class="rank-grid" id="rankGrid"></div>
+      </section>
+
+      <section class="section">
+        <h3 class="section-title">钦定封号</h3>
+        <div class="name-row">
+          <input class="name-input" id="titleInput" maxlength="4" />
+          <button class="random-btn" id="randomBtn">随机封号</button>
+        </div>
+        <div class="tip" id="tip"></div>
+      </section>
+
+      <section class="preview">
+        <div class="preview-label">最终册封称号</div>
+        <div class="full-title" id="fullTitle">请选择爵位与封号</div>
+        <div class="meta">
+          <div class="meta-item"><b id="salaryText">—</b>岁俸</div>
+          <div class="meta-item"><b id="estateText">—</b>府邸</div>
+          <div class="meta-item"><b id="powerText">—</b>宗室礼制</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <button class="btn" id="cancelBtn">取消</button>
+      <button class="btn primary" id="confirmBtn" disabled>确认册封</button>
+    </footer>
+  </section>
+
+  <section class="confirm-layer" id="confirmLayer">
+    <div class="confirm-card">
+      <div class="confirm-icon" id="confirmIcon">爵</div>
+      <h2 id="confirmTitle"></h2>
+      <p id="confirmText"></p>
+      <div class="confirm-actions">
+        <button class="btn" id="backBtn">再想想</button>
+        <button class="btn primary" id="executeBtn">颁旨册封</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/*
+ * 接入游戏时只需传入当前人物。
+ * gender: "male" 自动显示皇子爵位；
+ * gender: "female" 自动显示公主等级。
+ */
+const CHARACTER = {
+  id: "prince_003",
+  gender: "male",
+  name: "萧景珩",
+  initial: "珩",
+  info: "三皇子 · 18岁 · 资质86 · 功绩2",
+  motherRank: "贵妃",
+  legitimate: false,
+  merit: 2
+};
+
+/* 公主示例：
+const CHARACTER = {
+  id: "princess_001",
+  gender: "female",
+  name: "萧明昭",
+  initial: "昭",
+  info: "长公主 · 19岁 · 才德90 · 宠爱88",
+  motherRank: "皇后",
+  legitimate: true,
+  merit: 3
+};
+*/
+
+const configs = {
+  male:{
+    pageTitle:"皇子封爵",
+    subtitle:"宗室列爵 · 恩封有序",
+    rankTitle:"选择宗室爵位",
+    placeholder:"例如：和硕礼、和硕睿、恭",
+    tip:"输入1～4个汉字。选择亲王或郡王时，系统自动组成“和硕××亲王/多罗××郡王”。",
+    random:["礼","睿","恭","怡","庆","醇","肃","庄","豫","端"],
+    ranks:[
+      {name:"和硕亲王",prefix:"和硕",suffix:"亲王",salary:"10000两",estate:"亲王府",power:"亲王仪制",desc:"清代宗室最高常规爵位，可开府，享亲王仪仗。",minMerit:4},
+      {name:"多罗郡王",prefix:"多罗",suffix:"郡王",salary:"7000两",estate:"郡王府",power:"郡王仪制",desc:"次于亲王的高等宗室爵位，享独立王府与郡王仪制。",minMerit:3},
+      {name:"多罗贝勒",prefix:"多罗",suffix:"贝勒",salary:"4500两",estate:"贝勒府",power:"入八分",desc:"清代高等宗室爵位，低于郡王，高于贝子。",minMerit:2},
+      {name:"固山贝子",prefix:"固山",suffix:"贝子",salary:"3200两",estate:"贝子府",power:"入八分",desc:"低于贝勒的宗室爵位，享贝子仪制。",minMerit:1},
+      {name:"奉恩镇国公",prefix:"奉恩",suffix:"镇国公",salary:"2200两",estate:"公府",power:"宗室朝仪",desc:"宗室公爵之一，低于贝子，高于辅国公。",minMerit:0},
+      {name:"奉恩辅国公",prefix:"奉恩",suffix:"辅国公",salary:"1600两",estate:"公府",power:"宗室礼遇",desc:"宗室公爵，适用于较低等级恩封。",minMerit:0}
+    ]
+  },
+  female:{
+    pageTitle:"公主册封",
+    subtitle:"金册玉牒 · 皇女受封",
+    rankTitle:"选择公主等级",
+    placeholder:"例如：和敬、和嘉、固伦和孝",
+    tip:"输入1～4个汉字作为具体封号。完整称号按清制显示为“固伦××公主”或“和硕××公主”。",
+    random:["和敬","和嘉","和孝","和静","和恪","荣安","寿恩","庄静","慧安","端顺"],
+    ranks:[
+      {name:"固伦公主",prefix:"固伦",suffix:"公主",salary:"8000两",estate:"固伦公主府",power:"比亲王品秩",desc:"清代皇女最高等级，通常授予中宫所出，亦可特旨加恩。",requiresLegitimate:true},
+      {name:"和硕公主",prefix:"和硕",suffix:"公主",salary:"5500两",estate:"和硕公主府",power:"比郡王品秩",desc:"清代皇女常规等级，通常授予妃嫔所出皇女。",requiresLegitimate:false}
+    ]
+  }
+};
+
+const mode = CHARACTER.gender === "female" ? "female" : "male";
+const config = configs[mode];
+let selectedRank = null;
+
+const rankGrid = document.getElementById("rankGrid");
+const input = document.getElementById("titleInput");
+const confirmBtn = document.getElementById("confirmBtn");
+const toast = document.getElementById("toast");
+
+function isLocked(rank){
+  if(mode === "male") return CHARACTER.merit < rank.minMerit;
+  return rank.requiresLegitimate && !CHARACTER.legitimate;
+}
+
+function render(){
+  document.getElementById("pageTitle").textContent = config.pageTitle;
+  document.getElementById("pageSubtitle").textContent = config.subtitle;
+  document.getElementById("portrait").textContent = CHARACTER.initial;
+  document.getElementById("personName").textContent = CHARACTER.name;
+  document.getElementById("personInfo").textContent = CHARACTER.info;
+  document.getElementById("rankTitle").textContent = config.rankTitle;
+  input.placeholder = config.placeholder;
+  document.getElementById("tip").textContent = config.tip;
+
+  rankGrid.innerHTML = "";
+  config.ranks.forEach(rank=>{
+    const locked = isLocked(rank);
+    const card = document.createElement("article");
+    card.className = `rank-card ${locked ? "locked" : ""}`;
+    card.innerHTML = `
+      <span class="check">✓</span>
+      <div class="rank-name">${rank.name}</div>
+      <div class="rank-desc">${rank.desc}</div>
+      <div class="rank-cost">${locked ? "条件不足" : rank.salary}</div>
+    `;
+    card.onclick = ()=>{
+      if(locked){
+        showToast(
+          mode === "male"
+            ? `功绩不足，册封${rank.name}需功绩${rank.minMerit}`
+            : "非中宫所出，需皇帝特旨方可封固伦公主"
+        );
+        return;
+      }
+      document.querySelectorAll(".rank-card").forEach(x=>x.classList.remove("selected"));
+      card.classList.add("selected");
+      selectedRank = rank;
+      updatePreview();
+    };
+    rankGrid.appendChild(card);
+  });
+
+  updatePreview();
+}
+
+function sanitize(value){
+  return value.replace(/[^\u4e00-\u9fa5]/g,"").slice(0,4);
+}
+
+function makeFullTitle(){
+  if(!selectedRank) return "";
+  const title = sanitize(input.value.trim());
+  if(!title) return "";
+  return `${selectedRank.prefix}${title}${selectedRank.suffix}`;
+}
+
+function updatePreview(){
+  const clean = sanitize(input.value);
+  if(input.value !== clean) input.value = clean;
+
+  const full = makeFullTitle();
+  if(full){
+    document.getElementById("fullTitle").textContent = full;
+    document.getElementById("salaryText").textContent = selectedRank.salary;
+    document.getElementById("estateText").textContent = selectedRank.estate;
+    document.getElementById("powerText").textContent = selectedRank.power;
+    confirmBtn.disabled = false;
+  }else{
+    document.getElementById("fullTitle").textContent = "请选择爵位与封号";
+    document.getElementById("salaryText").textContent = "—";
+    document.getElementById("estateText").textContent = "—";
+    document.getElementById("powerText").textContent = "—";
+    confirmBtn.disabled = true;
+  }
+}
+
+input.addEventListener("input",updatePreview);
+
+document.getElementById("randomBtn").onclick = ()=>{
+  input.value = config.random[Math.floor(Math.random()*config.random.length)];
+  updatePreview();
+};
+
+confirmBtn.onclick = ()=>{
+  const full = makeFullTitle();
+  if(!full) return;
+
+  document.getElementById("confirmIcon").textContent = mode === "male" ? "爵" : "主";
+  document.getElementById("confirmTitle").textContent = `册封${CHARACTER.name}为${full}`;
+  document.getElementById("confirmText").textContent =
+    `册封后将授予${selectedRank.salary}岁俸、${selectedRank.estate}及${selectedRank.power}，是否确认？`;
+  document.getElementById("confirmLayer").classList.add("show");
+};
+
+document.getElementById("backBtn").onclick = ()=>{
+  document.getElementById("confirmLayer").classList.remove("show");
+};
+
+document.getElementById("executeBtn").onclick = ()=>{
+  const full = makeFullTitle();
+  document.getElementById("confirmLayer").classList.remove("show");
+  showToast(`已颁旨：册封${CHARACTER.name}为${full}`);
+};
+
+document.getElementById("cancelBtn").onclick = ()=>showToast("已取消册封");
+document.getElementById("closeBtn").onclick = ()=>document.getElementById("panel").style.display="none";
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove("show"),1400);
+}
+
+render();
+</script>
+</body>
+</html>

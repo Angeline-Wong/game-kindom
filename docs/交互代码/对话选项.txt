@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>竖屏古风对话选项</title>
+<style>
+  :root{
+    --gold-1:#f5dea0;
+    --gold-2:#dfbb68;
+    --gold-3:#ad792a;
+    --paper-1:rgba(255,252,239,.97);
+    --paper-2:rgba(247,239,217,.98);
+    --ink:#35271b;
+  }
+
+  *{box-sizing:border-box}
+  html,body{width:100%;height:100%;margin:0;background:transparent!important}
+  body{
+    overflow:hidden;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+    color:var(--ink);
+  }
+
+  .game-ui{
+    position:relative;
+    width:min(100vw,520px);
+    height:100dvh;
+    min-height:680px;
+    margin:0 auto;
+    overflow:hidden;
+    background:transparent;
+  }
+
+  /* 跳过固定在屏幕右上角 */
+  .skip-btn{
+    position:absolute;
+    z-index:60;
+    top:max(18px,env(safe-area-inset-top));
+    right:16px;
+    height:30px;
+    padding:0 11px;
+    border:1px solid rgba(181,133,51,.72);
+    border-radius:16px;
+    color:#9a6a20;
+    background:rgba(255,248,224,.76);
+    backdrop-filter:blur(3px);
+    font:15px/28px "STKaiti","KaiTi",serif;
+    letter-spacing:.14em;
+    cursor:pointer;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.42);
+  }
+
+  /* 双人物立绘层：左侧对话角色，右侧自己 */
+  .character-layer{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .character-slot{
+    position:absolute;
+    top:8%;
+    width:52%;
+    height:60%;
+    overflow:hidden;
+    background:transparent;
+  }
+
+  .character-slot.left{left:-2%}
+  .character-slot.right{right:-2%}
+
+  .character-placeholder{
+    position:absolute;
+    inset:8% 8% 0;
+    border:1px dashed rgba(176,137,67,.38);
+    border-radius:46% 46% 14% 14% / 30% 30% 8% 8%;
+    background:linear-gradient(180deg,rgba(234,205,137,.12),rgba(119,84,35,.04));
+  }
+
+  .character-placeholder::after{
+    position:absolute;
+    top:46%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:max-content;
+    max-width:90%;
+    color:rgba(132,99,47,.58);
+    font-size:15px;
+    letter-spacing:.1em;
+    text-align:center;
+  }
+
+  .left .character-placeholder::after{content:"左侧：对话角色立绘"}
+  .right .character-placeholder::after{content:"右侧：自己立绘"}
+
+  /* 核心修复：对话框和选项放进同一个正常文档流容器 */
+  .story-stack{
+    position:absolute;
+    z-index:30;
+    left:0;
+    right:0;
+    bottom:calc(18px + env(safe-area-inset-bottom));
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding:0 16px;
+    pointer-events:none;
+  }
+
+  .dialogue-section,
+  .choice-panel{pointer-events:auto}
+
+  .dialogue-wrap{position:relative}
+
+  .nameplate{
+    position:relative;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    width:58%;
+    min-width:205px;
+    height:46px;
+    margin-left:10px;
+    margin-bottom:-8px;
+    padding:0 28px 0 42px;
+    color:#4a3014;
+    font-size:23px;
+    font-weight:700;
+    letter-spacing:.16em;
+    background:linear-gradient(90deg,var(--gold-1),#e4c46d 58%,rgba(207,163,67,.88) 78%,rgba(207,163,67,0) 100%);
+    border-radius:14px 0 0 0;
+    box-shadow:0 3px 8px rgba(67,42,16,.14);
+  }
+
+  .nameplate::before{
+    content:"◆";
+    position:absolute;
+    left:17px;
+    color:#9f7027;
+    font-size:13px;
+  }
+
+  .dialogue-box{
+    position:relative;
+    min-height:138px;
+    padding:31px 56px 38px 24px;
+    background:linear-gradient(var(--paper-1),var(--paper-2));
+    border:2px solid #d7bd82;
+    border-radius:15px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.75),
+      inset 0 0 20px rgba(166,130,63,.1),
+      0 7px 18px rgba(48,30,12,.18);
+  }
+
+  .dialogue-box::before{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border:1px solid rgba(151,123,72,.34);
+    border-radius:10px;
+    pointer-events:none;
+  }
+
+  .dialogue-text{
+    position:relative;
+    z-index:2;
+    margin:0;
+    font-size:22px;
+    line-height:1.65;
+    letter-spacing:.04em;
+  }
+
+  .next-btn{
+    position:absolute;
+    z-index:4;
+    right:20px;
+    bottom:13px;
+    width:24px;
+    height:22px;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+    animation:nextFloat 1.25s ease-in-out infinite;
+  }
+
+  .next-btn::before,.next-btn::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    width:11px;
+    height:11px;
+    border-right:3px solid #a77525;
+    border-bottom:3px solid #a77525;
+    transform:translateX(-50%) rotate(45deg);
+  }
+  .next-btn::before{top:0}
+  .next-btn::after{top:7px}
+  @keyframes nextFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+
+  .choice-panel{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:0 12px;
+  }
+
+  .choice-btn{
+    width:100%;
+    min-height:48px;
+    padding:8px 18px;
+    border:1px solid #bd9858;
+    border-radius:11px;
+    color:#563614;
+    background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(249,239,211,.94));
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 3px 8px rgba(36,24,12,.14);
+    font:20px/1.2 "STKaiti","KaiTi",serif;
+    letter-spacing:.12em;
+    cursor:pointer;
+  }
+
+  .choice-btn:active{transform:translateY(1px)}
+  .choice-btn.selected{
+    background:linear-gradient(180deg,#f5d786,#ddb45d);
+    border-color:#95631c;
+  }
+  .choice-btn:disabled{opacity:.72;cursor:default}
+
+  .hidden{display:none!important}
+
+  @media (max-height:780px){
+    .character-slot{top:6%;height:53%}
+    .story-stack{gap:10px;bottom:calc(10px + env(safe-area-inset-bottom))}
+    .dialogue-box{min-height:116px;padding-top:27px;padding-bottom:33px}
+    .dialogue-text{font-size:19px}
+    .nameplate{height:41px;font-size:20px}
+    .choice-panel{gap:7px}
+    .choice-btn{min-height:40px;font-size:17px;padding:6px 14px}
+  }
+</style>
+</head>
+<body>
+<main class="game-ui" id="gameUi">
+  <button class="skip-btn" id="skipBtn">跳过</button>
+
+  <div class="character-layer" aria-hidden="true">
+    <div class="character-slot left">
+      <div class="character-placeholder"></div>
+    </div>
+    <div class="character-slot right">
+      <div class="character-placeholder"></div>
+    </div>
+  </div>
+
+  <div class="story-stack" id="storyStack">
+    <section class="dialogue-section">
+      <div class="dialogue-wrap">
+        <div class="nameplate" id="speaker">太后</div>
+        <div class="dialogue-box">
+          <p class="dialogue-text" id="dialogueText">皇帝，你说什么？</p>
+          <button class="next-btn" id="nextBtn" aria-label="下一步"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="choice-panel" id="choicePanel" aria-label="剧情选项"></section>
+  </div>
+</main>
+
+<script>
+  const dialogueData = {
+    speaker:'太后',
+    text:'皇帝，你说什么？',
+    choices:[
+      {text:'口误',speaker:'你',reply:'儿臣一时口误，还请母后莫怪。'},
+      {text:'坦白',speaker:'你',reply:'儿臣确有一事，想向母后如实禀明。'},
+      {text:'沉默',speaker:'你',reply:'儿臣只是……一时不知该如何开口。'},
+      {text:'转移话题',speaker:'你',reply:'母后，近日天气转凉，还请多加保重。'}
+    ]
+  };
+
+  const speakerEl=document.getElementById('speaker');
+  const textEl=document.getElementById('dialogueText');
+  const panelEl=document.getElementById('choicePanel');
+  const nextBtn=document.getElementById('nextBtn');
+  const skipBtn=document.getElementById('skipBtn');
+  const gameUi=document.getElementById('gameUi');
+
+  function renderChoices(choices){
+    panelEl.innerHTML='';
+    choices.slice(0,4).forEach(choice=>{
+      const btn=document.createElement('button');
+      btn.className='choice-btn';
+      btn.textContent=choice.text;
+      btn.addEventListener('click',()=>selectChoice(choice,btn));
+      panelEl.appendChild(btn);
+    });
+  }
+
+  function selectChoice(choice,selectedBtn){
+    panelEl.querySelectorAll('.choice-btn').forEach(btn=>{
+      btn.disabled=true;
+      if(btn===selectedBtn)btn.classList.add('selected');
+    });
+    speakerEl.textContent=choice.speaker;
+    textEl.textContent=choice.reply;
+    textEl.animate([
+      {opacity:0,transform:'translateY(4px)'},
+      {opacity:1,transform:'translateY(0)'}
+    ],{duration:220,easing:'ease-out'});
+  }
+
+  nextBtn.addEventListener('click',()=>panelEl.classList.toggle('hidden'));
+  skipBtn.addEventListener('click',()=>{
+    gameUi.animate([{opacity:1},{opacity:0}],{duration:280,fill:'forwards'});
+  });
+
+  speakerEl.textContent=dialogueData.speaker;
+  textEl.textContent=dialogueData.text;
+  renderChoices(dialogueData.choices);
+</script>
+</body>
+</html>

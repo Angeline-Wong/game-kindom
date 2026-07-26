@@ -1,4 +1,4 @@
-export type TimeSpeed = 0 | 1 | 2 | 4;
+export type TimeSpeed = 0 | 1 | 2 | 4 | 8;
 export interface GameClock { year: number; month: number; day: number; minuteOfDay: number }
 
 export function advanceClock(clock: GameClock, realMs: number, speed: TimeSpeed): GameClock {
@@ -20,4 +20,11 @@ const shichen = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', 
 export function formatShichen(minute: number) {
   const index = Math.floor(((minute + 60) % 1440) / 120);
   return `${shichen[index]}时`;
+}
+
+export function formatClockTime(minute: number) {
+  const normalized = ((Math.floor(minute) % 1440) + 1440) % 1440;
+  const hour = Math.floor(normalized / 60).toString().padStart(2, '0');
+  const minutePart = (normalized % 60).toString().padStart(2, '0');
+  return `${hour}:${minutePart}`;
 }
