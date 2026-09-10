@@ -1,0 +1,7 @@
+.palace-punishment-overlay { z-index: 140; }
+.palace-punishment-overlay .selection-modal-content { max-height: 72vh; overflow-y: auto; }
+.palace-effect-feedback { display: flex; flex-wrap: wrap; gap: 5px 12px; font-size: 13px; color: #785020; padding: 6px 0; }
+.scene-dialogue-overlay .palace-effect-feedback { margin: 0 14px; }
+.approved-action-grid button:disabled { opacity: .5; cursor: not-allowed; }
+
+.palace-empty-candidates { position: absolute; bottom: 15%; left: 10%; right: 10%; text-align: center; padding: 12px; background: #f4e4bd; color: #614622; }

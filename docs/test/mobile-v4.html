@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>长春宫 · 人物属性</title>
+<style>
+:root{--gold:#e8c76f;--paper:#f3dfaa;--paper2:#dfbd73;--ink:#533315}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080503;font-family:"STKaiti","KaiTi","Microsoft YaHei",serif}
+body{display:grid;place-items:center}button{font:inherit}
+.game{position:relative;width:min(100vw,430px);height:100dvh;min-height:760px;max-height:932px;overflow:hidden;color:var(--gold);background:#160d08;box-shadow:0 0 70px #000}
+.bg{position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(7,3,1,.12),rgba(7,3,1,.38) 46%,rgba(7,3,1,.9)),url("./assets/palace.png") center/cover}
+.header{position:absolute;z-index:7;top:15px;width:100%;text-align:center;text-shadow:0 2px 8px #000}
+.header small{font-size:10px;letter-spacing:4px}.header h1{margin:5px 0 2px;font-size:32px;letter-spacing:10px;text-indent:10px}.header p{margin:0;font-size:13px;letter-spacing:3px}
+.close{position:absolute;right:13px;top:4px;width:40px;height:40px;border:1px solid #c89e4c;border-radius:50%;background:#f1d992;color:#704617;font-size:28px;line-height:32px}
+.hero{position:absolute;z-index:1;top:82px;left:0;width:100%;height:520px;overflow:hidden}
+.role{width:100%;height:100%;object-fit:contain;object-position:center top;transform:scale(1.45);transform-origin:center top;filter:drop-shadow(0 15px 20px #000)}
+.name-card{position:absolute;left:18px;top:170px;display:flex;gap:7px;writing-mode:vertical-rl;padding:12px 8px;border-inline:2px solid #d2aa4d;background:rgba(18,8,4,.72)}
+.name-card b{font-size:22px;letter-spacing:6px}.name-card span{font-size:13px;letter-spacing:3px}
+.actions{position:absolute;z-index:6;top:405px;left:13px;right:13px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.actions button{display:grid;justify-items:center;gap:4px;padding:0;border:0;background:none;color:#ead18e}
+.actions b{display:grid;place-items:center;width:45px;height:45px;border:2px solid #b78c3c;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff4c9,#cfaa62);color:#765019;font-size:17px;box-shadow:0 0 14px rgba(229,190,91,.55)}
+.actions span{font-size:11px;white-space:nowrap;text-shadow:0 2px 4px #000}
+.panel{position:absolute;z-index:4;top:482px;left:13px;right:13px;bottom:65px;overflow:hidden;padding:14px 16px 12px;border:1px solid #b98635;border-radius:7px;background:linear-gradient(120deg,rgba(249,237,201,.98),rgba(221,190,123,.97));color:var(--ink);box-shadow:0 18px 35px #000}
+.panel:before,.panel:after{content:"";position:absolute;left:-4px;right:-4px;height:8px;border-radius:50%;background:linear-gradient(#e5c67d,#a76f23)}.panel:before{top:-4px}.panel:after{bottom:-4px}
+.panel h2{margin:0 0 9px;text-align:center;font-size:20px;letter-spacing:4px}.panel h2 em{font-size:10px;font-style:normal;color:#95703c}
+.section-title{display:flex;align-items:center;gap:7px;margin:0 0 7px;font-size:13px}.section-title:before{content:"";width:4px;height:15px;border-radius:4px;background:#a86f24}
+.basic-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}
+.item{min-height:38px;padding:5px 8px;border-radius:9px;background:rgba(255,246,216,.38)}
+.item small{display:block;color:#8e7048;font-size:9px}.item b{display:block;margin-top:1px;font-size:12px;line-height:1.2}.item.wide b{font-size:11px}
+.rule{height:1px;margin:9px 0 7px;background:linear-gradient(90deg,transparent,#9c6c2e,transparent)}
+.stats{display:grid;grid-template-columns:1fr 1fr;column-gap:13px}
+.stat label{display:flex;justify-content:space-between;font-size:10px}.bar{height:5px;margin:2px 0 5px;border-radius:6px;background:#9d875f;overflow:hidden}.bar i{display:block;height:100%;width:var(--v);background:linear-gradient(90deg,#8f5d22,#d6a848)}
+.tabs{position:absolute;z-index:9;left:0;right:0;bottom:0;height:58px;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(12,6,3,.94);border-top:1px solid #8f6826}
+.tabs button{border:0;border-right:1px solid rgba(143,104,38,.38);background:none;color:#d6bb71;font-size:14px}.tabs .active{background:linear-gradient(90deg,#b8862e,#765019);color:#fff}
+.toast{position:absolute;z-index:20;top:105px;left:50%;opacity:0;transform:translate(-50%,-8px);padding:8px 16px;border:1px solid #d3aa54;border-radius:4px;background:rgba(25,11,6,.92);white-space:nowrap;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-height:820px){.hero{top:70px;height:460px}.role{transform:scale(1.4)}.name-card{top:145px}.actions{top:342px}.panel{top:414px;padding-top:12px}.panel h2{margin-bottom:5px}.basic-grid{gap:4px 7px}.item{min-height:33px;padding:3px 7px}.rule{margin:5px 0}.header h1{font-size:27px}}
+</style>
+</head>
+<body>
+<main class="game">
+  <div class="bg"></div>
+  <header class="header"><small>紫宸纪事 · 后宫人物</small><h1>长 春 宫</h1><p>西侧殿 · 人物档案</p><button class="close">×</button></header>
+  <section class="hero"><img class="role" src="./assets/role-mobile.png" alt="程若兮"><div class="name-card"><b>程若兮</b><span>贵人</span></div></section>
+  <nav class="actions">
+    <button data-action="宠幸"><b>♥</b><span>宠幸</span></button><button data-action="闲聊"><b>聊</b><span>闲聊</span></button>
+    <button data-action="赏赐"><b>赏</b><span>赏赐</span></button><button data-action="晋升"><b>升</b><span>晋升</span></button>
+    <button data-action="搬迁"><b>迁</b><span>搬迁</span></button><button data-action="问责"><b>!</b><span>问责</span></button>
+  </nav>
+  <article class="panel">
+    <h2>人物属性 <em>卷一</em></h2>
+    <h3 class="section-title">基础信息</h3>
+    <div class="basic-grid">
+      <div class="item"><small>年龄</small><b>18岁</b></div>
+      <div class="item wide"><small>位份</small><b>贵人 · 长春宫西侧殿</b></div>
+      <div class="item wide"><small>所在</small><b>长春宫西侧殿</b></div>
+      <div class="item"><small>宠爱</small><b>40</b></div>
+      <div class="item"><small>状态</small><b>安好</b></div>
+      <div class="item"><small>子女</small><b>0人</b></div>
+      <div class="item"><small>性情</small><b>爽朗</b></div>
+      <div class="item"><small>怀孕</small><b>否</b></div>
+    </div>
+    <div class="rule"></div>
+    <div class="stats">
+      <div class="stat"><label>容貌 <span>92</span></label><div class="bar"><i style="--v:92%"></i></div><label>才艺 <span>78</span></label><div class="bar"><i style="--v:78%"></i></div></div>
+      <div class="stat"><label>心机 <span>66</span></label><div class="bar"><i style="--v:66%"></i></div><label>忠诚 <span>85</span></label><div class="bar"><i style="--v:85%"></i></div></div>
+    </div>
+  </article>
+  <nav class="tabs"><button class="active">属性</button><button>履历</button><button>关系</button><button>赏赐记录</button></nav>
+  <div class="toast"></div>
+</main>
+<script src="./demo.js"></script>
+</body>
+</html>

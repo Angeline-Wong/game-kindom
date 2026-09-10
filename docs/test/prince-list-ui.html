@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>皇嗣名册 · UI Demo</title>
+<style>
+:root{--gold:#e8c76f;--line:#9b6c28;--dark:#120905}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070403;font-family:"STKaiti","KaiTi","Microsoft YaHei",serif}button,input{font:inherit}
+body{display:grid;place-items:center}.phone{position:relative;width:min(100vw,430px);height:100dvh;min-height:720px;max-height:932px;overflow:hidden;color:var(--gold);background:#130b07;box-shadow:0 0 70px #000}
+.backdrop{position:absolute;inset:0;background:linear-gradient(#08040266,#080402d9),url("../../src/assets/inner-xiefang.png") center/cover}
+.page{position:absolute;inset:0 0 60px;display:flex;flex-direction:column}.header{position:relative;flex:0 0 92px;padding:12px 50px 7px;text-align:center;background:linear-gradient(#110905ee,#11090566,transparent);text-shadow:0 2px 7px #000}
+.header small{font-size:9px;letter-spacing:3px}.header h1{margin:3px 0 1px;font-size:25px;letter-spacing:6px}.header p{margin:0;color:#bfa466;font-size:10px;letter-spacing:1.5px}.close{position:absolute;right:12px;top:11px;width:35px;height:35px;padding:0;border:1px solid #c89e4c;border-radius:50%;background:#f1d992;color:#704617;font-size:24px;line-height:30px}
+.summary{z-index:3;display:grid;grid-template-columns:repeat(3,1fr);margin:-20px 16px 0;padding:5px 7px;border:1px solid #9f742d;border-radius:8px;background:linear-gradient(110deg,#fff0c3,#d9aa4e);color:#3d220d;box-shadow:0 12px 26px #000}.summary button,.summary span{min-height:36px;padding:2px;text-align:center;color:inherit;background:transparent;border:0;border-right:1px solid #7a4d184d}.summary>:last-child{border:0}.summary button.active{border-radius:6px;background:#793f1928;box-shadow:inset 0 0 0 1px #74461247}.summary small{display:block;color:#715022;font-size:9px}.summary b{font-size:16px}
+.tools{display:grid;grid-template-columns:1fr auto;gap:7px;padding:7px 15px 6px;background:#0a050394}.tools label{height:30px;display:flex;align-items:center;gap:7px;padding:0 10px;border:1px solid #816126;border-radius:17px;background:#120a06d9}.tools input{min-width:0;width:100%;color:#ecd28c;background:none;border:0;outline:0;font-size:12px}.tools>button{padding:0 11px;color:#d9ba70;background:#26160b;border:1px solid #a97c2d;border-radius:17px;font-size:11px}
+.content{flex:1;overflow:auto;padding:6px 13px 66px;scrollbar-width:none}.card{display:grid;grid-template-columns:78px 1fr auto;align-items:center;gap:10px;min-height:105px;margin-bottom:9px;padding:10px 12px 10px 8px;color:var(--gold);background:linear-gradient(100deg,#20110aee,#120905e3);border:1px solid #ba8b36a6;border-radius:10px;box-shadow:0 8px 20px #0006}.portrait{width:72px;height:82px;background:url("../../src/assets/character-portraits.png") 100% 50%/500% 100% no-repeat #21130c;border:1px solid #9d732d;border-radius:36px 36px 9px 9px}.identity button{padding:0;color:#e5c576;background:none;border:0;font-size:18px;font-weight:700;letter-spacing:2px}.identity i{margin-left:6px;padding:2px 6px;color:#c8aa64;border:1px solid #98702b;border-radius:8px;font:normal 9px sans-serif}.identity p{margin:5px 0;color:#ad9562;font-size:11px}.tags{display:flex;gap:4px;flex-wrap:wrap}.tags span{padding:2px 5px;color:#cbb174;background:#b8852e29;border-radius:7px;font-size:9px}.metric{text-align:right}.metric small{display:block;color:#92794a;font-size:9px}.metric b{font-size:20px}
+.group{margin-bottom:11px;overflow:hidden;background:#130905e6;border:1px solid #b5842fad;border-radius:10px;box-shadow:0 7px 18px #000}.group header{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;background:linear-gradient(90deg,#975d1873,#2d170980);border-bottom:1px solid #ae802f73}.group h2{margin:0;font-size:16px;letter-spacing:3px}.group header span{color:#9d8551;font-size:9px}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px}.tile{min-width:0;display:grid;justify-items:center;gap:4px;padding:6px 3px;color:inherit;background:#05030266;border:1px solid #89602261;border-radius:7px}.tile .portrait{width:62px;height:68px;border-radius:31px 31px 7px 7px}.tile b{max-width:100%;overflow:hidden;font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.mother-card{display:grid;grid-template-columns:66px 1fr auto;align-items:center;gap:9px;margin:8px;padding:8px;background:#0603026b;border:1px solid #8d632366;border-radius:7px}.mother-photo{width:62px;height:68px;background-repeat:no-repeat;background-size:205% auto;background-position:50% 7%;border-radius:31px 31px 7px 7px}.mother-card button{padding:0;color:#dfbf70;background:none;border:0;text-align:left;font-weight:700}.mother-card small{display:block;margin-top:4px;color:#8f7849}.mother-card em{color:#b99d60;font-size:10px;font-style:normal}.empty{padding:70px 20px;text-align:center;color:#c6ac70}
+.nav{position:absolute;z-index:8;left:0;right:0;bottom:0;height:60px;display:flex;background:linear-gradient(#17100b,#090604);border-top:1px solid #876326;box-shadow:0 -10px 25px #0006}.nav button{flex:1;display:grid;grid-template-rows:24px 16px;place-items:center;padding:4px 3px 3px;color:#bda26a;background:none;border:0;border-right:1px solid #87632638;font-size:10px}.nav button span{font:20px/22px "Segoe UI Symbol",sans-serif}.nav button.active{color:#f5d98a;background:radial-gradient(circle,#d0a03c66,transparent 70%)}
+.toast{position:absolute;z-index:20;left:50%;bottom:72px;opacity:0;transform:translate(-50%,8px);padding:8px 15px;border:1px solid #a6782b;border-radius:16px;background:#120905f0;white-space:nowrap;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<main class="phone">
+  <div class="backdrop"></div>
+  <section class="page">
+    <header class="header"><small>紫宸纪事 · 宗室玉牒</small><h1 id="title">皇 嗣 名 册</h1><p id="subtitle">宗室序齿 · 教养有章</p><button class="close" id="close" aria-label="返回">×</button></header>
+    <div class="summary"><span><small>皇嗣</small><b>8人</b></span><button id="adultFilter"><small>成年</small><b>3人</b></button><span><small>幼年</small><b>5人</b></span></div>
+    <div class="tools"><label>⌕<input id="search" placeholder="搜索姓名、身份或居所"></label><button id="sort">长幼排序</button></div>
+    <div class="content" id="content"></div>
+  </section>
+  <nav class="nav">
+    <button class="active" data-view="roster"><span>☷</span>名册</button>
+    <button data-view="order"><span>序</span>序齿</button>
+    <button data-view="home"><span>⌂</span>居所</button>
+    <button data-view="mother"><span>♧</span>母妃</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</main>
+<script>
+const heirs=[
+ {name:"萧景安",title:"太子",age:18,home:"毓庆宫",mother:"沈皇后",motherRank:"皇后",motherPhoto:"consort-01.png",talent:91,traits:["沉稳","勤学"]},
+ {name:"萧景珩",title:"大皇子",age:16,home:"撷芳殿",mother:"顾明棠",motherRank:"贵妃",motherPhoto:"consort-03.png",talent:86,traits:["果断","善骑射"]},
+ {name:"萧明华",title:"大公主",age:15,home:"寿康宫",mother:"许令仪",motherRank:"嫔",motherPhoto:"consort-05.png",talent:84,traits:["端雅","善琴"]},
+ {name:"萧景琰",title:"二皇子",age:12,home:"撷芳殿",mother:"顾明棠",motherRank:"贵妃",motherPhoto:"consort-03.png",talent:79,traits:["机敏","好学"]},
+ {name:"萧明珠",title:"二公主",age:9,home:"宁寿宫",mother:"周瑾瑜",motherRank:"贵人",motherPhoto:"consort-08.png",talent:76,traits:["灵秀","善画"]},
+ {name:"萧景澄",title:"三皇子",age:7,home:"撷芳殿",mother:"陆玉衡",motherRank:"嫔",motherPhoto:"consort-12.png",talent:72,traits:["温厚","守礼"]},
+ {name:"萧明玥",title:"三公主",age:5,home:"寿康宫",mother:"谢月容",motherRank:"嫔",motherPhoto:"consort-16.png",talent:69,traits:["活泼","善舞"]},
+ {name:"萧景和",title:"四皇子",age:2,home:"撷芳殿",mother:"苏婉容",motherRank:"常在",motherPhoto:"consort-18.png",talent:60,traits:["年幼","康健"]}
+];
+const views={roster:["皇 嗣 名 册","宗室序齿 · 教养有章"],order:["宗 室 序 齿","按身份与长幼查看皇嗣"],home:["皇 嗣 居 所","按教养宫室查看皇嗣"],mother:["母 妃 归 属","按生母查看皇子与公主"]};
+let view="roster",adultOnly=false,ascending=false;
+const content=document.querySelector("#content"),search=document.querySelector("#search");
+const portrait='<span class="portrait"></span>';
+function openDetail(name){const t=document.querySelector("#toast");t.textContent=`打开 ${name} 人物详情`;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1200)}
+function filtered(){const q=search.value.trim();return heirs.filter(p=>(!adultOnly||p.age>=15)&&(!q||(p.name+p.title+p.home+p.mother).includes(q))).sort((a,b)=>ascending?a.age-b.age:b.age-a.age)}
+function tile(p){return `<button class="tile" data-name="${p.name}">${portrait}<b>${p.title} · ${p.name}</b></button>`}
+function render(){const rows=filtered();
+ if(view==="roster")content.innerHTML=rows.map(p=>`<article class="card" data-name="${p.name}">${portrait}<div class="identity"><button data-name="${p.name}">${p.name}<i>${p.title}</i></button><p>${p.age}岁 · ${p.home}</p><div class="tags">${p.traits.map(t=>`<span>${t}</span>`).join("")}<span>母妃 ${p.mother}</span></div></div><div class="metric"><small>才学</small><b>${p.talent}</b></div></article>`).join("")||'<p class="empty">暂无符合条件的皇嗣</p>';
+ if(view==="order"){const groups=[["储君",p=>p.title==="太子"],["皇子",p=>p.title.includes("皇子")],["公主",p=>p.title.includes("公主")]];content.innerHTML=groups.map(([name,test],i)=>{const members=rows.filter(test);return members.length?`<section class="group"><header><h2>${name}</h2><span>第${i+1}层级 · ${members.length}人</span></header><div class="tiles">${members.map(tile).join("")}</div></section>`:""}).join("")||'<p class="empty">暂无符合条件的皇嗣</p>'}
+ if(view==="home"){const homes=[...new Set(rows.map(p=>p.home))];content.innerHTML=homes.map(home=>{const members=rows.filter(p=>p.home===home);return `<section class="group"><header><h2>${home}</h2><span>${members.length}人</span></header><div class="tiles">${members.map(tile).join("")}</div></section>`}).join("")||'<p class="empty">暂无符合条件的皇嗣</p>'}
+ if(view==="mother"){const mothers=[...new Set(rows.map(p=>p.mother))];content.innerHTML=mothers.map(mother=>{const members=rows.filter(p=>p.mother===mother),m=members[0];return `<section class="group"><header><h2 data-name="${mother}">${mother}名下</h2><span>${m.motherRank} · ${members.length}名子嗣</span></header><div class="mother-card"><span class="mother-photo" data-name="${mother}" style="background-image:url('../../src/assets/consort-portraits/${m.motherPhoto}')"></span><button data-name="${mother}">${mother}<small>点击查看母妃详情</small></button><em>${m.motherRank}</em></div><div class="tiles">${members.map(tile).join("")}</div></section>`}).join("")||'<p class="empty">暂无符合条件的皇嗣</p>'}
+}
+document.querySelector(".nav").onclick=e=>{const b=e.target.closest("[data-view]");if(!b)return;view=b.dataset.view;document.querySelector(".nav .active").classList.remove("active");b.classList.add("active");document.querySelector("#title").textContent=views[view][0];document.querySelector("#subtitle").textContent=views[view][1];render()};
+content.onclick=e=>{const t=e.target.closest("[data-name]");if(t)openDetail(t.dataset.name)};
+document.querySelector("#adultFilter").onclick=e=>{adultOnly=!adultOnly;e.currentTarget.classList.toggle("active",adultOnly);render()};
+document.querySelector("#sort").onclick=()=>{ascending=!ascending;render()};search.oninput=render;document.querySelector("#close").onclick=()=>history.back();render();
+</script>
+</body>
+</html>

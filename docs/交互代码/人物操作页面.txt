@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>古风竖屏人物交互菜单·精修版</title>
+<style>
+  :root{
+    --gold-hi:#ffeab0;
+    --gold:#d9aa4d;
+    --gold-deep:#76501d;
+    --red:#8d2030;
+    --red-mid:#6d1622;
+    --red-deep:#3b0c13;
+  }
+
+  *{box-sizing:border-box}
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+    background:#16100c;
+  }
+
+  body{
+    display:grid;
+    place-items:center;
+  }
+
+  .phone{
+    position:relative;
+    width:min(100vw,430px);
+    height:min(100vh,932px);
+    min-height:700px;
+    overflow:hidden;
+    background:
+      linear-gradient(rgba(18,10,7,.13),rgba(18,10,7,.46)),
+      url("e53a81472536ccf003c03c2d012a4fad(1).jpg") center/cover no-repeat;
+  }
+
+  .phone::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:linear-gradient(90deg,transparent 45%,rgba(17,8,5,.18));
+  }
+
+  .interaction{
+    position:absolute;
+    right:9px;
+    top:28%;
+    z-index:8;
+    width:142px;
+    height:455px;
+  }
+
+  .path{
+    position:absolute;
+    left:31px;
+    top:30px;
+    bottom:30px;
+    width:1px;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(238,202,107,.75) 0 2px,
+        transparent 2px 6px
+      );
+    filter:drop-shadow(0 0 3px rgba(237,194,88,.25));
+  }
+
+  .path::before,
+  .path::after{
+    content:"✦";
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    color:#dcb05b;
+    font-size:7px;
+  }
+  .path::before{top:-9px}
+  .path::after{bottom:-9px}
+
+  .item{
+    position:absolute;
+    left:0;
+    width:138px;
+    height:66px;
+    display:flex;
+    align-items:center;
+    border:0;
+    padding:0;
+    background:none;
+    cursor:pointer;
+    transform-origin:30px center;
+    transition:transform .18s ease,filter .18s ease;
+  }
+
+  .item:hover{
+    transform:translateX(-4px) scale(1.035);
+    filter:brightness(1.08);
+  }
+
+  .item:active{
+    transform:translateX(-2px) scale(.97);
+  }
+
+  .icon{
+    position:relative;
+    z-index:2;
+    width:58px;
+    height:58px;
+    flex:0 0 58px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#f7dd92;
+    background:
+      radial-gradient(circle at 34% 27%,rgba(255,255,255,.14),transparent 16%),
+      linear-gradient(145deg,#982635,#761927 58%,#460e16);
+    border:2px solid #e1b456;
+    box-shadow:
+      0 0 0 2px #724617,
+      0 5px 11px rgba(0,0,0,.34),
+      inset 0 0 10px rgba(255,223,135,.08);
+  }
+
+  .icon::before{
+    content:"";
+    position:absolute;
+    inset:5px;
+    border:1px solid rgba(255,227,152,.23);
+    border-radius:50%;
+  }
+
+  .icon::after{
+    content:"";
+    position:absolute;
+    inset:-5px;
+    border-radius:50%;
+    border:1px solid rgba(226,181,84,.14);
+  }
+
+  .icon svg{
+    width:31px;
+    height:31px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.65;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    filter:drop-shadow(0 1px 0 rgba(68,24,7,.55));
+  }
+
+  .tag{
+    position:relative;
+    width:36px;
+    height:60px;
+    margin-left:7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    writing-mode:vertical-rl;
+    color:#f3d279;
+    letter-spacing:.12em;
+    font-size:17px;
+    font-weight:700;
+    border:1px solid #c28d38;
+    border-radius:16px 16px 6px 6px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.08),transparent 28%),
+      linear-gradient(180deg,#84202b,#57111a);
+    box-shadow:
+      0 4px 9px rgba(0,0,0,.28),
+      inset 0 0 0 1px rgba(255,225,143,.06);
+  }
+
+  .tag::before,
+  .tag::after{
+    content:"";
+    position:absolute;
+    width:7px;
+    height:1px;
+    background:#d6a348;
+    opacity:.8;
+  }
+  .tag::before{top:7px}
+  .tag::after{bottom:7px}
+
+  .item.selected .icon{
+    color:#fff0b5;
+    box-shadow:
+      0 0 0 2px #724617,
+      0 0 0 5px rgba(229,183,80,.13),
+      0 6px 14px rgba(0,0,0,.36),
+      inset 0 0 13px rgba(255,224,136,.13);
+  }
+
+  .nameplate{
+    position:absolute;
+    z-index:7;
+    left:8px;
+    bottom:24%;
+    width:225px;
+    height:46px;
+    display:flex;
+    align-items:center;
+    padding-left:38px;
+    color:#47270f;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.14em;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.28),transparent 38%),
+      linear-gradient(90deg,#f0ce6f,#d19a37 74%,#8c571a);
+    border:1px solid #714313;
+    border-radius:6px 22px 22px 6px;
+    box-shadow:
+      0 6px 14px rgba(0,0,0,.28),
+      inset 0 0 0 2px rgba(255,237,175,.20);
+  }
+
+  .nameplate::before{
+    content:"◇";
+    position:absolute;
+    left:15px;
+    color:#80501c;
+    font-size:14px;
+  }
+
+  .back{
+    position:absolute;
+    z-index:10;
+    right:16px;
+    top:max(18px,env(safe-area-inset-top));
+    width:44px;
+    height:44px;
+    border:0;
+    border-radius:50%;
+    cursor:pointer;
+    color:#40220d;
+    font-size:24px;
+    background:linear-gradient(#ffe493,#c68928);
+    border:2px solid #684014;
+    box-shadow:
+      0 5px 13px rgba(0,0,0,.34),
+      inset 0 0 0 2px rgba(255,241,187,.30);
+  }
+
+  .toast{
+    position:absolute;
+    left:50%;
+    bottom:24px;
+    z-index:20;
+    transform:translate(-50%,15px);
+    opacity:0;
+    padding:8px 15px;
+    border-radius:18px;
+    color:#f3d488;
+    background:rgba(43,24,11,.88);
+    border:1px solid rgba(220,174,69,.55);
+    font-size:14px;
+    transition:.2s ease;
+    pointer-events:none;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  @media (max-height:760px){
+    .interaction{
+      top:23%;
+      height:410px;
+    }
+    .item{height:60px}
+    .icon{
+      width:52px;
+      height:52px;
+      flex-basis:52px;
+    }
+    .icon svg{
+      width:28px;
+      height:28px;
+    }
+    .tag{
+      height:55px;
+      font-size:16px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="nameplate">徐珍淑</div>
+
+  <div class="interaction" id="interaction">
+    <div class="path"></div>
+  </div>
+
+  <button class="back" id="backBtn">↶</button>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const actions = [
+  {
+    name:"临幸",
+    icon:`<svg viewBox="0 0 48 48">
+      <path d="M13 13h22v23H13z"/>
+      <path d="M17 17h14"/>
+      <path d="M18 24c4-4 8-4 12 0"/>
+      <path d="M19 30h10"/>
+      <path d="M10 10l4 3M38 10l-4 3"/>
+    </svg>`
+  },
+  {
+    name:"闲聊",
+    icon:`<svg viewBox="0 0 48 48">
+      <path d="M10 14h28v19H23l-8 6v-6h-5z"/>
+      <path d="M17 22h14"/>
+      <path d="M17 27h9"/>
+      <path d="M33 11c2 1 3 2 4 4"/>
+    </svg>`
+  },
+  {
+    name:"详情",
+    icon:`<svg viewBox="0 0 48 48">
+      <path d="M15 8h18v32H15z"/>
+      <path d="M19 15h10"/>
+      <path d="M19 21h10"/>
+      <path d="M19 27h7"/>
+      <path d="M19 33h9"/>
+      <path d="M13 11h2M33 11h2"/>
+    </svg>`
+  },
+  {
+    name:"互动",
+    icon:`<svg viewBox="0 0 48 48">
+      <circle cx="17" cy="24" r="6"/>
+      <circle cx="31" cy="24" r="6"/>
+      <path d="M23 24h2"/>
+      <path d="M13 33c5 4 17 4 22 0"/>
+      <path d="M12 17l-3-3M36 17l3-3"/>
+    </svg>`
+  },
+  {
+    name:"赏赐",
+    icon:`<svg viewBox="0 0 48 48">
+      <path d="M11 20h26v18H11z"/>
+      <path d="M24 20v18"/>
+      <path d="M9 20h30"/>
+      <path d="M16 14c3-5 8-1 8 6"/>
+      <path d="M32 14c-3-5-8-1-8 6"/>
+      <path d="M14 25h20"/>
+    </svg>`
+  },
+  {
+    name:"晋升",
+    icon:`<svg viewBox="0 0 48 48">
+      <path d="M12 36h24"/>
+      <path d="M16 36V23h16v13"/>
+      <path d="M19 23l5-11 5 11"/>
+      <path d="M20 29h8"/>
+      <path d="M24 8v4"/>
+    </svg>`
+  }
+];
+
+const interaction = document.getElementById("interaction");
+const toast = document.getElementById("toast");
+const visibleCount = 6;
+
+function showToast(name){
+  toast.textContent = "已选择：" + name;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove("show"),1100);
+}
+
+function render(){
+  interaction.innerHTML = '<div class="path"></div>';
+  const list = actions.slice(0,visibleCount);
+  const usableHeight = 380;
+  const step = list.length > 1 ? usableHeight/(list.length-1) : 0;
+
+  list.forEach((action,index)=>{
+    const button = document.createElement("button");
+    button.className = "item";
+
+    // 轻微弧线排布，贴近参考图
+    const curveOffset = Math.sin((index/(list.length-1))*Math.PI) * 13;
+    button.style.top = `${index*step}px`;
+    button.style.left = `${curveOffset}px`;
+
+    button.innerHTML = `
+      <span class="icon">${action.icon}</span>
+      <span class="tag">${action.name}</span>
+    `;
+
+    button.addEventListener("click",()=>{
+      document.querySelectorAll(".item").forEach(el=>el.classList.remove("selected"));
+      button.classList.add("selected");
+      showToast(action.name);
+    });
+
+    interaction.appendChild(button);
+  });
+}
+
+document.getElementById("backBtn").addEventListener("click",()=>showToast("返回"));
+render();
+</script>
+</body>
+</html>

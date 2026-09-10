@@ -1,0 +1,126 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>后宫名册 · 列表 UI Demo</title>
+<style>
+:root{--gold:#e8c76f;--gold2:#a67526;--ink:#4d2e13;--paper:#f2dfae}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070403;font-family:"STKaiti","KaiTi","Microsoft YaHei",serif}
+body{display:grid;place-items:center}button,input{font:inherit}
+.phone{position:relative;width:min(100vw,430px);height:100dvh;min-height:760px;max-height:932px;overflow:hidden;color:var(--gold);background:#130b07;box-shadow:0 0 70px #000}
+.backdrop{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,4,2,.35),rgba(8,4,2,.72)),url("../../src/assets/inner-palace-courtyard.png") center/cover}
+.page{position:absolute;inset:0 0 102px;display:flex;flex-direction:column}
+.header{position:relative;flex:0 0 118px;padding:19px 18px 12px;text-align:center;background:linear-gradient(180deg,rgba(17,9,5,.92),rgba(17,9,5,.5),transparent);text-shadow:0 2px 7px #000}
+.header small{font-size:10px;letter-spacing:4px}.header h1{margin:5px 0 2px;font-size:30px;letter-spacing:8px;text-indent:8px}.header p{margin:0;color:#bfa466;font-size:12px;letter-spacing:2px}
+.top-back{position:absolute;z-index:10;right:13px;top:23px;width:40px;height:40px;padding:0;border:1px solid #c89e4c;border-radius:50%;background:#f1d992;color:#704617;font-size:28px;line-height:34px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.summary{position:absolute;left:17px;right:17px;bottom:-31px;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);padding:10px 8px;border:1px solid #9f742d;border-radius:8px;background:linear-gradient(110deg,#fff0c3,#d9aa4e);color:#3d220d;box-shadow:0 12px 26px #000}
+.summary div{text-align:center;border-right:1px solid rgba(122,77,24,.3)}.summary .filter{cursor:pointer;border-radius:6px;transition:.2s}.summary .filter:hover,.summary .filter.active{background:rgba(104,55,11,.16);box-shadow:inset 0 0 0 1px rgba(116,70,18,.28)}.summary div:last-child{border:0}.summary small{display:block;font-size:10px;font-weight:700;color:#715022}.summary b{font-size:18px;text-shadow:0 1px #fff2c7}
+.toolbar{flex:0 0 77px;padding:40px 16px 8px;display:grid;grid-template-columns:1fr auto;gap:8px;background:rgba(10,5,3,.58)}
+.search{min-width:0;height:32px;padding:0 12px;border:1px solid #816126;border-radius:17px;outline:none;background:rgba(18,10,6,.78);color:#ecd28c}.search::placeholder{color:#937b4f}
+.sort{height:32px;padding:0 13px;border:1px solid #a97c2d;border-radius:17px;background:#26160b;color:#d9ba70}
+.list{flex:1;overflow:auto;padding:8px 13px 18px;scrollbar-width:none}.list::-webkit-scrollbar{display:none}
+.card{position:relative;display:grid;grid-template-columns:78px 1fr auto;align-items:center;gap:11px;min-height:105px;margin-bottom:9px;padding:10px 12px 10px 8px;border:1px solid rgba(186,139,54,.65);border-radius:10px;background:linear-gradient(100deg,rgba(32,17,10,.93),rgba(18,9,5,.89));box-shadow:0 8px 20px rgba(0,0,0,.35);overflow:hidden}
+.card:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(transparent,#d2a448,transparent)}
+.portrait{align-self:center;width:72px;height:82px;border:1px solid #9d732d;border-radius:36px 36px 9px 9px;background-color:#21130c;background-repeat:no-repeat;background-size:205% auto;background-position:center 10%;filter:drop-shadow(0 5px 7px #000);overflow:hidden}
+.identity h2{margin:0;font-size:19px;letter-spacing:2px}.identity h2 span{margin-left:7px;padding:2px 6px;border:1px solid #98702b;border-radius:8px;color:#c8aa64;font-size:9px;letter-spacing:0}.identity p{margin:5px 0;color:#ad9562;font-size:11px}.tags{display:flex;gap:4px;flex-wrap:wrap}.tags i{padding:2px 5px;border-radius:7px;background:rgba(184,133,46,.16);color:#cbb174;font-size:9px;font-style:normal}
+.metric{text-align:right}.metric b{display:block;color:#e5be63;font-size:20px}.metric small{font-size:9px;color:#92794a}.metric button{margin-top:9px;width:29px;height:29px;border:1px solid #ad7e2c;border-radius:50%;background:#351d0c;color:#e5c576}
+.empty{padding:70px 20px;text-align:center;color:#c6ac70}.empty b{display:block;font-size:36px}
+.palace-row{margin-bottom:11px;padding:10px;border:1px solid rgba(188,140,52,.72);border-radius:10px;background:linear-gradient(100deg,rgba(35,18,10,.95),rgba(16,8,5,.91));box-shadow:0 8px 20px #000}
+.palace-title{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 8px;color:#e7c56f;font-size:18px;letter-spacing:4px}.palace-title:before,.palace-title:after{content:"";width:42px;height:1px;background:linear-gradient(90deg,transparent,#a87a2d)}.palace-title:after{transform:rotate(180deg)}
+.rooms{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:6px}.room{position:relative;min-height:104px;padding:7px 4px 5px;border:1px solid rgba(157,114,42,.52);border-radius:7px;background:rgba(8,4,3,.48);text-align:center}.room.main{border-color:#c5953d;background:rgba(118,70,19,.22)}
+.room>small{display:block;margin-bottom:4px;color:#9d8654;font-size:9px}.room-photo{width:56px;height:60px;margin:auto;border-radius:28px 28px 7px 7px;background-repeat:no-repeat;background-size:210% auto;background-position:center 10%;background-color:#21130c}.room b{display:block;margin-top:3px;color:#e3c473;font-size:11px}.room em{display:block;color:#8f7a4c;font-size:9px;font-style:normal}[data-name]{cursor:pointer}.room.empty{display:grid;place-items:center;padding:18px 2px;color:#766441;font-size:10px}.room.empty:after{content:"空殿";display:block;font-size:17px;color:#5e4d31}.rank-group,.family-group{margin-bottom:11px;border:1px solid rgba(181,132,47,.68);border-radius:10px;background:rgba(19,9,5,.9);overflow:hidden;box-shadow:0 7px 18px #000}
+.group-head{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;background:linear-gradient(90deg,rgba(151,93,24,.45),rgba(45,23,9,.5));border-bottom:1px solid rgba(174,128,47,.45)}.group-head h2{margin:0;color:#ebc96e;font-size:16px;letter-spacing:3px}.group-head span{color:#9d8551;font-size:9px}
+.rank-people{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px}.rank-person{display:grid;justify-items:center;gap:4px;min-width:0;padding:6px 3px;border:1px solid rgba(137,96,34,.38);border-radius:7px;background:rgba(5,3,2,.4);color:inherit;cursor:pointer}.rank-photo{width:62px;height:68px;border-radius:31px 31px 7px 7px;background-repeat:no-repeat;background-size:210% auto;background-position:center 10%;background-color:#21130c}.rank-person b{display:block;max-width:100%;overflow:hidden;color:#dfbf70;font-size:11px;text-overflow:ellipsis;white-space:nowrap}.rank-person small{display:none}
+.children-list{padding:8px}.child-card{display:grid;grid-template-columns:50px 1fr auto;align-items:center;gap:8px;margin-bottom:6px;padding:8px;border:1px solid rgba(141,99,35,.4);border-radius:7px;background:rgba(6,3,2,.42)}.child-photo{width:48px;height:54px;border:1px solid #a4772b;border-radius:24px 24px 6px 6px;background-color:#21130c;background-repeat:no-repeat;background-image:url("../../src/assets/character-portraits.png");background-size:500% 100%}.child-photo.prince{background-position:100% 50%}.child-photo.princess{background-position:50% 50%}.child-card b{display:block;color:#dfbf70;font-size:12px}.child-card small{color:#8f7849;font-size:9px}.child-card em{color:#b99d60;font-size:10px;font-style:normal}
+.bottom span{font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif;font-size:27px;font-weight:400;line-height:1}.bottom{position:absolute;z-index:8;bottom:0;left:0;right:0;height:102px;display:flex;padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(#17100b,#090604);border-top:1px solid #876326;box-shadow:0 -10px 25px rgba(0,0,0,.35)}
+.bottom button{flex:1;border:0;border-right:1px solid rgba(135,99,38,.22);background:transparent;color:#bda26a;padding-top:10px;font-size:12px;cursor:pointer}.bottom span{display:grid;place-items:center;height:39px;font-size:25px}.bottom p{margin:4px}.bottom button.active{background:radial-gradient(circle,rgba(208,160,60,.4),transparent 70%);color:#f5d98a}
+.toast{position:absolute;z-index:20;left:50%;bottom:114px;opacity:0;transform:translate(-50%,8px);padding:8px 15px;border:1px solid #a6782b;border-radius:16px;background:rgba(18,9,5,.94);white-space:nowrap;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<main class="phone">
+  <div class="backdrop"></div>
+  <section class="page">
+    <header class="header">
+      <button class="top-back" id="topBack" aria-label="返回">×</button>
+      <small>紫宸纪事 · 内廷档案</small>      <h1 id="pageTitle">宫 眷 名 册</h1>
+      <p id="pageSub">宫眷人物与近况总览</p>      <div class="summary"><div><small>在册</small><b>43人</b></div><div class="filter" id="pregnancyFilter" role="button" tabindex="0" aria-pressed="false"><small>有孕</small><b id="pregnancyCount">2人</b></div><div><small>皇嗣</small><b>6人</b></div></div>
+    </header>
+    <div class="toolbar"><input class="search" id="search" placeholder="搜索姓名、位份或居所"><button class="sort" id="sort">位份排序</button></div>
+    <div class="list" id="list"></div>
+  </section>
+  <nav class="bottom" aria-label="人物列表分类">
+    <button class="active" data-view="roster"><span>☷</span><p>名册</p></button>
+    <button data-view="rank"><span>♕</span><p>位份</p></button>
+    <button data-view="home"><span>⌂</span><p>居所</p></button>
+    <button data-view="children"><span>♧</span><p>子嗣</p></button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</main>
+<script>
+const people=[
+  {name:"沈皇后",rank:"皇后",home:"坤宁宫主殿",age:23,favor:76,children:2,pregnant:false,traits:["端庄","持重"],portrait:"consort-01.png"},
+  {name:"顾清漪",rank:"贵妃",home:"翊坤宫主殿",age:22,favor:68,children:1,pregnant:true,traits:["聪慧","善琴"],portrait:"consort-03.png"},
+  {name:"程若兮",rank:"贵人",home:"长春宫西侧殿",age:18,favor:40,children:0,pregnant:false,traits:["爽朗","温婉"],portrait:"consort-08.png"},
+  {name:"苏婉容",rank:"嫔",home:"储秀宫东侧殿",age:20,favor:55,children:1,pregnant:true,traits:["谨慎","善舞"],portrait:"consort-12.png"},
+  {name:"陆玉衡",rank:"常在",home:"景阳宫西侧殿",age:17,favor:31,children:0,pregnant:false,traits:["灵巧","好学"],portrait:"consort-18.png"}
+];
+const palaces=[
+  {name:"永寿宫",rooms:[{label:"东侧殿",person:people[4]},{label:"主殿",person:people[1]},{label:"西侧殿",person:null}]},
+  {name:"长春宫",rooms:[{label:"东侧殿",person:null},{label:"主殿",person:people[3]},{label:"西侧殿",person:people[2]}]},
+  {name:"坤宁宫",rooms:[{label:"东侧殿",person:null},{label:"主殿",person:people[0]},{label:"西侧殿",person:null}]}
+];const rankOrder=["皇后","皇贵妃","贵妃","妃","嫔","贵人","常在","答应"];
+const families=[
+  {mother:"沈皇后",rank:"皇后",children:[{title:"大皇子",name:"萧景璟",age:5,status:"养于坤宁宫",portrait:"prince"},{title:"二公主",name:"萧明华",age:3,status:"养于坤宁宫",portrait:"princess"}]},
+  {mother:"顾清漪",rank:"贵妃",children:[{title:"二皇子",name:"萧景珩",age:4,status:"养于永寿宫",portrait:"prince"}]},
+  {mother:"苏婉容",rank:"嫔",children:[{title:"三公主",name:"萧明玥",age:1,status:"养于长春宫",portrait:"princess"}]}
+];const views={
+  roster:["宫 眷 名 册","宫眷人物与近况总览"],
+  rank:["位 份 清 单","按宫中品秩查看人物"],
+  home:["宫 室 居 所","按所居宫殿查看人物"],
+  children:["皇 嗣 亲 缘","育有子嗣的宫眷人物"]
+};
+let active=new URLSearchParams(location.search).get("view")||"roster",descending=true,pregnancyOnly=false;
+const list=document.querySelector("#list"),search=document.querySelector("#search");
+list.addEventListener("click",event=>{const target=event.target.closest("[data-name]");if(target)window.open(`./mobile-v4.html?person=${encodeURIComponent(target.dataset.name)}`,"_blank")});
+function render(){
+  const q=search.value.trim();
+  if(active==="rank"){
+    list.innerHTML=rankOrder.map((rank,index)=>{const members=people.filter(p=>p.rank===rank&&(p.name+p.home).includes(q));if(!members.length)return "";return `<section class="rank-group"><header class="group-head"><h2>${rank}</h2><span>第${index+1}层级 · ${members.length}人</span></header><div class="rank-people">${members.map(p=>`<button class="rank-person" data-name="${p.name}"><div class="rank-photo" style="background-image:url('../../src/assets/consort-portraits/${p.portrait}')"></div><b>${p.name}</b></button>`).join("")}</div></section>`}).join("")||`<div class="empty"><b>◇</b>暂无符合条件的人物</div>`;
+    return;
+  }
+  if(active==="children"){
+    const visibleFamilies=families.filter(f=>(f.mother+f.rank+f.children.map(c=>c.title+c.name).join("")).includes(q));
+    list.innerHTML=visibleFamilies.map(f=>`<section class="family-group"><header class="group-head"><h2>${f.mother}名下</h2><span>${f.rank} · ${f.children.length}名子嗣</span></header><div class="children-list">${f.children.map(c=>`<div class="child-card"><div class="child-photo ${c.portrait}" data-name="${c.name}"></div><div><b data-name="${c.name}">${c.title} · ${c.name}</b><small>${c.age}岁 · ${c.status}</small></div><em>安好</em></div>`).join("")}</div></section>`).join("")||`<div class="empty"><b>◇</b>暂无符合条件的子嗣</div>`;
+    return;
+  }
+  if(active==="home"){
+    const matching=palaces.map(p=>({...p,rooms:p.rooms.map(r=>({...r,person:r.person&&(r.person.name+r.person.rank+r.person.home).includes(q)?r.person:q?null:r.person}))}));
+    list.innerHTML=matching.map(p=>`<section class="palace-row"><h2 class="palace-title">${p.name}</h2><div class="rooms">${p.rooms.map((r,i)=>r.person?`<div class="room ${i===1?'main':''}"><small>${r.label}</small><div class="room-photo" data-name="${r.person.name}" style="background-image:url('../../src/assets/consort-portraits/${r.person.portrait}')"></div><b data-name="${r.person.name}">${r.person.name}</b><em>${r.person.rank}</em></div>`:`<div class="room empty"><small>${r.label}</small></div>`).join("")}</div></section>`).join("");
+    return;
+  }
+  let rows=people.filter(p=>(p.name+p.rank+p.home).includes(q));
+  if(pregnancyOnly)rows=rows.filter(p=>p.pregnant);
+  if(active==="children")rows=rows.filter(p=>p.children>0);
+  if(active==="rank")rows=[...rows].sort((a,b)=>(descending?b.favor-a.favor:a.favor-b.favor));
+  if(active==="home")rows=[...rows].sort((a,b)=>a.home.localeCompare(b.home,"zh-CN"));
+  list.innerHTML=rows.length?rows.map(p=>`<article class="card"><div class="portrait" data-name="${p.name}" style="background-image:url('../../src/assets/consort-portraits/${p.portrait}')"></div><div class="identity"><h2 data-name="${p.name}">${p.name}<span>${p.rank}</span></h2><p>${p.age}岁 · ${p.home}</p><div class="tags">${p.traits.map(t=>`<i>${t}</i>`).join("")}<i>子嗣 ${p.children}</i>${p.pregnant?`<i>有孕</i>`:""}</div></div><div class="metric"><small>宠爱</small><b>${p.favor}</b><button aria-label="查看${p.name}" data-name="${p.name}">›</button></div></article>`).join(""):`<div class="empty"><b>◇</b>暂无符合条件的人物</div>`;
+}
+function notify(text){const t=document.querySelector("#toast");t.textContent=text;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1200)}
+document.querySelectorAll(".bottom button").forEach(btn=>btn.onclick=()=>{active=btn.dataset.view;document.querySelector(".bottom .active").classList.remove("active");btn.classList.add("active");[document.querySelector("#pageTitle").textContent,document.querySelector("#pageSub").textContent]=views[active];render()});
+const pregnancyFilter=document.querySelector("#pregnancyFilter");
+document.querySelector("#pregnancyCount").textContent=`${people.filter(p=>p.pregnant).length}人`;
+function togglePregnancy(){pregnancyOnly=!pregnancyOnly;pregnancyFilter.classList.toggle("active",pregnancyOnly);pregnancyFilter.setAttribute("aria-pressed",String(pregnancyOnly));if(pregnancyOnly&&active!=="roster"){active="roster";document.querySelector(".bottom .active")?.classList.remove("active");document.querySelector('[data-view="roster"]').classList.add("active");[document.querySelector("#pageTitle").textContent,document.querySelector("#pageSub").textContent]=views.roster}render();notify(pregnancyOnly?"已筛选有孕人物":"已显示全部人物")}
+pregnancyFilter.onclick=togglePregnancy;pregnancyFilter.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();togglePregnancy()}};
+document.querySelector("#topBack").onclick=()=>{if(history.length>1)history.back();else location.href="./mobile-v4.html"};
+if(active!=="roster"&&views[active]){document.querySelector(".bottom .active")?.classList.remove("active");document.querySelector(`[data-view="${active}"]`)?.classList.add("active");[document.querySelector("#pageTitle").textContent,document.querySelector("#pageSub").textContent]=views[active]}search.addEventListener("input",render);document.querySelector("#sort").onclick=()=>{descending=!descending;render()};render();
+</script>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,23 @@
+node:internal/fs/watchers:321
+    const error = new UVException({
+                  ^
+
+Error: EBUSY: resource busy or locked, watch 'D:\dev\codex\games-kingdom\docs\妃子图库\古风游戏角色立绘生成 (1)_人物.png'
+    at FSWatcher.<computed> (node:internal/fs/watchers:321:19)
+    at Object.watch (node:fs:2548:36)
+    at createFsWatchInstance (file:///D:/dev/codex/games-kingdom/node_modules/vite/dist/node/chunks/node.js:9185:16)
+    at setFsWatchListener (file:///D:/dev/codex/games-kingdom/node_modules/vite/dist/node/chunks/node.js:9227:14)
+    at NodeFsHandler._watchWithNodeFs (file:///D:/dev/codex/games-kingdom/node_modules/vite/dist/node/chunks/node.js:9342:20)
+    at NodeFsHandler._handleFile (file:///D:/dev/codex/games-kingdom/node_modules/vite/dist/node/chunks/node.js:9386:24)
+    at NodeFsHandler._addToNodeFs (file:///D:/dev/codex/games-kingdom/node_modules/vite/dist/node/chunks/node.js:9560:26)
+Emitted 'error' event on FSWatcher instance at:
+    at FSWatcher._handleError (file:///D:/dev/codex/games-kingdom/node_modules/vite/dist/node/chunks/node.js:10359:146)
+    at NodeFsHandler._addToNodeFs (file:///D:/dev/codex/games-kingdom/node_modules/vite/dist/node/chunks/node.js:9565:18) {
+  errno: -4082,
+  syscall: 'watch',
+  code: 'EBUSY',
+  path: 'D:\\dev\\codex\\games-kingdom\\docs\\妃子图库\\古风游戏角色立绘生成 (1)_人物.png',
+  filename: 'D:\\dev\\codex\\games-kingdom\\docs\\妃子图库\\古风游戏角色立绘生成 (1)_人物.png'
+}
+
+Node.js v24.18.0

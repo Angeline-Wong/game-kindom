@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>大臣名册</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#2a2017;font-family:"KaiTi","STKaiti",serif;display:grid;place-items:center;height:100vh}
+.stage{width:min(430px,100vw);height:min(932px,100vh);background:linear-gradient(#2b2117,#130e0a);position:relative}
+.mask{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.panel{position:absolute;left:12px;right:12px;top:50%;transform:translateY(-50%);height:84%;background:linear-gradient(#2c1b10,#140d09);border:1px solid #8e6224;border-radius:18px;color:#efd58d;display:flex;flex-direction:column;overflow:hidden}
+.header{height:68px;border-bottom:1px solid #6b4718;display:flex;align-items:center;justify-content:center;position:relative}
+.header h1{margin:0;font-size:25px;letter-spacing:.25em}
+.close{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:1px solid #9a6b25;background:#1c120d;color:#f2d06f}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);background:#120c09;border-bottom:1px solid #5d3b14}
+.summary div{text-align:center;padding:8px;font-size:11px;color:#b59a63}.summary b{display:block;font-size:17px;color:#f2c962}
+.toolbar{padding:8px;background:#18100c;border-bottom:1px solid #5d3b14}
+.row{display:grid;grid-template-columns:1fr 86px;gap:8px}
+.search{display:flex;align-items:center;border:1px solid #76501d;border-radius:16px;background:#0f0a07;padding:0 10px}
+.search input{flex:1;background:none;border:0;color:#f0d68d;outline:none}
+.sort{border:1px solid #7f5720;border-radius:16px;background:#21150d;color:#e0bd68}
+.tabs{display:flex;gap:6px;overflow:auto;margin-top:8px}
+.tab{padding:6px 12px;border-radius:14px;border:1px solid #73501d;background:#23160f;color:#c5a663;white-space:nowrap}
+.tab.active{background:linear-gradient(#8c2d25,#53150f);color:#ffe69e}
+.list{flex:1;overflow:auto;padding:12px 10px 16px 18px}
+.card{position:relative;margin-left:28px;margin-bottom:12px;background:linear-gradient(90deg,#ead8b0,#d2b476);border:1px solid #946a2d;border-radius:14px;padding:10px 10px 10px 66px;color:#4a2d14}
+.avatar{position:absolute;left:-30px;top:50%;transform:translateY(-50%);width:80px;height:90px;border-radius:40px 40px 14px 14px;background:linear-gradient(#6f5b42,#37241b);border:2px solid #ca9a3b;display:grid;place-items:center;color:#f5dd98;font-size:36px}
+.tag{position:absolute;right:0;top:10px;background:linear-gradient(#9a312a,#5a1713);color:#ffe39a;padding:3px 10px;border-radius:12px 0 0 12px;font-size:11px}
+.name{font-size:18px;font-weight:bold}
+.office{font-size:10px;color:#7d623b}
+.line{height:1px;background:linear-gradient(90deg,#af8845,transparent);margin:6px 0}
+.stats{display:flex;gap:12px;font-size:10px;color:#745b35}.stats b{font-size:13px;color:#7d2d23}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.badge{padding:2px 6px;border-radius:10px;background:#f1e6ca;border:1px solid rgba(0,0,0,.12);font-size:9px}
+.sheet,.sortsheet{position:absolute;left:12px;right:12px;bottom:12px;background:linear-gradient(#2d1c11,#160e0a);border:1px solid #8e6224;border-radius:18px;padding:14px;transform:translateY(120%);transition:.2s;color:#efd58d}
+.show{transform:translateY(0)}
+.handle{width:42px;height:4px;background:#8f6a2b;border-radius:3px;margin:0 auto 10px}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.actions button,.opts button,.dir button{border:1px solid #76501d;background:#21150d;color:#d7b764;border-radius:12px;min-height:38px}
+.actions .pri{background:linear-gradient(#7f2a21,#4b140f);color:#ffe59a}
+.opts{display:grid;gap:8px}.dir{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.toast{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:#18100c;border:1px solid #8e6224;color:#f0cf72;padding:8px 14px;border-radius:14px;display:none}
+</style>
+</head>
+<body>
+<div class="stage"><div class="mask"></div>
+<div class="panel">
+<div class="header"><h1>大臣名册</h1><button class="close">×</button></div>
+<div class="summary"><div><b id=t>10</b>在朝</div><div><b>3</b>可提拔</div><div><b>2</b>待任命</div></div>
+<div class="toolbar">
+<div class="row"><div class="search">⌕<input id="kw" placeholder="姓名 / 官职"></div><button class="sort" id="sortBtn">官职 ↓</button></div>
+<div class="tabs">
+<button class="tab active" data=f>全部</button><button class="tab">内阁</button><button class="tab">六部</button><button class="tab">武将</button><button class="tab">地方</button><button class="tab">翰林</button>
+</div></div>
+<div class="list" id="list"></div>
+</div>
+
+<div class="sheet" id="sheet"><div class="handle"></div>
+<div><b id="title" style="font-size:20px"></b><div id="sub" style="font-size:11px;color:#b39660"></div></div>
+<div class="actions">
+<button>详情</button><button>召见</button><button>赏赐</button>
+<button>调任</button><button>任命</button><button class="pri">晋升</button>
+</div></div>
+
+<div class="sortsheet" id="sortSheet"><div class="handle"></div>
+<div style="text-align:center;font-size:18px;margin-bottom:10px">排序方式</div>
+<div class="opts">
+<button data=s>官职</button>
+<button>忠诚</button>
+<button>能力</button>
+<button>年龄</button>
+<button>功绩</button>
+<button>派系</button>
+</div>
+<div class="dir"><button>降序</button><button>升序</button></div>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+<script>
+const data=[
+["张居正","内阁首辅","内阁",98,96,58,"改革派",["治国能臣","可晋升"]],
+["于谦","兵部尚书","六部",96,99,51,"忠臣",["忠心耿耿"]],
+["霍去病","骠骑将军","武将",100,99,24,"武勋",["百战百胜"]],
+["李善长","吏部尚书","六部",91,88,63,"文臣",["可调任"]],
+["狄仁杰","大理寺卿","内阁",95,97,56,"清流",["断案如神"]],
+["海瑞","巡抚","地方",99,90,52,"清流",["刚正不阿"]],
+["纪晓岚","大学士","翰林",88,92,49,"文臣",["博学多识"]]
+];
+const list=document.getElementById("list"),sheet=document.getElementById("sheet"),sortSheet=document.getElementById("sortSheet");
+function render(){
+ const kw=document.getElementById("kw").value;
+ let arr=data.filter(x=>x[0].includes(kw)||x[1].includes(kw));
+ document.getElementById("t").innerText=arr.length;
+ list.innerHTML="";
+ arr.forEach(d=>{
+ let c=document.createElement("div");
+ c.className="card";
+ c.innerHTML=`<div class=avatar>${d[0].slice(-1)}</div><div class=tag>${d[1]}</div>
+ <div class=name>${d[0]}</div><div class=office>${d[6]} · ${d[1]}</div>
+ <div class=line></div>
+ <div class=stats><span><b>${d[3]}</b>忠诚</span><span><b>${d[4]}</b>能力</span><span><b>${d[5]}</b>岁</span></div>
+ <div class=badges>${d[7].map(v=>`<span class=badge>${v}</span>`).join("")}</div>`;
+ c.onclick=()=>{sheet.classList.add("show");sortSheet.classList.remove("show");title.innerText=d[0]+" · "+d[1];sub.innerText=`${d[6]} · 忠诚${d[3]} · 能力${d[4]} · ${d[5]}岁`;};
+ list.appendChild(c);
+ });
+}
+kw.oninput=render;
+sortBtn.onclick=()=>{sheet.classList.remove("show");sortSheet.classList.toggle("show");}
+document.querySelector(".close").onclick=()=>document.querySelector(".panel").style.display="none";
+render();
+</script>
+</body></html>

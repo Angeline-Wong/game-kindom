@@ -1,0 +1,3476 @@
+
+> zichen-chronicles@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.10 D:/dev/codex/games-kingdom
+
+ ❯ src/game/dialogueLibrary.test.ts (10 tests | 1 failed) 11ms
+     × keeps low-roll selection on the first scene and interpolates the person name 6ms
+ ❯ src/features/Settings.test.tsx (1 test | 1 failed) 1221ms
+   × bounds probabilities, confirms overwrite/load, and requires both reset confirmations 1220ms
+ ❯ src/App.test.tsx (21 tests | 6 failed) 2176ms
+     × renders the game title and the four V1 navigation destinations 190ms
+     × records a completed scene dialogue and opens character actions 66ms
+     × opens live minister, consort, and heir rosters from their assigned scenes 83ms
+     × moves a punished consort into the cold palace with custody-only actions 82ms
+     × reports that there is no marriageable royal heir at the start of a new game 123ms
+     × shows the treasury inventory under the shared fixed shell 165ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > App shell > renders the game title and the four V1 navigation destinations
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "更多"
+
+Here are the accessible roles:
+
+  main:
+
+  Name "":
+  <main
+    class="app time-morning"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "紫宸纪":
+  <h1
+    class="sr-only"
+  />
+
+  --------------------------------------------------
+  banner:
+
+  Name "":
+  <header
+    class="hud"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "萧 萧承曜 · 24岁永和3年 十月18日 · 辰时 07:00 · 晴":
+  <button
+    class="emperor"
+  />
+
+  Name "切换时间速度":
+  <button
+    aria-label="切换时间速度"
+    class="time-control"
+  />
+
+  Name "查看太和殿":
+  <button
+    aria-label="查看太和殿"
+    class="map-plaque horizontal"
+    style="top: 13%; left: 50%;"
+  />
+
+  Name "进入乾清门":
+  <button
+    aria-label="进入乾清门"
+    class="map-plaque horizontal"
+    style="top: 28%; left: 50%;"
+  />
+
+  Name "进入养心殿":
+  <button
+    aria-label="进入养心殿"
+    class="map-plaque vertical"
+    style="top: 37%; left: 18%;"
+  />
+
+  Name "查看军机处":
+  <button
+    aria-label="查看军机处"
+    class="map-plaque vertical"
+    style="top: 37%; left: 82%;"
+  />
+
+  Name "查看御书房":
+  <button
+    aria-label="查看御书房"
+    class="map-plaque vertical"
+    style="top: 51%; left: 18%;"
+  />
+
+  Name "查看文华殿":
+  <button
+    aria-label="查看文华殿"
+    class="map-plaque vertical"
+    style="top: 51%; left: 82%;"
+  />
+
+  Name "查看演武场":
+  <button
+    aria-label="查看演武场"
+    class="map-plaque horizontal"
+    style="top: 60%; left: 50%;"
+  />
+
+  Name "查看宗人府":
+  <button
+    aria-label="查看宗人府"
+    class="map-plaque vertical"
+    style="top: 68%; left: 18%;"
+  />
+
+  Name "进入内务府":
+  <button
+    aria-label="进入内务府"
+    class="map-plaque vertical"
+    style="top: 68%; left: 82%;"
+  />
+
+  Name "查看会同馆":
+  <button
+    aria-label="查看会同馆"
+    class="map-plaque horizontal"
+    style="top: 76%; left: 50%;"
+  />
+
+  Name "查看午门":
+  <button
+    aria-label="查看午门"
+    class="map-plaque horizontal"
+    style="top: 90%; left: 50%;"
+  />
+
+  Name "前朝":
+  <button
+    class="active"
+  />
+
+  Name "后宫":
+  <button
+    class=""
+  />
+
+  Name "国库":
+  <button
+    class=""
+  />
+
+  Name "设置":
+  <button
+    class=""
+  />
+
+  --------------------------------------------------
+  region:
+
+  Name "前朝地图":
+  <section
+    aria-label="前朝地图"
+    class="map-stage overview-stage"
+  />
+
+  --------------------------------------------------
+  presentation:
+
+  Name "":
+  <img
+    alt=""
+    class="map-art"
+    src="/src/assets/front-court-base.png"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p />
+
+  --------------------------------------------------
+  navigation:
+
+  Name "":
+  <nav
+    class="bottom-nav"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <main
+      class="app time-morning"
+    >
+      <h1
+        class="sr-only"
+      >
+        紫宸纪
+      </h1>
+      <header
+        class="hud"
+      >
+        <button
+          class="emperor"
+        >
+          <span>
+            萧
+          </span>
+          <div>
+            <b>
+              萧承曜
+               · 
+              24
+              岁
+            </b>
+            <small>
+              永和3年 十月18日 · 辰时 07:00 · 晴
+            </small>
+          </div>
+        </button>
+        <div
+          class="money"
+        >
+          <span>
+            国库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            私库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            黄金 
+            <b>
+              20万
+            </b>
+          </span>
+          <span>
+            元宝 
+            <b>
+              9999
+            </b>
+          </span>
+        </div>
+        <button
+          aria-label="切换时间速度"
+          class="time-control"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-pause"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="14"
+              y="3"
+            />
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="5"
+              y="3"
+            />
+          </svg>
+          <span>
+            1×
+          </span>
+        </button>
+      </header>
+      <section
+        aria-label="前朝地图"
+        class="map-stage overview-stage"
+      >
+        <img
+          alt=""
+          class="map-art"
+          src="/src/assets/front-court-base.png"
+        />
+        <div
+          class="scene-caption"
+        >
+          <p>
+            前朝宫城
+          </p>
+          <span>
+            朝会议政 · 批阅奏折 · 宗亲官署
+          </span>
+        </div>
+        <button
+          aria-label="查看太和殿"
+          class="map-plaque horizontal"
+          style="top: 13%; left: 50%;"
+        >
+          太和殿
+        </button>
+        <button
+          aria-label="进入乾清门"
+          class="map-plaque horizontal"
+          style="top: 28%; left: 50%;"
+        >
+          乾清门
+        </button>
+        <button
+          aria-label="进入养心殿"
+          class="map-plaque vertical"
+          style="top: 37%; left: 18%;"
+        >
+          养心殿
+        </button>
+        <button
+          aria-label="查看军机处"
+          class="map-plaque vertical"
+          style="top: 37%; left: 82%;"
+        >
+          军机处
+        </button>
+        <button
+          aria-label="查看御书房"
+          class="map-plaque vertical"
+          style="top: 51%; left: 18%;"
+        >
+          御书房
+        </button>
+        <button
+          aria-label="查看文华殿"
+          class="map-plaque vertical"
+          style="top: 51%; left: 82%;"
+        >
+          文华殿
+        </button>
+        <button
+          aria-label="查看演武场"
+          class="map-plaque horizontal"
+          style="top: 60%; left: 50%;"
+        >
+          演武场
+        </button>
+        <button
+          aria-label="查看宗人府"
+          class="map-plaque vertical"
+          style="top: 68%; left: 18%;"
+        >
+          宗人府
+        </button>
+        <button
+          aria-label="进入内务府"
+          class="map-plaque vertical"
+          style="top: 68%; left: 82%;"
+        >
+          内务府
+        </button>
+        <button
+          aria-label="查看会同馆"
+          class="map-plaque horizontal"
+          style="top: 76%; left: 50%;"
+        >
+          会同馆
+        </button>
+        <button
+          aria-label="查看午门"
+          class="map-plaque horizontal"
+          style="top: 90%; left: 50%;"
+        >
+          午门
+        </button>
+      </section>
+      <nav
+        class="bottom-nav"
+      >
+        <button
+          class="active"
+        >
+          <span>
+            前朝
+          </span>
+        </button>
+        <button
+          class=""
+        >
+          <span>
+            后宫
+          </span>
+        </button>
+        <button
+          class=""
+        >
+          <span>
+            国库
+          </span>
+        </button>
+        <button
+          class=""
+        >
+          <span>
+            设置
+          </span>
+        </button>
+      </nav>
+      <div
+        aria-hidden="true"
+        aria-label="晨光氛围"
+        class="daylight-overlay daylight-morning"
+      />
+      <div
+        aria-hidden="true"
+        aria-label="晴景特效"
+        class="weather-overlay weather-sunny"
+      >
+        <i
+          class="dust"
+          style="left: 10%; top: 18%; animation-delay: 0s;"
+        />
+        <i
+          class="dust"
+          style="left: 27%; top: 41%; animation-delay: -0.32s;"
+        />
+        <i
+          class="dust"
+          style="left: 44%; top: 64%; animation-delay: -0.64s;"
+        />
+        <i
+          class="dust"
+          style="left: 61%; top: 87%; animation-delay: -0.96s;"
+        />
+        <i
+          class="dust"
+          style="left: 78%; top: 40%; animation-delay: -1.28s;"
+        />
+        <i
+          class="dust"
+          style="left: 13%; top: 63%; animation-delay: -1.6s;"
+        />
+        <i
+          class="dust"
+          style="left: 30%; top: 86%; animation-delay: -1.92s;"
+        />
+        <i
+          class="dust"
+          style="left: 47%; top: 39%; animation-delay: -2.24s;"
+        />
+        <i
+          class="dust"
+          style="left: 64%; top: 62%; animation-delay: -2.56s;"
+        />
+        <i
+          class="dust"
+          style="left: 81%; top: 85%; animation-delay: -2.88s;"
+        />
+        <i
+          class="dust"
+          style="left: 16%; top: 38%; animation-delay: -3.2s;"
+        />
+        <i
+          class="dust"
+          style="left: 33%; top: 61%; animation-delay: -3.52s;"
+        />
+        <i
+          class="dust"
+          style="left: 50%; top: 84%; animation-delay: -3.84s;"
+        />
+        <i
+          class="dust"
+          style="left: 67%; top: 37%; animation-delay: -4.16s;"
+        />
+      </div>
+    </main>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:49:21
+     47|     expect(screen.getByText('紫宸纪')).toBeInTheDocument();
+     48|     for (const label of ['前朝', '后宫', '国库', '更多']) {
+     49|       expect(screen.getByRole('button', { name: label })).toBeInTheDoc…
+       |                     ^
+     50|     }
+     51|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/App.test.tsx > App shell > records a completed scene dialogue and opens character actions
+TestingLibraryElementError: Unable to find an element with the text: 臣已将本季经筵策问拟好，请陛下定夺题旨。. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <main
+      class="app time-morning"
+    >
+      <h1
+        class="sr-only"
+      >
+        紫宸纪
+      </h1>
+      <header
+        class="hud"
+      >
+        <button
+          class="emperor"
+        >
+          <span>
+            萧
+          </span>
+          <div>
+            <b>
+              萧承曜
+               · 
+              24
+              岁
+            </b>
+            <small>
+              永和3年 十月18日 · 辰时 07:00 · 晴
+            </small>
+          </div>
+        </button>
+        <div
+          class="money"
+        >
+          <span>
+            国库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            私库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            黄金 
+            <b>
+              20万
+            </b>
+          </span>
+          <span>
+            元宝 
+            <b>
+              9999
+            </b>
+          </span>
+        </div>
+        <button
+          aria-label="切换时间速度"
+          class="time-control"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-pause"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="14"
+              y="3"
+            />
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="5"
+              y="3"
+            />
+          </svg>
+          <span>
+            1×
+          </span>
+        </button>
+      </header>
+      <section
+        aria-label="文华殿场景"
+        class="map-stage detail-stage"
+      >
+        <img
+          alt=""
+          class="map-art"
+          src="/src/assets/front-wenhua.png"
+        />
+        <div
+          class="occluder-layer top-shadow"
+        />
+        <header
+          class="scene-topper"
+        >
+          <div
+            class="detail-title"
+          >
+            <h2>
+              文华殿
+            </h2>
+            <p>
+              经筵讲学、会试考务与进士授官之所。
+            </p>
+          </div>
+          <button
+            aria-label="返回上级地图"
+            class="round-btn detail-back"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-chevron-left"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m15 18-6-6 6-6"
+              />
+            </svg>
+          </button>
+          <button
+            class="scene-directory-button"
+          >
+            科举事务
+          </button>
+        </header>
+        <div
+          aria-label="场景人物"
+          class="people-dock"
+        >
+          <button
+            class="person-btn idle"
+          >
+            <div
+              class="portrait-wrap"
+            >
+              <div
+                class="portrait-glow"
+              />
+              <div
+                class="portrait-frame"
+              >
+                <div
+                  class="portrait minister head-portrait"
+                  style="background-image: url(\"/src/assets/minister-portraits/minister-12.png\");"
+                />
+              </div>
+              <span
+                class="rank-mark"
+              >
+                正五品
+              </span>
+              <span
+                class="event-dot"
+              />
+              <span
+                class="click-wave"
+              />
+              <span
+                class="spark"
+              />
+            </div>
+            <span
+              class="person-name"
+            >
+              沈砚之
+            </span>
+          </button>
+        </div>
+        <div
+          class="interaction-overlay scene-dialogue-overlay"
+        >
+          <main
+            class="game-ui"
+          >
+            <button
+              class="skip-btn"
+            >
+              跳过
+            </button>
+            <div
+              aria-hidden="true"
+              class="character-layer"
+            >
+              <div
+                class="character-slot left is-speaker"
+              >
+                <div
+                  class="character-placeholder minister has-custom-portrait"
+                  style="background-image: url(\"/src/assets/minister-portraits/minister-12.png\");"
+                />
+              </div>
+              <div
+                class="character-slot right is-listener"
+              >
+                <div
+                  class="character-placeholder has-custom-portrait"
+                  style="background-image: url(\"/src/assets/emperor-portraits/emperor-01.png\");"
+                />
+              </div>
+            </div>
+            <div
+              class="story-stack"
+            >
+              <section
+                class="dialogue-section"
+              >
+                <div
+                  class="dialogue-wrap"
+                >
+                  <div
+                    class="nameplate"
+                  >
+                    沈砚之
+                  </div>
+                  <div
+                    class="dialogue-box"
+                  >
+                    <p
+                      class="dialogue-text"
+                    >
+                      臣今日早朝有三事奏陈：京畿仓储已满可暂缓征购；河工告竣请遣使验收；礼部呈请秋祭典仪规格。
+                    </p>
+                  </div>
+                </div>
+              </section>
+              <section
+                aria-label="剧情选项"
+                class="choice-panel"
+              >
+                <button
+                  class="choice-btn"
+                >
+                  一一准奏
+                </button>
+                <button
+                  class="choice-btn"
+                >
+                  挑出细问
+                </button>
+              </section>
+            </div>
+          </main>
+        </div>
+            
+      </section>
+      <div
+        aria-hidden="true"
+        aria-label="晨光氛围"
+        class="daylight-overlay daylight-morning"
+      />
+      <div
+        aria-hidden="true"
+        aria-label="晴景特效"
+        class="weather-overlay weather-sunny"
+      >
+        <i
+          class="dust"
+          style="left: 10%; top: 18%; animation-delay: 0s;"
+        />
+        <i
+          class="dust"
+          style="left: 27%; top: 41%; animation-delay: -0.32s;"
+        />
+        <i
+          class="dust"
+          style="left: 44%; top: 64%; animation-delay: -0.64s;"
+        />
+        <i
+          class="dust"
+          style="left: 61%; top: 87%; animation-delay: -0.96s;"
+        />
+        <i
+          class="dust"
+          style="left: 78%; top: 40%; animation-delay: -1.28s;"
+        />
+        <i
+          class="dust"
+          style="left: 13%; top: 63%; animation-delay: -1.6s;"
+        />
+        <i
+          class="dust"
+          style="left: 30%; top: 86%; animation-delay: -1.92s;"
+        />
+        <i
+          class="dust"
+          style="left: 47%; top: 39%; animation-delay: -2.24s;"
+        />
+        <i
+          class="dust"
+          style="left: 64%; top: 62%; animation-delay: -2.56s;"
+        />
+        <i
+          class="dust"
+          style="left: 81%; top: 85%; animation-delay: -2.88s;"
+        />
+        <i
+          class="dust"
+          style="left: 16%; top: 38%; animation-delay: -3.2s;"
+        />
+        <i
+          class="dust"
+          style="left: 33%; top: 61%; animation-delay: -3.52s;"
+        />
+        <i
+          class="dust"
+          style="left: 50%; top: 84%; animation-delay: -3.84s;"
+        />
+        <i
+          class="dust"
+          style="left: 67%; top: 37%; animation-delay: -4.16s;"
+        />
+      </div>
+    </main>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:108:19
+    106|     fireEvent.click(screen.getByRole('button', { name: '查看文华殿' }));
+    107|     fireEvent.click(screen.getByRole('button', { name: /沈砚之/ }));
+    108|     expect(screen.getByText('臣已将本季经筵策问拟好，请陛下定夺题旨。')).toBeInTheDocument…
+       |                   ^
+    109|     fireEvent.click(screen.getByRole('button', { name: '立刻询问详情' }));
+    110|     expect(screen.getByRole('button', { name: '调任' })).toBeInTheDocume…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/App.test.tsx > App shell > opens live minister, consort, and heir rosters from their assigned scenes
+TestingLibraryElementError: Found multiple elements with the role "button" and name `/沈砚之/`
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+<span
+  aria-label="查看沈砚之"
+  class="consort-list-portrait head-portrait"
+  role="button"
+  style="background-image: url(\"/src/assets/minister-portraits/minister-12.png\");"
+  tabindex="0"
+/>
+
+Ignored nodes: comments, script, style
+<button
+  class="consort-list-name"
+>
+  沈砚之
+  <i>
+    正五品
+  </i>
+</button>
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+<div
+  aria-label="大臣名册"
+  aria-modal="true"
+  class="roster-overlay approved-consort-roster approved-minister-roster"
+  role="dialog"
+>
+  <section
+    class="consort-list-panel"
+  >
+    <header
+      class="consort-list-header"
+    >
+      <small>
+        紫宸纪事 · 吏部铨档
+      </small>
+      <h2
+        aria-label="大臣名册"
+      >
+        百 官 名 册
+      </h2>
+      <p>
+        朝臣履历与任职总览
+      </p>
+      <button
+        aria-label="关闭官员名册"
+        class="consort-list-close"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-x"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18 6 6 18"
+          />
+          <path
+            d="m6 6 12 12"
+          />
+        </svg>
+      </button>
+    </header>
+    <div
+      class="consort-list-summary"
+    >
+      <span>
+        <small>
+          在册
+        </small>
+        <b>
+          8
+          人
+        </b>
+      </span>
+      <button
+        class=""
+      >
+        <small>
+          忠良
+        </small>
+        <b>
+          7
+          人
+        </b>
+      </button>
+      <span>
+        <small>
+          才识卓著
+        </small>
+        <b>
+          7
+          人
+        </b>
+      </span>
+    </div>
+    <div
+      class="consort-list-tools"
+    >
+      <label>
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-search"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m21 21-4.34-4.34"
+          />
+          <circle
+            cx="11"
+            cy="11"
+            r="8"
+          />
+        </svg>
+        <input
+          placeholder="搜索姓名、官职或品级"
+          value=""
+        />
+      </label>
+      <button
+        class="active"
+      >
+        官品高→低
+      </button>
+    </div>
+    <div
+      class="consort-list-content"
+    >
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看傅弘毅"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-06.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            傅弘毅
+            <i>
+              正一品
+            </i>
+          </button>
+          <p>
+            太傅
+             · 
+            53
+            岁
+          </p>
+          <em>
+            老成 · 清正
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          84
+        </strong>
+      </article>
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看谢怀瑾"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-16.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            谢怀瑾
+            <i>
+              从一品
+            </i>
+          </button>
+          <p>
+            兵部尚书
+             · 
+            46
+            岁
+          </p>
+          <em>
+            刚毅 · 持重
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          79
+        </strong>
+      </article>
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看顾廷钧"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-01.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            顾廷钧
+            <i>
+              正二品
+            </i>
+          </button>
+          <p>
+            吏部尚书
+             · 
+            42
+            岁
+          </p>
+          <em>
+            圆融 · 善断
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          73
+        </strong>
+      </article>
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看方肃"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-21.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            方肃
+            <i>
+              从二品
+            </i>
+          </button>
+          <p>
+            宗人府宗令
+             · 
+            50
+            岁
+          </p>
+          <em>
+            守礼 · 严峻
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          82
+        </strong>
+      </article>
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看裴景川"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-05.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            裴景川
+            <i>
+              正三品
+            </i>
+          </button>
+          <p>
+            礼部侍郎
+             · 
+            34
+            岁
+          </p>
+          <em>
+            知礼 · 机敏
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          76
+        </strong>
+      </article>
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看陆文澜"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-11.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            陆文澜
+            <i>
+              正三品
+            </i>
+          </button>
+          <p>
+            户部侍郎
+             · 
+            37
+            岁
+          </p>
+          <em>
+            精算 · 谨慎
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          68
+        </strong>
+      </article>
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看霍云峥"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-15.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            霍云峥
+            <i>
+              正四品
+            </i>
+          </button>
+          <p>
+            禁军统领
+             · 
+            32
+            岁
+          </p>
+          <em>
+            勇毅 · 忠直
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          88
+        </strong>
+      </article>
+      <article
+        class="consort-list-card minister-list-card"
+      >
+        <span
+          aria-label="查看沈砚之"
+          class="consort-list-portrait head-portrait"
+          role="button"
+          style="background-image: url(\"/src/assets/minister-portraits/minister-12.png\");"
+          tabindex="0"
+        />
+        <div>
+          <button
+            class="consort-list-name"
+          >
+            沈砚之
+            <i>
+              正五品
+            </i>
+          </button>
+          <p>
+            翰林院
+             · 
+            46
+            岁
+          </p>
+          <em>
+            严谨 · 果断
+             · 
+            京师
+          </em>
+        </div>
+        <strong>
+          <small>
+            忠诚
+          </small>
+          71
+        </strong>
+      </article>
+    </div>
+    <nav
+      class="consort-list-nav"
+    >
+      <button
+        class="active"
+      >
+        <span>
+          ☷
+        </span>
+        名册
+      </button>
+      <button
+        class=""
+      >
+        <span>
+          品
+        </span>
+        官品
+      </button>
+      <button
+        class=""
+      >
+        <span>
+          ⌂
+        </span>
+        衙署
+      </button>
+      <button
+        class=""
+      >
+        <span>
+          忠
+        </span>
+        忠良
+      </button>
+    </nav>
+  </section>
+</div>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:168:44
+    166|     expect(screen.getByText('沈砚之')).toBeInTheDocument();
+    167|     const ministerRoster = screen.getByRole('dialog', { name: '大臣名册' }…
+    168|     fireEvent.click(within(ministerRoster).getByRole('button', { name:…
+       |                                            ^
+    169|     fireEvent.click(within(ministerRoster).getByRole('button', { name:…
+    170|     expect(screen.getByTitle('人物详情')).toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/App.test.tsx > App shell > moves a punished consort into the cold palace with custody-only actions
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/沈皇后/`
+
+Here are the accessible roles:
+
+  main:
+
+  Name "":
+  <main
+    class="app time-morning"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "紫宸纪":
+  <h1
+    class="sr-only"
+  />
+
+  Name "坤宁宫·主殿":
+  <h2 />
+
+  --------------------------------------------------
+  banner:
+
+  Name "":
+  <header
+    class="hud"
+  />
+
+  Name "":
+  <header
+    class="scene-topper"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "萧 萧承曜 · 24岁永和3年 十月18日 · 辰时 07:00 · 晴":
+  <button
+    class="emperor"
+  />
+
+  Name "切换时间速度":
+  <button
+    aria-label="切换时间速度"
+    class="time-control"
+  />
+
+  Name "返回上级地图":
+  <button
+    aria-label="返回上级地图"
+    class="round-btn detail-back"
+  />
+
+  Name "皇后 沈清和":
+  <button
+    class="person-btn idle"
+  />
+
+  --------------------------------------------------
+  region:
+
+  Name "坤宁宫场景":
+  <section
+    aria-label="坤宁宫场景"
+    class="map-stage detail-stage"
+  />
+
+  --------------------------------------------------
+  presentation:
+
+  Name "":
+  <img
+    alt=""
+    class="map-art"
+    src="/src/assets/inner-kuning-main.png"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <main
+      class="app time-morning"
+    >
+      <h1
+        class="sr-only"
+      >
+        紫宸纪
+      </h1>
+      <header
+        class="hud"
+      >
+        <button
+          class="emperor"
+        >
+          <span>
+            萧
+          </span>
+          <div>
+            <b>
+              萧承曜
+               · 
+              24
+              岁
+            </b>
+            <small>
+              永和3年 十月18日 · 辰时 07:00 · 晴
+            </small>
+          </div>
+        </button>
+        <div
+          class="money"
+        >
+          <span>
+            国库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            私库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            黄金 
+            <b>
+              20万
+            </b>
+          </span>
+          <span>
+            元宝 
+            <b>
+              9999
+            </b>
+          </span>
+        </div>
+        <button
+          aria-label="切换时间速度"
+          class="time-control"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-pause"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="14"
+              y="3"
+            />
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="5"
+              y="3"
+            />
+          </svg>
+          <span>
+            1×
+          </span>
+        </button>
+      </header>
+      <section
+        aria-label="坤宁宫场景"
+        class="map-stage detail-stage"
+      >
+        <img
+          alt=""
+          class="map-art"
+          src="/src/assets/inner-kuning-main.png"
+        />
+        <div
+          class="occluder-layer top-shadow"
+        />
+        <header
+          class="scene-topper"
+        >
+          <div
+            class="detail-title"
+          >
+            <h2>
+              坤宁宫·主殿
+            </h2>
+            <p>
+              起居、赏赐与召见
+            </p>
+          </div>
+          <button
+            aria-label="返回上级地图"
+            class="round-btn detail-back"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-chevron-left"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m15 18-6-6 6-6"
+              />
+            </svg>
+          </button>
+        </header>
+        <div
+          aria-label="场景人物"
+          class="people-dock"
+        >
+          <button
+            class="person-btn idle"
+          >
+            <div
+              class="portrait-wrap"
+            >
+              <div
+                class="portrait-glow"
+              />
+              <div
+                class="portrait-frame"
+              >
+                <div
+                  class="portrait empress head-portrait"
+                  style="background-image: url(\"/src/assets/empress-portraits/empress-01.png\");"
+                />
+              </div>
+              <span
+                class="rank-mark"
+              >
+                皇后
+              </span>
+              <span
+                class="event-dot"
+              />
+              <span
+                class="click-wave"
+              />
+              <span
+                class="spark"
+              />
+            </div>
+            <span
+              class="person-name"
+            >
+              沈清和
+            </span>
+          </button>
+        </div>
+            
+      </section>
+      <div
+        aria-hidden="true"
+        aria-label="晨光氛围"
+        class="daylight-overlay daylight-morning"
+      />
+      <div
+        aria-hidden="true"
+        aria-label="晴景特效"
+        class="weather-overlay weather-sunny"
+      >
+        <i
+          class="dust"
+          style="left: 10%; top: 18%; animation-delay: 0s;"
+        />
+        <i
+          class="dust"
+          style="left: 27%; top: 41%; animation-delay: -0.32s;"
+        />
+        <i
+          class="dust"
+          style="left: 44%; top: 64%; animation-delay: -0.64s;"
+        />
+        <i
+          class="dust"
+          style="left: 61%; top: 87%; animation-delay: -0.96s;"
+        />
+        <i
+          class="dust"
+          style="left: 78%; top: 40%; animation-delay: -1.28s;"
+        />
+        <i
+          class="dust"
+          style="left: 13%; top: 63%; animation-delay: -1.6s;"
+        />
+        <i
+          class="dust"
+          style="left: 30%; top: 86%; animation-delay: -1.92s;"
+        />
+        <i
+          class="dust"
+          style="left: 47%; top: 39%; animation-delay: -2.24s;"
+        />
+        <i
+          class="dust"
+          style="left: 64%; top: 62%; animation-delay: -2.56s;"
+        />
+        <i
+          class="dust"
+          style="left: 81%; top: 85%; animation-delay: -2.88s;"
+        />
+        <i
+          class="dust"
+          style="left: 16%; top: 38%; animation-delay: -3.2s;"
+        />
+        <i
+          class="dust"
+          style="left: 33%; top: 61%; animation-delay: -3.52s;"
+        />
+        <i
+          class="dust"
+          style="left: 50%; top: 84%; animation-delay: -3.84s;"
+        />
+        <i
+          class="dust"
+          style="left: 67%; top: 37%; animation-delay: -4.16s;"
+        />
+      </div>
+    </main>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:240:28
+    238|     fireEvent.click(screen.getByRole('button', { name: '查看坤宁宫' }));
+    239|     fireEvent.click(screen.getByRole('button', { name: '主殿' }));
+    240|     fireEvent.click(screen.getByRole('button', { name: /沈皇后/ }));
+       |                            ^
+    241|     fireEvent.click(screen.getByRole('button', { name: '问责' }));
+    242|     fireEvent.click(screen.getByRole('button', { name: '打入冷宫' }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/App.test.tsx > App shell > reports that there is no marriageable royal heir at the start of a new game
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "皇子婚配"
+
+Here are the accessible roles:
+
+  main:
+
+  Name "":
+  <main
+    class="app time-morning"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "紫宸纪":
+  <h1
+    class="sr-only"
+  />
+
+  Name "毓庆宫":
+  <h2 />
+
+  --------------------------------------------------
+  banner:
+
+  Name "":
+  <header
+    class="hud"
+  />
+
+  Name "":
+  <header
+    class="scene-topper"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "萧 萧承曜 · 24岁永和3年 十月18日 · 辰时 07:00 · 晴":
+  <button
+    class="emperor"
+  />
+
+  Name "切换时间速度":
+  <button
+    aria-label="切换时间速度"
+    class="time-control"
+  />
+
+  Name "返回上级地图":
+  <button
+    aria-label="返回上级地图"
+    class="round-btn detail-back"
+  />
+
+  Name "选立太子":
+  <button
+    class="scene-directory-button"
+  />
+
+  Name "正七品 值房内侍":
+  <button
+    class="person-btn idle"
+  />
+
+  --------------------------------------------------
+  region:
+
+  Name "毓庆宫场景":
+  <section
+    aria-label="毓庆宫场景"
+    class="map-stage detail-stage"
+  />
+
+  --------------------------------------------------
+  presentation:
+
+  Name "":
+  <img
+    alt=""
+    class="map-art"
+    src="/src/assets/inner-yuqing.png"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <main
+      class="app time-morning"
+    >
+      <h1
+        class="sr-only"
+      >
+        紫宸纪
+      </h1>
+      <header
+        class="hud"
+      >
+        <button
+          class="emperor"
+        >
+          <span>
+            萧
+          </span>
+          <div>
+            <b>
+              萧承曜
+               · 
+              24
+              岁
+            </b>
+            <small>
+              永和3年 十月18日 · 辰时 07:00 · 晴
+            </small>
+          </div>
+        </button>
+        <div
+          class="money"
+        >
+          <span>
+            国库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            私库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            黄金 
+            <b>
+              20万
+            </b>
+          </span>
+          <span>
+            元宝 
+            <b>
+              9999
+            </b>
+          </span>
+        </div>
+        <button
+          aria-label="切换时间速度"
+          class="time-control"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-pause"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="14"
+              y="3"
+            />
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="5"
+              y="3"
+            />
+          </svg>
+          <span>
+            1×
+          </span>
+        </button>
+      </header>
+      <section
+        aria-label="毓庆宫场景"
+        class="map-stage detail-stage"
+      >
+        <img
+          alt=""
+          class="map-art"
+          src="/src/assets/inner-yuqing.png"
+        />
+        <div
+          class="occluder-layer top-shadow"
+        />
+        <header
+          class="scene-topper"
+        >
+          <div
+            class="detail-title"
+          >
+            <h2>
+              毓庆宫
+            </h2>
+            <p>
+              储君培养、政治班底与监国事务之所。
+            </p>
+          </div>
+          <button
+            aria-label="返回上级地图"
+            class="round-btn detail-back"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-chevron-left"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m15 18-6-6 6-6"
+              />
+            </svg>
+          </button>
+          <button
+            class="scene-directory-button"
+          >
+            选立太子
+          </button>
+        </header>
+        <div
+          aria-label="场景人物"
+          class="people-dock"
+        >
+          <button
+            class="person-btn idle"
+          >
+            <div
+              class="portrait-wrap"
+            >
+              <div
+                class="portrait-glow"
+              />
+              <div
+                class="portrait-frame"
+              >
+                <div
+                  class="portrait minister head-portrait"
+                  style="background-image: url(\"/src/assets/minister-portraits/minister-11.png\");"
+                />
+              </div>
+              <span
+                class="rank-mark"
+              >
+                正七品
+              </span>
+              <span
+                class="click-wave"
+              />
+              <span
+                class="spark"
+              />
+            </div>
+            <span
+              class="person-name"
+            >
+              值房内侍
+            </span>
+          </button>
+        </div>
+            
+      </section>
+      <div
+        aria-hidden="true"
+        aria-label="晨光氛围"
+        class="daylight-overlay daylight-morning"
+      />
+      <div
+        aria-hidden="true"
+        aria-label="晴景特效"
+        class="weather-overlay weather-sunny"
+      >
+        <i
+          class="dust"
+          style="left: 10%; top: 18%; animation-delay: 0s;"
+        />
+        <i
+          class="dust"
+          style="left: 27%; top: 41%; animation-delay: -0.32s;"
+        />
+        <i
+          class="dust"
+          style="left: 44%; top: 64%; animation-delay: -0.64s;"
+        />
+        <i
+          class="dust"
+          style="left: 61%; top: 87%; animation-delay: -0.96s;"
+        />
+        <i
+          class="dust"
+          style="left: 78%; top: 40%; animation-delay: -1.28s;"
+        />
+        <i
+          class="dust"
+          style="left: 13%; top: 63%; animation-delay: -1.6s;"
+        />
+        <i
+          class="dust"
+          style="left: 30%; top: 86%; animation-delay: -1.92s;"
+        />
+        <i
+          class="dust"
+          style="left: 47%; top: 39%; animation-delay: -2.24s;"
+        />
+        <i
+          class="dust"
+          style="left: 64%; top: 62%; animation-delay: -2.56s;"
+        />
+        <i
+          class="dust"
+          style="left: 81%; top: 85%; animation-delay: -2.88s;"
+        />
+        <i
+          class="dust"
+          style="left: 16%; top: 38%; animation-delay: -3.2s;"
+        />
+        <i
+          class="dust"
+          style="left: 33%; top: 61%; animation-delay: -3.52s;"
+        />
+        <i
+          class="dust"
+          style="left: 50%; top: 84%; animation-delay: -3.84s;"
+        />
+        <i
+          class="dust"
+          style="left: 67%; top: 37%; animation-delay: -4.16s;"
+        />
+      </div>
+    </main>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:273:28
+    271|     fireEvent.click(screen.getByRole('button', { name: '后宫' }));
+    272|     fireEvent.click(screen.getByRole('button', { name: '查看毓庆宫' }));
+    273|     fireEvent.click(screen.getByRole('button', { name: '皇子婚配' }));
+       |                            ^
+    274|     expect(screen.getByText('当前没有年满十五岁且尚未婚配的皇嗣。')).toBeInTheDocument();
+    275|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  src/App.test.tsx > App shell > shows the treasury inventory under the shared fixed shell
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/黄金万两/`
+
+Here are the accessible roles:
+
+  main:
+
+  Name "":
+  <main
+    class="app time-morning"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "紫宸纪":
+  <h1
+    class="sr-only"
+  />
+
+  Name "国库":
+  <h2 />
+
+  Name "四书集注":
+  <h3 />
+
+  --------------------------------------------------
+  banner:
+
+  Name "":
+  <header
+    class="hud"
+  />
+
+  Name "":
+  <header
+    class="treasury-header"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "萧 萧承曜 · 24岁永和3年 十月18日 · 辰时 07:00 · 晴":
+  <button
+    class="emperor"
+  />
+
+  Name "切换时间速度":
+  <button
+    aria-label="切换时间速度"
+    class="time-control"
+  />
+
+  Name "返回前朝":
+  <button
+    aria-label="返回前朝"
+    class="treasury-back"
+  />
+
+  Name "全部":
+  <button
+    class="active"
+  />
+
+  Name "书籍":
+  <button
+    class=""
+  />
+
+  Name "珍宝":
+  <button
+    class=""
+  />
+
+  Name "金银":
+  <button
+    class=""
+  />
+
+  Name "玉器":
+  <button
+    class=""
+  />
+
+  Name "服饰":
+  <button
+    class=""
+  />
+
+  Name "器物":
+  <button
+    class=""
+  />
+
+  Name "丹药":
+  <button
+    class=""
+  />
+
+  Name "其他":
+  <button
+    class=""
+  />
+
+  Name "四书集注数量：12":
+  <button
+    class="inventory-card selected"
+  />
+
+  Name "永乐大典数量：3":
+  <button
+    class="inventory-card "
+  />
+
+  Name "百花诗集数量：8":
+  <button
+    class="inventory-card "
+  />
+
+  Name "翡翠平安扣数量：5":
+  <button
+    class="inventory-card "
+  />
+
+  Name "金凤簪数量：2":
+  <button
+    class="inventory-card "
+  />
+
+  Name "东珠项链数量：4":
+  <button
+    class="inventory-card "
+  />
+
+  Name "和田玉镯数量：6":
+  <button
+    class="inventory-card "
+  />
+
+  Name "点翠首饰盒数量：7":
+  <button
+    class="inventory-card "
+  />
+
+  Name "织云锦袍数量：9":
+  <button
+    class="inventory-card "
+  />
+
+  Name "缂花鞋数量：15":
+  <button
+    class="inventory-card "
+  />
+
+  Name "名家画卷数量：6":
+  <button
+    class="inventory-card "
+  />
+
+  Name "青花瓷瓶数量：10":
+  <button
+    class="inventory-card "
+  />
+
+  Name "千年灵芝数量：3":
+  <button
+    class="inventory-card "
+  />
+
+  Name "御赐墨宝数量：30":
+  <button
+    class="inventory-card "
+  />
+
+  Name "减少数量":
+  <button
+    aria-label="减少数量"
+  />
+
+  Name "增加数量":
+  <button
+    aria-label="增加数量"
+  />
+
+  Name "确认赏赐":
+  <button
+    class="gift-button"
+    disabled=""
+  />
+
+  Name "前朝":
+  <button
+    class=""
+  />
+
+  Name "后宫":
+  <button
+    class=""
+  />
+
+  Name "国库":
+  <button
+    class="active"
+  />
+
+  Name "设置":
+  <button
+    class=""
+  />
+
+  --------------------------------------------------
+  region:
+
+  Name "国库":
+  <section
+    aria-label="国库"
+    class="treasury-page"
+    style="background-image: linear-gradient(rgba(18, 13, 10, 0.85), rgba(18, 13, 10, 0.94)), url(\"/src/assets/treasury-background.png\");"
+  />
+
+  --------------------------------------------------
+  complementary:
+
+  Name "":
+  <aside
+    class="treasury-categories"
+  />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "选择赏赐对象":
+  <select
+    aria-label="选择赏赐对象"
+  />
+
+  --------------------------------------------------
+  option:
+
+  Name "请选择人物":
+  <option
+    value=""
+  />
+
+  Name "皇后 · 沈清和":
+  <option
+    value="empress"
+  />
+
+  Name "皇太后 · 孝和太后":
+  <option
+    value="empress-dowager"
+  />
+
+  Name "宗令 · 方肃":
+  <option
+    value="minister-007"
+  />
+
+  Name "太傅 · 傅弘毅":
+  <option
+    value="minister-002"
+  />
+
+  Name "吏部尚书 · 顾廷钧":
+  <option
+    value="minister-003"
+  />
+
+  Name "禁军统领 · 霍云峥":
+  <option
+    value="minister-008"
+  />
+
+  Name "户部侍郎 · 陆文澜":
+  <option
+    value="minister-005"
+  />
+
+  Name "礼部侍郎 · 裴景川":
+  <option
+    value="minister-006"
+  />
+
+  Name "翰林学士 · 沈砚之":
+  <option
+    value="minister-001"
+  />
+
+  Name "兵部尚书 · 谢怀瑾":
+  <option
+    value="minister-004"
+  />
+
+  --------------------------------------------------
+  contentinfo:
+
+  Name "":
+  <footer
+    class="treasury-detail"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p />
+
+  --------------------------------------------------
+  navigation:
+
+  Name "":
+  <nav
+    class="bottom-nav"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <main
+      class="app time-morning"
+    >
+      <h1
+        class="sr-only"
+      >
+        紫宸纪
+      </h1>
+      <header
+        class="hud"
+      >
+        <button
+          class="emperor"
+        >
+          <span>
+            萧
+          </span>
+          <div>
+            <b>
+              萧承曜
+               · 
+              24
+              岁
+            </b>
+            <small>
+              永和3年 十月18日 · 辰时 07:00 · 晴
+            </small>
+          </div>
+        </button>
+        <div
+          class="money"
+        >
+          <span>
+            国库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            私库 
+            <b>
+              1亿
+            </b>
+          </span>
+          <span>
+            黄金 
+            <b>
+              20万
+            </b>
+          </span>
+          <span>
+            元宝 
+            <b>
+              9999
+            </b>
+          </span>
+        </div>
+        <button
+          aria-label="切换时间速度"
+          class="time-control"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-pause"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="14"
+              y="3"
+            />
+            <rect
+              height="18"
+              rx="1"
+              width="5"
+              x="5"
+              y="3"
+            />
+          </svg>
+          <span>
+            1×
+          </span>
+        </button>
+      </header>
+      <section
+        aria-label="国库"
+        class="treasury-page"
+        style="background-image: linear-gradient(rgba(18, 13, 10, 0.85), rgba(18, 13, 10, 0.94)), url(\"/src/assets/treasury-background.png\");"
+      >
+        <header
+          class="treasury-header"
+        >
+          <h2>
+            国库
+          </h2>
+          <button
+            aria-label="返回前朝"
+            class="treasury-back"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-chevron-left"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m15 18-6-6 6-6"
+              />
+            </svg>
+          </button>
+        </header>
+        <aside
+          class="treasury-categories"
+        >
+          <button
+            class="active"
+          >
+            全部
+          </button>
+          <button
+            class=""
+          >
+            书籍
+          </button>
+          <button
+            class=""
+          >
+            珍宝
+          </button>
+          <button
+            class=""
+          >
+            金银
+          </button>
+          <button
+            class=""
+          >
+            玉器
+          </button>
+          <button
+            class=""
+          >
+            服饰
+          </button>
+          <button
+            class=""
+          >
+            器物
+          </button>
+          <button
+            class=""
+          >
+            丹药
+          </button>
+          <button
+            class=""
+          >
+            其他
+          </button>
+        </aside>
+        <div
+          class="treasury-content"
+        >
+          <div
+            class="treasury-intro"
+          >
+            <span>
+              内府藏珍
+            </span>
+            <label
+              class="treasury-recipient"
+            >
+              <span>
+                赏赐对象
+              </span>
+              <select
+                aria-label="选择赏赐对象"
+              >
+                <option
+                  value=""
+                >
+                  请选择人物
+                </option>
+                <option
+                  value="empress"
+                >
+                  皇后
+                   · 
+                  沈清和
+                </option>
+                <option
+                  value="empress-dowager"
+                >
+                  皇太后
+                   · 
+                  孝和太后
+                </option>
+                <option
+                  value="minister-007"
+                >
+                  宗令
+                   · 
+                  方肃
+                </option>
+                <option
+                  value="minister-002"
+                >
+                  太傅
+                   · 
+                  傅弘毅
+                </option>
+                <option
+                  value="minister-003"
+                >
+                  吏部尚书
+                   · 
+                  顾廷钧
+                </option>
+                <option
+                  value="minister-008"
+                >
+                  禁军统领
+                   · 
+                  霍云峥
+                </option>
+                <option
+                  value="minister-005"
+                >
+                  户部侍郎
+                   · 
+                  陆文澜
+                </option>
+                <option
+                  value="minister-006"
+                >
+                  礼部侍郎
+                   · 
+                  裴景川
+                </option>
+                <option
+                  value="minister-001"
+                >
+                  翰林学士
+                   · 
+                  沈砚之
+                </option>
+                <option
+                  value="minister-004"
+                >
+                  兵部尚书
+                   · 
+                  谢怀瑾
+                </option>
+              </select>
+            </label>
+          </div>
+          <div
+            class="inventory-grid"
+          >
+            <button
+              class="inventory-card selected"
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 0% 0%;"
+              />
+              <b>
+                四书集注
+              </b>
+              <small>
+                数量：
+                12
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 33.333% 0%;"
+              />
+              <b>
+                永乐大典
+              </b>
+              <small>
+                数量：
+                3
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 66.666% 0%;"
+              />
+              <b>
+                百花诗集
+              </b>
+              <small>
+                数量：
+                8
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 99.999% 0%;"
+              />
+              <b>
+                翡翠平安扣
+              </b>
+              <small>
+                数量：
+                5
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 0% 33.333%;"
+              />
+              <b>
+                金凤簪
+              </b>
+              <small>
+                数量：
+                2
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 33.333% 33.333%;"
+              />
+              <b>
+                东珠项链
+              </b>
+              <small>
+                数量：
+                4
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 66.666% 33.333%;"
+              />
+              <b>
+                和田玉镯
+              </b>
+              <small>
+                数量：
+                6
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 33.333% 66.666%;"
+              />
+              <b>
+                点翠首饰盒
+              </b>
+              <small>
+                数量：
+                7
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 66.666% 66.666%;"
+              />
+              <b>
+                织云锦袍
+              </b>
+              <small>
+                数量：
+                9
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 99.999% 66.666%;"
+              />
+              <b>
+                缂花鞋
+              </b>
+              <small>
+                数量：
+                15
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 0% 99.999%;"
+              />
+              <b>
+                名家画卷
+              </b>
+              <small>
+                数量：
+                6
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 33.333% 99.999%;"
+              />
+              <b>
+                青花瓷瓶
+              </b>
+              <small>
+                数量：
+                10
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 66.666% 99.999%;"
+              />
+              <b>
+                千年灵芝
+              </b>
+              <small>
+                数量：
+                3
+              </small>
+            </button>
+            <button
+              class="inventory-card "
+            >
+              <span
+                class="item-sprite"
+                style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 99.999% 99.999%;"
+              />
+              <b>
+                御赐墨宝
+              </b>
+              <small>
+                数量：
+                30
+              </small>
+            </button>
+          </div>
+        </div>
+        <footer
+          class="treasury-detail"
+        >
+          <span
+            class="detail-emblem item-sprite"
+            style="background-image: url(\"/src/assets/treasury-items.png\"); background-position: 0% 0%;"
+          />
+          <div
+            class="detail-copy"
+          >
+            <h3>
+              四书集注
+            </h3>
+            <p>
+              类别：
+              书籍
+              　库存：
+              12
+            </p>
+            <span>
+              经筵常用的精校典籍。
+            </span>
+          </div>
+          <div
+            class="gift-controls"
+          >
+            <div>
+              <span>
+                赏赐数量
+              </span>
+              <button
+                aria-label="减少数量"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-minus"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                </svg>
+              </button>
+              <b>
+                1
+              </b>
+              <button
+                aria-label="增加数量"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-plus"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="M12 5v14"
+                  />
+                </svg>
+              </button>
+            </div>
+            <button
+              class="gift-button"
+              disabled=""
+            >
+              确认赏赐
+            </button>
+          </div>
+        </footer>
+      </section>
+      <nav
+        class="bottom-nav"
+      >
+        <button
+          class=""
+        >
+          <span>
+            前朝
+          </span>
+        </button>
+        <button
+          class=""
+        >
+          <span>
+            后宫
+          </span>
+        </button>
+        <button
+          class="active"
+        >
+          <span>
+            国库
+          </span>
+        </button>
+        <button
+          class=""
+        >
+          <span>
+            设置
+          </span>
+        </button>
+      </nav>
+    </main>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:282:19
+    280|     fireEvent.click(screen.getByRole('button', { name: '国库' }));
+    281|     expect(screen.getByRole('heading', { name: '国库' })).toBeInTheDocum…
+    282|     expect(screen.getByRole('button', { name: /黄金万两/ })).toBeInTheDocu…
+       |                   ^
+    283|     expect(screen.getByRole('button', { name: '增加数量' })).toBeInTheDocu…
+    284|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  src/features/Settings.test.tsx > bounds probabilities, confirms overwrite/load, and requires both reset confirmations
+TestingLibraryElementError: Unable to find role="button" and name "提高孕率"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      aria-label="游戏设置"
+      class="settings-page"
+    >
+      <header
+        class="settings-header"
+      >
+        <small>
+          紫宸纪事 · 御前设定
+        </small>
+        <h2>
+          游戏设置
+        </h2>
+        <p>
+          声画 · 阅读 · 存档 · 辅助
+        </p>
+        <span>
+          版本 0.1.0
+        </span>
+      </header>
+      <nav
+        class="settings-tabs"
+      >
+        <button
+          class=""
+        >
+          声画
+        </button>
+        <button
+          class=""
+        >
+          阅读
+        </button>
+        <button
+          class="active"
+        >
+          存档
+        </button>
+        <button
+          class=""
+        >
+          辅助
+        </button>
+      </nav>
+      <main
+        class="settings-content"
+      >
+        <section
+          class="settings-section"
+        >
+          <header>
+            <b>
+              存档管理
+            </b>
+            <small>
+              本机保存完整游戏进度
+            </small>
+          </header>
+          <div
+            class="settings-save-card"
+          >
+            <i>
+              自
+            </i>
+            <span>
+              <b>
+                自动存档
+              </b>
+              <small>
+                最后保存时间：
+                暂无
+              </small>
+            </span>
+            <em>
+              待同步
+            </em>
+          </div>
+          <div
+            class="settings-save-card"
+          >
+            <i>
+              壹
+            </i>
+            <span>
+              <b>
+                存档一
+              </b>
+              <small>
+                空存档
+              </small>
+            </span>
+            <div
+              class="settings-save-actions"
+            >
+              <button>
+                保存
+              </button>
+              <button
+                disabled=""
+              >
+                回档
+              </button>
+            </div>
+          </div>
+          <div
+            class="settings-save-card"
+          >
+            <i>
+              贰
+            </i>
+            <span>
+              <b>
+                存档二
+              </b>
+              <small>
+                空存档
+              </small>
+            </span>
+            <div
+              class="settings-save-actions"
+            >
+              <button>
+                保存
+              </button>
+              <button
+                disabled=""
+              >
+                回档
+              </button>
+            </div>
+          </div>
+          <div
+            class="settings-row"
+          >
+            <span>
+              <b>
+                待处理事件
+              </b>
+              <small>
+                尚待内侍呈报的事件数量
+              </small>
+            </span>
+            <em>
+              0件
+            </em>
+          </div>
+        </section>
+        <section
+          class="settings-section"
+        >
+          <header>
+            <b>
+              危险操作
+            </b>
+            <small>
+              谨慎操作
+            </small>
+          </header>
+          <div
+            class="settings-row"
+          >
+            <span>
+              <b>
+                重置游戏
+              </b>
+              <small>
+                清除当前游戏进度以及全部存档
+              </small>
+            </span>
+            <button
+              class="settings-danger"
+            >
+              重置游戏
+            </button>
+          </div>
+        </section>
+      </main>
+      <footer
+        class="settings-footer"
+      >
+        <button>
+          恢复默认
+        </button>
+        <button
+          class="primary"
+        >
+          保存设置
+        </button>
+      </footer>
+    </section>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <section
+        aria-label="游戏设置"
+        class="settings-page"
+      >
+        <header
+          class="settings-header"
+        >
+          <small>
+            紫宸纪事 · 御前设定
+          </small>
+          <h2>
+            游戏设置
+          </h2>
+          <p>
+            声画 · 阅读 · 存档 · 辅助
+          </p>
+          <span>
+            版本 0.1.0
+          </span>
+        </header>
+        <nav
+          class="settings-tabs"
+        >
+          <button
+            class=""
+          >
+            声画
+          </button>
+          <button
+            class=""
+          >
+            阅读
+          </button>
+          <button
+            class="active"
+          >
+            存档
+          </button>
+          <button
+            class=""
+          >
+            辅助
+          </button>
+        </nav>
+        <main
+          class="settings-content"
+        >
+          <section
+            class="settings-section"
+          >
+            <header>
+              <b>
+                存档管理
+              </b>
+              <small>
+                本机保存完整游戏进度
+              </small>
+            </header>
+            <div
+              class="settings-save-card"
+            >
+              <i>
+                自
+              </i>
+              <span>
+                <b>
+                  自动存档
+                </b>
+                <small>
+                  最后保存时间：
+                  暂无
+                </small>
+              </span>
+              <em>
+                待同步
+              </em>
+            </div>
+            <div
+              class="settings-save-card"
+            >
+              <i>
+                壹
+              </i>
+              <span>
+                <b>
+                  存档一
+                </b>
+                <small>
+                  空存档
+                </small>
+              </span>
+              <div
+                class="settings-save-actions"
+              >
+                <button>
+                  保存
+                </button>
+                <button
+                  disabled=""
+                >
+                  回档
+                </button>
+              </div>
+            </div>
+            <div
+              class="settings-save-card"
+            >
+              <i>
+                贰
+              </i>
+              <span>
+                <b>
+                  存档二
+                </b>
+                <small>
+                  空存档
+                </small>
+              </span>
+              <div
+                class="settings-save-actions"
+              >
+                <button>
+                  保存
+                </button>
+                <button
+                  disabled=""
+                >
+                  回档
+                </button>
+              </div>
+            </div>
+            <div
+              class="settings-row"
+            >
+              <span>
+                <b>
+                  待处理事件
+                </b>
+                <small>
+                  尚待内侍呈报的事件数量
+                </small>
+              </span>
+              <em>
+                0件
+              </em>
+            </div>
+          </section>
+          <section
+            class="settings-section"
+          >
+            <header>
+              <b>
+                危险操作
+              </b>
+              <small>
+                谨慎操作
+              </small>
+            </header>
+            <div
+              class="settings-row"
+            >
+              <span>
+                <b>
+                  重置游戏
+                </b>
+                <small>
+                  清除当前游戏进度以及全部存档
+                </small>
+              </span>
+              <button
+                class="settings-danger"
+              >
+                重置游戏
+              </button>
+            </div>
+          </section>
+        </main>
+        <footer
+          class="settings-footer"
+        >
+          <button>
+            恢复默认
+          </button>
+          <button
+            class="primary"
+          >
+            保存设置
+          </button>
+        </footer>
+      </section>
+    </div>
+  </body>
+</html>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ src/features/Settings.test.tsx:21:9
+     19|   const { unmount } = render(<Harness />);
+     20|   fireEvent.click(screen.getByRole('button', { name: '存档' }));
+     21|   await waitFor(() => expect(screen.getByRole('button', { name: '提高孕率'…
+       |         ^
+     22|   const cards = () => screen.getAllByRole('button', { name: '回档' });
+     23|   expect(cards()[0]).toBeDisabled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  src/game/dialogueLibrary.test.ts > dialogue library > keeps low-roll selection on the first scene and interpolates the person name
+AssertionError: expected 'consort-daily-palace-lanterns' to be 'consort-greeting' // Object.is equality
+
+Expected: "consort-greeting"
+Received: "consort-daily-palace-lanterns"
+
+ ❯ src/game/dialogueLibrary.test.ts:95:23
+     93|   it('keeps low-roll selection on the first scene and interpolates the…
+     94|     const scene = pickDialogueForPerson(consort(), .2);
+     95|     expect(scene?.id).toBe('consort-greeting');
+       |                       ^
+     96|     expect(scene?.text).toContain('臣妾');
+     97|     expect(scene?.choices).toHaveLength(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  3 failed | 38 passed (41)
+      Tests  8 failed | 206 passed (214)
+   Start at  11:31:34
+   Duration  6.03s (transform 7.03s, setup 8.58s, import 16.51s, tests 5.29s, environment 44.13s)
+

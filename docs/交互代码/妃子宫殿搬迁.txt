@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>妃嫔宫殿搬迁</title>
+<style>
+:root{
+  --gold:#e8bf5d;--gold-hi:#ffe8a8;--red:#8c2d25;--red-dark:#4e130f;
+  --paper:#f1dfb5;--paper2:#d5b676;--ink:#452a14;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;background:#120b08;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+}
+body{display:grid;place-items:center}
+.stage{
+  position:relative;width:min(100vw,430px);height:min(100vh,932px);min-height:720px;
+  overflow:hidden;background:
+    radial-gradient(circle at 50% 25%,rgba(220,169,66,.12),transparent 34%),
+    linear-gradient(#2d2116,#130d09);
+}
+.mask{position:absolute;inset:0;background:rgba(8,5,3,.69);backdrop-filter:blur(2px)}
+.panel{
+  position:absolute;left:12px;right:12px;top:50%;height:min(88vh,820px);
+  transform:translateY(-50%);display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #8e6123;border-radius:20px 20px 15px 15px;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 16%),linear-gradient(#2b1a10,#140d09);
+  box-shadow:0 20px 48px rgba(0,0,0,.52),inset 0 0 0 2px rgba(239,201,95,.05);
+}
+.panel::before{
+  content:"";position:absolute;inset:7px;border:1px solid rgba(224,178,76,.15);
+  border-radius:15px 15px 11px 11px;pointer-events:none;z-index:2;
+}
+.header{
+  flex:0 0 74px;display:flex;align-items:center;justify-content:center;position:relative;
+  border-bottom:1px solid #75501d;
+  background:radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),linear-gradient(#422714,#21140d);
+}
+.header h1{margin:0;color:#f3d176;font-size:25px;letter-spacing:.23em;text-indent:.23em}
+.header small{position:absolute;bottom:7px;color:#aa8c56;font-size:10px;letter-spacing:.16em}
+.close{
+  position:absolute;right:13px;top:14px;width:36px;height:36px;border:1px solid #996a24;
+  border-radius:50%;background:linear-gradient(#332012,#18100b);color:#efcf72;font-size:21px;cursor:pointer;
+}
+.consort{
+  flex:0 0 auto;display:grid;grid-template-columns:60px 1fr auto;gap:10px;align-items:center;
+  padding:10px 12px;background:#130c09;border-bottom:1px solid #5d3c14;
+}
+.avatar{
+  width:56px;height:62px;border-radius:28px 28px 12px 12px;display:grid;place-items:center;
+  color:#f3d88f;font-size:24px;background:linear-gradient(145deg,#8a654f,#3a211a);
+  border:2px solid #bf8932;box-shadow:0 6px 13px rgba(0,0,0,.28);
+}
+.consort h2{margin:0;color:#f0cf72;font-size:19px}
+.consort p{margin:4px 0 0;color:#aa8d58;font-size:10px;line-height:1.45}
+.rank-badge{
+  padding:5px 9px;border-radius:12px;color:#ffe49a;background:linear-gradient(#8b2d25,#53140f);
+  border:1px solid #b67f2c;font-size:10px;white-space:nowrap;
+}
+.current-home{
+  flex:0 0 auto;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;
+  background:#18100b;border-bottom:1px solid #5d3c14;color:#9f8350;font-size:10px;
+}
+.current-home b{color:#e9c76e;font-size:12px}
+.filters{
+  flex:0 0 auto;padding:8px 9px;background:#130c09;border-bottom:1px solid #5d3c14;
+}
+.tabs{display:flex;gap:6px;overflow:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;height:29px;padding:0 12px;border:1px solid #73501d;border-radius:14px;
+  background:#21150e;color:#b5975b;font-family:inherit;cursor:pointer;
+}
+.tab.active{color:#ffe49b;border-color:#c79839;background:linear-gradient(#90312c,#561612)}
+.search-row{display:grid;grid-template-columns:1fr 90px;gap:7px;margin-top:7px}
+.search{
+  height:32px;border:1px solid #73501e;border-radius:16px;background:#0f0a07;color:#efd68e;
+  padding:0 11px;outline:none;font-family:inherit;
+}
+.vacancy-toggle{
+  border:1px solid #805820;border-radius:16px;background:#21150e;color:#c8a45e;font-family:inherit;cursor:pointer;
+}
+.vacancy-toggle.active{color:#ffe49a;background:#532019;border-color:#ad7629}
+.palace-list{
+  flex:1 1 auto;overflow:auto;padding:11px 12px 15px;display:grid;gap:10px;
+  scrollbar-width:thin;scrollbar-color:#896226 transparent;
+}
+.palace-card{
+  position:relative;padding:10px;border:1px solid #886127;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 36%),linear-gradient(145deg,var(--paper),var(--paper2));
+  color:var(--ink);box-shadow:0 7px 14px rgba(0,0,0,.23),inset 0 0 0 2px rgba(255,248,216,.18);
+}
+.palace-card.selected{
+  border-color:#d2a547;box-shadow:0 0 0 3px rgba(236,191,81,.15),0 10px 20px rgba(0,0,0,.29);
+}
+.palace-card.disabled{opacity:.43;filter:saturate(.55)}
+.palace-head{display:grid;grid-template-columns:48px 1fr auto;gap:9px;align-items:center}
+.palace-icon{
+  width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:#7b2f20;
+  background:linear-gradient(145deg,#f2dfae,#c99b4a);border:2px solid #a66f24;font-size:18px;font-weight:bold;
+}
+.palace-name{font-size:16px;font-weight:700;color:#4b2d14}
+.palace-meta{margin-top:3px;color:#795f3b;font-size:9px}
+.palace-desc{margin-top:5px;color:#745a37;font-size:10px;line-height:1.4}
+.level-badge{
+  padding:3px 7px;border-radius:9px;background:rgba(255,248,220,.48);
+  border:1px solid rgba(126,83,28,.24);color:#8b2d25;font-size:9px;
+}
+.room-options{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px;
+}
+.room-btn{
+  min-height:48px;padding:5px;border:1px solid rgba(121,82,28,.40);border-radius:10px;
+  background:rgba(255,248,220,.32);color:#735734;font-family:inherit;font-size:10px;cursor:pointer;
+}
+.room-btn b{display:block;color:#4c2d14;font-size:11px;margin-bottom:2px}
+.room-btn.selected{color:#ffe49a;background:linear-gradient(#8b2d25,#53140f);border-color:#c79538}
+.room-btn.selected b{color:#ffe49a}
+.room-btn:disabled{opacity:.36;cursor:not-allowed}
+.reason{
+  margin-top:7px;padding:5px 7px;border-radius:8px;color:#856b45;background:rgba(255,248,220,.30);
+  font-size:9px;line-height:1.4;
+}
+.reason.error{color:#8d342d}
+.check{
+  position:absolute;right:7px;top:7px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;
+  color:#ffe49a;background:#8b2d25;border:1px solid #c79538;opacity:0;transform:scale(.6);transition:.18s;
+}
+.palace-card.selected .check{opacity:1;transform:scale(1)}
+.empty{text-align:center;color:#9e8351;padding:38px 0}
+.footer{
+  flex:0 0 auto;padding:10px 12px 12px;display:grid;grid-template-columns:1fr 1.4fr;gap:9px;
+  background:#100b08;border-top:1px solid #684617;
+}
+.btn{
+  height:42px;border:1px solid #7c5520;border-radius:15px;background:linear-gradient(#2b1a10,#17100b);
+  color:#c6a55f;font-family:inherit;font-size:14px;cursor:pointer;
+}
+.btn.primary{color:#ffe49a;border-color:#b48330;background:linear-gradient(#8b2d25,#4f130f)}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.confirm-layer{
+  position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(7,4,3,.58);
+  opacity:0;pointer-events:none;transition:.25s;
+}
+.confirm-layer.show{opacity:1;pointer-events:auto}
+.confirm-card{
+  width:85%;padding:20px 17px 17px;border:1px solid #946524;border-radius:18px;text-align:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 35%),linear-gradient(#2d1b10,#160e0a);
+  box-shadow:0 16px 34px rgba(0,0,0,.45);
+}
+.confirm-card h2{margin:0;color:#f1cf72;font-size:21px}
+.move-flow{
+  display:grid;grid-template-columns:1fr 32px 1fr;gap:5px;align-items:center;margin:12px 0;
+}
+.home-box{
+  min-height:66px;padding:8px 5px;border:1px solid #684718;border-radius:11px;background:#100b08;
+  display:grid;place-items:center;color:#d4b466;font-size:12px;
+}
+.home-box small{display:block;color:#876f49;font-size:8px;margin-top:3px}
+.flow-arrow{color:#d7aa49;font-size:23px}
+.confirm-card p{margin:7px 0 12px;color:#aa8e58;font-size:11px;line-height:1.55}
+.confirm-effects{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:13px}
+.confirm-effect{
+  padding:6px 3px;border-radius:9px;background:#100b08;border:1px solid #5f4018;color:#92784d;font-size:8px;
+}
+.confirm-effect b{display:block;color:#e1be67;font-size:11px;margin-bottom:2px}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.toast{
+  position:absolute;left:50%;bottom:18px;z-index:50;transform:translate(-50%,14px);opacity:0;
+  padding:8px 14px;border:1px solid #8b6123;border-radius:16px;background:rgba(18,11,8,.94);
+  color:#edce79;font-size:12px;transition:.2s;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-height:760px){.panel{height:92vh}}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="mask"></div>
+
+<section class="panel" id="panel">
+  <header class="header">
+    <h1>妃嫔迁宫</h1>
+    <small>位份相宜 · 宫室有序</small>
+    <button class="close" id="closeBtn">×</button>
+  </header>
+
+  <section class="consort">
+    <div class="avatar">淑</div>
+    <div>
+      <h2>徐珍淑</h2>
+      <p>宠爱92 · 德行86 · 皇嗣2 · 宫权38</p>
+    </div>
+    <div class="rank-badge">贵妃</div>
+  </section>
+
+  <div class="current-home">
+    <span>当前居所：<b>翊坤宫 · 主殿</b></span>
+    <span>高位宫殿</span>
+  </div>
+
+  <section class="filters">
+    <div class="tabs">
+      <button class="tab active" data-filter="全部">全部</button>
+      <button class="tab" data-filter="东六宫">东六宫</button>
+      <button class="tab" data-filter="西六宫">西六宫</button>
+      <button class="tab" data-filter="高位">高位宫殿</button>
+      <button class="tab" data-filter="普通">普通宫殿</button>
+    </div>
+    <div class="search-row">
+      <input class="search" id="searchInput" placeholder="搜索宫殿">
+      <button class="vacancy-toggle active" id="vacancyBtn">仅看空缺</button>
+    </div>
+  </section>
+
+  <main class="palace-list" id="palaceList"></main>
+
+  <footer class="footer">
+    <button class="btn" id="cancelBtn">取消</button>
+    <button class="btn primary" id="confirmBtn" disabled>确认迁宫</button>
+  </footer>
+</section>
+
+<section class="confirm-layer" id="confirmLayer">
+  <div class="confirm-card">
+    <h2>确认迁宫</h2>
+    <div class="move-flow">
+      <div class="home-box">翊坤宫<small>主殿</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="home-box" id="targetHome">承乾宫<small>主殿</small></div>
+    </div>
+    <p id="confirmText">迁宫后将立即变更居所、宫殿归属和宫务权限。</p>
+    <div class="confirm-effects">
+      <div class="confirm-effect"><b id="favorEffect">+3</b>宠爱</div>
+      <div class="confirm-effect"><b id="powerEffect">+5</b>宫权</div>
+      <div class="confirm-effect"><b id="prestigeEffect">+4</b>声望</div>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn" id="backBtn">再想想</button>
+      <button class="btn primary" id="executeBtn">颁旨迁宫</button>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const CONSORT = {
+  name:"徐珍淑",
+  rank:"贵妃",
+  rankLevel:2,
+  currentPalace:"翊坤宫",
+  currentRoom:"主殿"
+};
+
+/*
+ rankLevel 越小位份越高：
+ 皇后1、皇贵妃/贵妃2、妃3、嫔4、贵人5、常在6、答应7
+*/
+const palaces = [
+  {name:"承乾宫",group:"东六宫",level:"高位",desc:"东六宫之首，宫制华贵，适合高位妃嫔居住。",
+   rooms:[
+    {name:"主殿",minRank:3,vacant:true,favor:3,power:5,prestige:4},
+    {name:"东配殿",minRank:5,vacant:false,favor:1,power:1,prestige:1},
+    {name:"西配殿",minRank:5,vacant:true,favor:1,power:1,prestige:1}
+   ]},
+  {name:"景仁宫",group:"东六宫",level:"高位",desc:"靠近乾清宫，位置尊贵，宫务往来便利。",
+   rooms:[
+    {name:"主殿",minRank:3,vacant:true,favor:2,power:4,prestige:3},
+    {name:"东配殿",minRank:5,vacant:true,favor:1,power:1,prestige:0},
+    {name:"西配殿",minRank:5,vacant:true,favor:1,power:1,prestige:0}
+   ]},
+  {name:"钟粹宫",group:"东六宫",level:"普通",desc:"环境清幽，适合性情安静的妃嫔。",
+   rooms:[
+    {name:"主殿",minRank:4,vacant:true,favor:1,power:2,prestige:1},
+    {name:"东配殿",minRank:6,vacant:true,favor:0,power:0,prestige:0},
+    {name:"西配殿",minRank:6,vacant:false,favor:0,power:0,prestige:0}
+   ]},
+  {name:"延禧宫",group:"东六宫",level:"普通",desc:"位置稍偏，但庭院宽敞，居住舒适。",
+   rooms:[
+    {name:"主殿",minRank:4,vacant:true,favor:0,power:2,prestige:0},
+    {name:"东配殿",minRank:7,vacant:true,favor:0,power:0,prestige:-1},
+    {name:"西配殿",minRank:7,vacant:true,favor:0,power:0,prestige:-1}
+   ]},
+  {name:"储秀宫",group:"西六宫",level:"高位",desc:"西六宫重要宫殿，常为受宠妃嫔居所。",
+   rooms:[
+    {name:"主殿",minRank:3,vacant:false,favor:3,power:4,prestige:3},
+    {name:"东配殿",minRank:5,vacant:true,favor:1,power:1,prestige:1},
+    {name:"西配殿",minRank:5,vacant:true,favor:1,power:1,prestige:1}
+   ]},
+  {name:"长春宫",group:"西六宫",level:"高位",desc:"宫室雅致，靠近御花园，环境上佳。",
+   rooms:[
+    {name:"主殿",minRank:3,vacant:true,favor:2,power:3,prestige:2},
+    {name:"东配殿",minRank:5,vacant:true,favor:1,power:1,prestige:0},
+    {name:"西配殿",minRank:5,vacant:true,favor:1,power:1,prestige:0}
+   ]},
+  {name:"咸福宫",group:"西六宫",level:"普通",desc:"宫院安静，适合普通妃嫔与年幼皇嗣居住。",
+   rooms:[
+    {name:"主殿",minRank:4,vacant:true,favor:0,power:2,prestige:0},
+    {name:"东配殿",minRank:6,vacant:true,favor:0,power:0,prestige:0},
+    {name:"西配殿",minRank:6,vacant:true,favor:0,power:0,prestige:0}
+   ]},
+  {name:"永寿宫",group:"西六宫",level:"普通",desc:"宫室规整，日常往来便利。",
+   rooms:[
+    {name:"主殿",minRank:4,vacant:true,favor:1,power:2,prestige:1},
+    {name:"东配殿",minRank:6,vacant:true,favor:0,power:0,prestige:0},
+    {name:"西配殿",minRank:6,vacant:false,favor:0,power:0,prestige:0}
+   ]}
+];
+
+let filter="全部";
+let vacancyOnly=true;
+let selectedPalace=null;
+let selectedRoom=null;
+
+const list=document.getElementById("palaceList");
+const confirmBtn=document.getElementById("confirmBtn");
+const searchInput=document.getElementById("searchInput");
+const toast=document.getElementById("toast");
+
+function roomAllowed(room){
+  return CONSORT.rankLevel <= room.minRank;
+}
+
+function render(){
+  const keyword=searchInput.value.trim();
+  const rows=palaces.filter(p=>{
+    const category=filter==="全部" || p.group===filter || p.level===filter;
+    const vacancy=!vacancyOnly || p.rooms.some(r=>r.vacant);
+    const search=!keyword || p.name.includes(keyword);
+    return category && vacancy && search;
+  });
+
+  list.innerHTML="";
+  if(!rows.length){
+    list.innerHTML='<div class="empty">暂无符合条件的宫殿</div>';
+    return;
+  }
+
+  rows.forEach(p=>{
+    const anyAllowed=p.rooms.some(r=>roomAllowed(r) && (!vacancyOnly || r.vacant));
+    const card=document.createElement("article");
+    card.className=`palace-card ${selectedPalace===p?"selected":""} ${anyAllowed?"":"disabled"}`;
+
+    const rooms=p.rooms.map(r=>{
+      const allowed=roomAllowed(r);
+      const available=r.vacant;
+      const disabled=!allowed || !available;
+      const reason=!available?"已有人居住":!allowed?`需${rankText(r.minRank)}以上`:"可入住";
+      return `
+        <button class="room-btn ${selectedPalace===p && selectedRoom===r?"selected":""}"
+          data-palace="${p.name}" data-room="${r.name}" ${disabled?"disabled":""}>
+          <b>${r.name}</b>
+          ${reason}
+        </button>
+      `;
+    }).join("");
+
+    card.innerHTML=`
+      <span class="check">✓</span>
+      <div class="palace-head">
+        <div class="palace-icon">${p.name.slice(0,1)}</div>
+        <div>
+          <div class="palace-name">${p.name}</div>
+          <div class="palace-meta">${p.group} · ${p.level}宫殿</div>
+          <div class="palace-desc">${p.desc}</div>
+        </div>
+        <div class="level-badge">${p.level}</div>
+      </div>
+      <div class="room-options">${rooms}</div>
+      ${anyAllowed?"":'<div class="reason error">当前位份暂无可入住殿室</div>'}
+    `;
+
+    card.querySelectorAll(".room-btn").forEach(btn=>{
+      btn.onclick=e=>{
+        e.stopPropagation();
+        const room=p.rooms.find(r=>r.name===btn.dataset.room);
+        selectedPalace=p;
+        selectedRoom=room;
+        confirmBtn.disabled=false;
+        render();
+      };
+    });
+
+    list.appendChild(card);
+  });
+}
+
+function rankText(level){
+  const map={1:"皇后",2:"贵妃",3:"妃",4:"嫔",5:"贵人",6:"常在",7:"答应"};
+  return map[level] || "对应位份";
+}
+
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    filter=btn.dataset.filter;
+    selectedPalace=null;
+    selectedRoom=null;
+    confirmBtn.disabled=true;
+    render();
+  };
+});
+
+document.getElementById("vacancyBtn").onclick=e=>{
+  vacancyOnly=!vacancyOnly;
+  e.currentTarget.classList.toggle("active",vacancyOnly);
+  e.currentTarget.textContent=vacancyOnly?"仅看空缺":"显示全部";
+  selectedPalace=null;
+  selectedRoom=null;
+  confirmBtn.disabled=true;
+  render();
+};
+
+searchInput.oninput=render;
+
+confirmBtn.onclick=()=>{
+  if(!selectedPalace || !selectedRoom)return;
+
+  document.getElementById("targetHome").innerHTML=
+    `${selectedPalace.name}<small>${selectedRoom.name}</small>`;
+  document.getElementById("confirmText").textContent=
+    `徐珍淑将由翊坤宫主殿迁往${selectedPalace.name}${selectedRoom.name}，迁宫后将更新宫殿归属与居住权限。`;
+  document.getElementById("favorEffect").textContent=signed(selectedRoom.favor);
+  document.getElementById("powerEffect").textContent=signed(selectedRoom.power);
+  document.getElementById("prestigeEffect").textContent=signed(selectedRoom.prestige);
+  document.getElementById("confirmLayer").classList.add("show");
+};
+
+function signed(v){
+  if(v===0)return "不变";
+  return v>0?`+${v}`:`${v}`;
+}
+
+document.getElementById("backBtn").onclick=()=>document.getElementById("confirmLayer").classList.remove("show");
+document.getElementById("executeBtn").onclick=()=>{
+  document.getElementById("confirmLayer").classList.remove("show");
+  showToast(`已颁旨：徐珍淑迁居${selectedPalace.name}${selectedRoom.name}`);
+};
+document.getElementById("cancelBtn").onclick=()=>showToast("已取消迁宫");
+document.getElementById("closeBtn").onclick=()=>document.getElementById("panel").style.display="none";
+
+function showToast(text){
+  toast.textContent=text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>toast.classList.remove("show"),1300);
+}
+render();
+</script>
+</body>
+</html>

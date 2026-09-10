@@ -1,0 +1,37 @@
+
+> zichen-chronicles@0.1.0 test
+> vitest --run src/game/health.test.ts src/game/simulation.test.ts
+
+
+ RUN  v4.1.10 D:/dev/codex/games-kingdom
+
+ ❯ src/game/simulation.test.ts (30 tests | 1 failed) 22ms
+     × raises emperor happiness only when a pregnancy notice is greeted with joy 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/simulation.test.ts > palace simulation > raises emperor happiness only when a pregnancy notice is greeted with joy
+AssertionError: expected 60 to be 68 // Object.is equality
+
+- Expected
++ Received
+
+- 68
++ 60
+
+ ❯ src/game/simulation.test.ts:118:46
+    116|     const before = state.people.emperor.stats.快乐;
+    117|     const rejoiced = resolveEvent(state, 'pregnancy-notice', 'rejoice'…
+    118|     expect(rejoiced.people.emperor.stats.快乐).toBe(before + 8);
+       |                                              ^
+    119|
+    120|     const silentState = withConsort();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 40 passed (41)
+   Start at  11:24:41
+   Duration  1.22s (transform 556ms, setup 222ms, import 1.03s, tests 33ms, environment 945ms)
+

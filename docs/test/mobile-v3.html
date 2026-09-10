@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>长春宫 · 半身人物版</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080503}
+body{display:grid;place-items:center}
+iframe{display:block;width:min(100vw,430px);height:100dvh;max-height:932px;border:0;box-shadow:0 0 70px #000}
+</style>
+</head>
+<body>
+<iframe id="demo" src="./mobile-v2.html" title="长春宫人物档案"></iframe>
+<script>
+document.querySelector("#demo").addEventListener("load", (event) => {
+  const doc = event.currentTarget.contentDocument;
+  const style = doc.createElement("style");
+  style.textContent = `
+    .hero{
+      z-index:1 !important;
+      top:82px !important;
+      height:520px !important;
+      overflow:hidden !important;
+    }
+    .role{
+      object-position:center top !important;
+      transform:scale(1.45) !important;
+      transform-origin:center top !important;
+    }
+    .name-card{
+      top:170px !important;
+      bottom:auto !important;
+      z-index:2 !important;
+    }
+    .profile{z-index:4 !important}
+    .actions{z-index:6 !important}
+    @media(max-height:820px){
+      .hero{top:70px !important;height:460px !important}
+      .role{transform:scale(1.4) !important}
+      .name-card{top:145px !important}
+    }
+  `;
+  doc.head.appendChild(style);
+});
+</script>
+</body>
+</html>

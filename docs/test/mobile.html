@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>长春宫 · 手机竖版</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    body{display:grid;place-items:center}
+    .game{width:min(100vw,430px);height:100dvh;min-height:760px;max-height:932px;box-shadow:0 0 70px #000}
+  </style>
+</head>
+<body>
+  <main class="game">
+    <div class="bg"></div><div class="mist"></div>
+    <header class="header">
+      <p class="eyebrow">紫宸纪事 · 后宫人物</p>
+      <h1>长 春 宫</h1><p>西侧殿 · 人物档案</p>
+      <button class="close" aria-label="关闭">×</button>
+    </header>
+    <section class="character" aria-label="人物立绘">
+      <img class="role" src="./assets/role.png" alt="程若兮人物立绘">
+      <div class="name-card"><span class="name">程若兮</span><span class="rank">贵人</span></div>
+    </section>
+    <article class="profile">
+      <h2>人物小传 <span>卷一</span></h2>
+      <p class="bio">江南程氏嫡女，温婉娴静，善琴棋书画，性情柔顺，颇得圣心。</p>
+      <div class="line"></div>
+      <div class="info">
+        <dl>
+          <div><dt>入宫时间</dt><dd>永和三年三月初七</dd></div>
+          <div><dt>年龄</dt><dd>十八岁</dd></div>
+          <div><dt>身份</dt><dd>贵人</dd></div>
+          <div><dt>居所</dt><dd>长春宫西侧殿</dd></div>
+        </dl>
+        <div class="stats">
+          <p class="favor">宠爱 <span>♥ ♥ ♥ ♥ ♡</span></p>
+          <label>容貌 <span>92</span></label><div class="bar"><i style="--value:92%"></i></div>
+          <label>才艺 <span>78</span></label><div class="bar"><i style="--value:78%"></i></div>
+          <label>心机 <span>66</span></label><div class="bar"><i style="--value:66%"></i></div>
+          <label>忠诚 <span>85</span></label><div class="bar"><i style="--value:85%"></i></div>
+        </div>
+      </div>
+    </article>
+    <nav class="actions" aria-label="人物操作">
+      <button data-action="宠幸"><b>♥</b><span>宠幸</span></button>
+      <button data-action="闲聊"><b>聊</b><span>闲聊</span></button>
+      <button data-action="赏赐"><b>赏</b><span>赏赐</span></button>
+      <button data-action="晋升"><b>升</b><span>晋升</span></button>
+      <button data-action="搬迁"><b>迁</b><span>搬迁</span></button>
+      <button data-action="问责"><b>!</b><span>问责</span></button>
+    </nav>
+    <nav class="tabs">
+      <button class="active">属性</button><button>履历</button>
+      <button>关系</button><button>赏赐记录</button>
+    </nav>
+    <div class="toast" role="status"></div>
+  </main>
+  <script src="./demo.js"></script>
+</body>
+</html>

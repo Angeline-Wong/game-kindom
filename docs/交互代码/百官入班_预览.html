@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="efG05lrgEk6YrORITJjAFZ">
+<head data-page-node-id="eyCKdlDzOv0ywMhrP1zeFo">
+<meta charset="UTF-8" data-page-node-id="GC3ZHFBhaVeB39zpZnBveG" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="7D0ISCxeOUFJkrjavZp4YS" />
+<title>百官入班 · 重构预览</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0605; font-family: KaiTi, STKaiti, "Songti SC", serif; }
+  .wrap { width: min(100%, 440px); height: min(94vh, 860px); display: flex; flex-direction: column; overflow: hidden; color: #f4dfaa; background: linear-gradient(180deg,#090604bd,#130a07d9 48%,#080504f0), radial-gradient(circle at 50% 37%, #c48a3630, transparent 40%), linear-gradient(90deg,#0503028c,transparent 22%,transparent 78%,#0503028c); border: 1px solid #7a5527; border-radius: 10px; box-shadow: 0 20px 60px #000b; position: relative; }
+  .wrap::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 30%,#c48a3620,transparent 42%); }
+
+  /* header */
+  .rework-header { flex: 0 0 72px; display: grid; grid-template-columns: 44px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 8px 14px; color: #f4d786; background: linear-gradient(180deg,#351510ef,#160b08ef); border-bottom: 1px solid #bd8b3e; box-shadow: 0 7px 18px #0009; position: relative; z-index: 2; }
+  .back { width: 38px; height: 38px; display: grid; place-items: center; color: #f2d27d; background: #140b08b8; border: 1px solid #b27c2b; border-radius: 50%; font-size: 20px; }
+  .hdr small { display: block; color: #cba862; font-size: 11px; letter-spacing: 2px; }
+  .hdr h2 { margin: 1px 0 0; color: #f8da86; font-size: 23px; letter-spacing: 4px; }
+  .sess-date { align-self: center; padding: 4px 8px; color: #f5d580; border: 1px solid #9f7028; font-size: 11px; white-space: nowrap; }
+
+  /* overview body */
+  .overview-body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: auto; padding: 12px 12px 20px; z-index: 1; }
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); margin-bottom: 12px; background: linear-gradient(180deg,#160c08cf,#0d0604cf); border: 1px solid #8a6128; box-shadow: inset 0 0 0 1px #e9c16d2b,0 5px 14px #0007; }
+  .stats span { position: relative; display: grid; gap: 3px; justify-items: center; padding: 9px 4px; }
+  .stats span:not(:last-child)::after { content:''; position:absolute; right:0; top:24%; bottom:24%; border-right:1px solid #78562870; }
+  .stats small { color: #bfa06a; font-size: 10px; letter-spacing: 2px; }
+  .stats b { color: #f4d382; font-size: 21px; letter-spacing: 1px; }
+
+  /* hall */
+  .hall { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 84px minmax(0,1fr); flex: 1; min-height: 340px; align-items: stretch; gap: 16px 14px; padding: 18px 8px; background: linear-gradient(180deg,#0b0705c9,#1c0d0866 50%,#090504c9); border: 1px solid #86592b; box-shadow: inset 0 0 0 1px #e6bd6124,0 10px 24px #0008; }
+  .hall::before { content:''; position:absolute; left:50%; top:6%; bottom:6%; border-left:1px solid #c7953f45; box-shadow:0 0 16px #c48a3726; pointer-events:none; }
+  .rank { display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; }
+  .node { position: relative; flex: 0 0 auto; min-height: 74px; display: flex; align-items: center; gap: 11px; padding: 11px 14px; color: #f4d58a; background: linear-gradient(135deg,#3a1f13,#1a0d08 70%); border: 1px solid #b17b2c; border-radius: 7px; box-shadow: inset 0 0 0 1px #f1d1761c,0 6px 14px #0009; cursor: pointer; }
+  .node::before { content:''; position:absolute; left:0; top:10px; bottom:10px; width:3px; border-radius:2px; background:linear-gradient(180deg,#e8c168,#a8741f); }
+  .rank.right .node { flex-direction: row-reverse; text-align: right; background: linear-gradient(225deg,#3a1f13,#1a0d08 70%); }
+  .rank.right .node::before { left:auto; right:0; }
+  .node.empty { opacity: .62; }
+  .node.empty::before { background: linear-gradient(180deg,#8a6a33,#5d4718); }
+  .main { display: grid; gap: 3px; min-width: 0; }
+  .main b { overflow:hidden; font-size:19px; letter-spacing:4px; white-space:nowrap; }
+  .main small { overflow:hidden; color:#c7aa70; font-size:11px; letter-spacing:1px; white-space:nowrap; }
+  .emblem { flex: 0 0 auto; width: 36px; height: 42px; display: grid; place-items: center; color: #ffe49b; background: linear-gradient(160deg,#8a2620,#5c1510); border: 1px solid #d2a44b; border-radius: 5px; box-shadow: inset 0 0 0 2px #f4d57e26,0 2px 5px #0006; font-size: 23px; font-weight: 700; }
+  .badge { position: absolute; top: -9px; right: -9px; min-width: 22px; height: 22px; display: grid; place-items: center; padding: 0 5px; color: #fff3c0; background: radial-gradient(circle at 35% 30%,#c23a2c,#7e1e18); border: 1px solid #efc86c; border-radius: 11px; box-shadow: 0 0 0 3px #120a06b0,0 3px 7px #0007; font: 700 12px serif; }
+  .rank.right .badge { right: auto; left: -9px; }
+  .throne { position: relative; align-self: center; justify-self: center; width: 56px; height: 112px; display: grid; place-items: center; color: #f7dd8e; background: linear-gradient(180deg,#3d1f13,#1a0c07); border: 1px solid #cd9a41; border-radius: 7px; box-shadow: 0 0 0 4px #160b086e,0 0 0 5px #c5923b33,0 8px 18px #000b; }
+  .throne::before { content:''; position:absolute; width:38px; height:38px; border:2px solid #c5923b7a; border-radius:50%; pointer-events:none; }
+  .throne span { position: relative; font-size: 18px; line-height: 1.5; letter-spacing: 8px; writing-mode: vertical-rl; text-shadow: 0 1px 3px #000a; }
+
+  /* attendance */
+  .attendance { display: flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 12px; padding: 8px 12px; color: #d4b46f; background: linear-gradient(90deg,#140c08d6,#24150dd6); border: 1px solid #77512a; border-radius: 6px; font-size: 11px; box-shadow: inset 0 0 0 1px #e9c16d1a; }
+  .attendance > svg, .attendance > .ic { width: 17px; flex: 0 0 auto; color: #d4b15e; }
+  .attendance > span { margin-right: 6px; color: #e7c977; white-space: nowrap; letter-spacing: 2px; }
+  .people { display: flex; flex: 1; min-width: 0; gap: 6px; overflow: hidden; }
+  .people em { flex: 0 0 auto; width: 23px; height: 23px; display: grid; place-items: center; color: #d7bd80; background: #4c271a; border: 1px solid #95682d; border-radius: 50%; font-style: normal; font-size: 10px; box-shadow: inset 0 0 0 1px #e9c16d1c; }
+  .people em.absent, .people em.improper { color: #d79578; background: #3b1714; }
+  .people em.late { color: #e4bc6c; background: #4e3a1b; }
+
+  .actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
+  .actions small { color: #a9905e; font-size: 11px; text-align: right; letter-spacing: 1px; }
+  .retire { min-width: 130px; min-height: 42px; padding: 8px 18px; color: #e9c979; background: #25120d; border: 1px solid #9b702e; border-radius: 6px; font: 700 15px KaiTi, STKaiti, serif; cursor: pointer; }
+</style>
+</head>
+<body data-page-node-id="sEGsg8HpM6IRkhc7dtBRRk">
+  <div class="wrap" data-page-node-id="MMl7h9tn4wISgiuvCGBkvF">
+    <div class="rework-header" data-page-node-id="Q0WlG1f09do5jcufwPKAsA">
+      <div class="back" data-page-node-id="HrKIpnhHhCobxN4doeWw6E">‹</div>
+      <div class="hdr" data-page-node-id="Bk9GjmfE9iKKHe1bITzShe"><small data-page-node-id="Bvvw5yqldN6E8ECk0ksfOZ">乾清门 · 常朝</small><h2 data-page-node-id="b7BRxHQUj7HwCmiQRmY8p4">百官入班</h2></div>
+      <span class="sess-date" data-page-node-id="mEDAo0o5ynSJTl2ORWlFPP">第3议</span>
+    </div>
+
+    <div class="overview-body" data-page-node-id="H2nqt3MJfupHfEwk5iYVh5">
+      <div class="stats" data-page-node-id="LOI2IUaYmWWXNZZujV5F99">
+        <span data-page-node-id="HRxCFTmqlaFp1NhLQGkzC4"><small data-page-node-id="1uCqJVqUMuThmmnsDy8n7v">待议奏折</small><b data-page-node-id="JryvAAAK1IvpeXBFyTsvGF">37</b></span>
+        <span data-page-node-id="9M7OFuvgLkFeXTrDuS5XLj"><small data-page-node-id="xXgk0RkhF4kWRNbWxPFVok">到班人数</small><b data-page-node-id="u7fyxjtrZ2LxU0yQHdmBBS">8/9</b></span>
+        <span data-page-node-id="YM6qC2SFSeWONovob58Ycd"><small data-page-node-id="Mw3E2qD8gBCODjJRtXuHAZ">朝议用时</small><b data-page-node-id="2mKYfxUv1BKO4xBLT2lENR">60分</b></span>
+      </div>
+
+      <div class="hall" data-page-node-id="y5RWbQs94C7SfSnHzTGT8B">
+        <div class="rank" data-page-node-id="MAAvT4GpVEagKSFjdzoTkz">
+          <div class="node has-pending" data-page-node-id="uMe9v4BUY4r5CA6a4Val4b"><span class="emblem" data-page-node-id="Tdh9kFANyl9DVXvZY9PnmQ">吏</span><span class="main" data-page-node-id="D9zGAqDe9pt39M8rzKZswK"><b data-page-node-id="zxJlgk6J7wH0thbTCCq515">吏部</b><small data-page-node-id="Bt1KVxVG5rwOYPEWQ4Szyn">顾廷钧</small></span><i class="badge" data-page-node-id="Ldq107anwwRthiXxQMEkkx">8</i></div>
+          <div class="node has-pending" data-page-node-id="EtjTP1EAZgG3mandCNYVYq"><span class="emblem" data-page-node-id="KiILH1ojHqtJLDN1glKo78">礼</span><span class="main" data-page-node-id="7MjiCDDMbJcm09h779qOO7"><b data-page-node-id="ThZuhdqPaESPOxmBJJXfIE">礼部</b><small data-page-node-id="PVjZezRd0jzozL4PtgBji4">裴景川</small></span><i class="badge" data-page-node-id="dU90xE3QRWie1nP6DEGbQ2">8</i></div>
+          <div class="node has-pending" data-page-node-id="aRKubD2yJxq2Y0y6nxP3u3"><span class="emblem" data-page-node-id="o4ykh9eD9qxb62ETwyL8eB">刑</span><span class="main" data-page-node-id="VywMDo7FHl6MQB8ukcUAF4"><b data-page-node-id="ndU2CmEdIATYmPbu7B7UJf">刑部</b><small data-page-node-id="DnODvK2jXHMNKUzpr5Cj6n">方肃</small></span><i class="badge" data-page-node-id="ESKyd5waoBMGbkqcUfSLkK">8</i></div>
+        </div>
+
+        <div class="throne" data-page-node-id="HFgHOjKGUTNWOl2E79LIvQ"><span data-page-node-id="PdzmH605tM8F9GP352njpb">御前</span></div>
+
+        <div class="rank right" data-page-node-id="baBPJTLB3VfVx7vV7BAHCb">
+          <div class="node has-pending" data-page-node-id="Bsf58lqSMqZHekR9q6ghAE"><span class="emblem" data-page-node-id="6dnHl04UYAnHgTuFtA3cPW">户</span><span class="main" data-page-node-id="DbANlAXF2oGHbWNCRyz96Z"><b data-page-node-id="dJgLxVzmJBHUwZzncC3IX1">户部</b><small data-page-node-id="qf5AgUgqGIMxeN1Iw5knBF">陆文渊</small></span><i class="badge" data-page-node-id="9EFCxUTbO8V8j3f0w6OOSW">4</i></div>
+          <div class="node has-pending" data-page-node-id="y8e6VBa3c0ETXZ3yQQ5wiH"><span class="emblem" data-page-node-id="dz2iAZInasjESEnADnCSc0">兵</span><span class="main" data-page-node-id="fZl59RjmgcEe1OfTXC6KQN"><b data-page-node-id="uCpMQ0vln7Z4lX5C42lrZJ">兵部</b><small data-page-node-id="kvhzvmalEwJ3AWO08gcREq">谢怀瑾</small></span><i class="badge" data-page-node-id="rndBkgtR90rCbXdCbSF9cG">8</i></div>
+          <div class="node empty" data-page-node-id="Jr7QOhKIZfaA6OdnS0BFz4"><span class="emblem" data-page-node-id="ksQwRL0uHwEt759qwUbdDq">工</span><span class="main" data-page-node-id="uFOXrMX1lYOOWS5r2UHBR7"><b data-page-node-id="G1ivL9wD3KLeUyMCjKmIkT">工部</b><small data-page-node-id="qSUCJYgayD6azoUCfKWaNn">今日无本</small></span></div>
+        </div>
+      </div>
+
+      <div class="attendance" data-page-node-id="ehN2dY4cr6INIFP5VQwCUU">
+        <span class="ic" data-page-node-id="6pK3g4eWKrTGFrObDQfEVG">👥</span><span data-page-node-id="A6UJ9ecwXVJ4ZgeXSncyTj">朝班点卯</span>
+        <div class="people" data-page-node-id="2zdEpIDDTaFJje2rCaVu2a">
+          <em data-page-node-id="IUpgnBTWYd66ToOBGJSAKv">沈</em><em data-page-node-id="EGFpVwRovrwHUuRmXLdDxV">许</em><em data-page-node-id="2WJJLXDHOVJx344DIafdPC">顾</em><em data-page-node-id="YGlTYvk18zxUNRiqcteEuv">谢</em><em data-page-node-id="7NcSyS5J6siV7o10OX6AFl">陆</em><em data-page-node-id="g9Os3ejc0IypMMsHNIWJMu">裴</em><em data-page-node-id="JzxsvmWMI60jkPOoyBkUAE">方</em><em class="absent" data-page-node-id="gfm1wrCJyVcduuF3HDUYNt">霍</em>
+        </div>
+      </div>
+
+      <div class="actions" data-page-node-id="HTCGUdFPgu31A3Ag72mgdy">
+        <button class="retire" data-page-node-id="Mhcn08AiZwem424xmbpQOs">今日退朝</button>
+        <small data-page-node-id="vX7cr9ERedYeUzDCoT4wny">点击六部名牌，听取该部奏折</small>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

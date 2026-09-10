@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>透明天气浮层预览 V3</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#111;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  }
+  body{display:grid;place-items:center}
+
+  .preview{
+    position:relative;
+    width:min(100vw,650px);
+    aspect-ratio:650/1226;
+    max-height:100vh;
+    overflow:hidden;
+    background:#211812;
+  }
+
+  /* 底图是真正 img，不再使用 background-image */
+  .background-image{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+    user-select:none;
+    pointer-events:none;
+  }
+
+  .background-image.show{display:block}
+
+  .empty-state{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    display:grid;
+    place-items:center;
+    color:#c8aa6d;
+    font-size:17px;
+    letter-spacing:.12em;
+    background:linear-gradient(#2b2118,#15100c);
+  }
+
+  .empty-state.hidden{display:none}
+
+  /* 透明天气层 */
+  .weather-overlay{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    overflow:hidden;
+    pointer-events:none;
+    background:transparent !important;
+  }
+
+  .weather-overlay::before,
+  .weather-overlay::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+
+  /* 下雨 */
+  .weather-rain::before{
+    background:
+      repeating-linear-gradient(
+        105deg,
+        transparent 0 18px,
+        rgba(225,239,248,.28) 18px 19px,
+        transparent 19px 37px
+      );
+    background-size:70px 70px;
+    opacity:.48;
+    animation:rainPlane .68s linear infinite;
+  }
+
+  .weather-rain::after{
+    background:linear-gradient(
+      180deg,
+      rgba(70,100,125,.018),
+      rgba(45,67,88,.035)
+    );
+  }
+
+  .rain-drop{
+    position:absolute;
+    top:-12%;
+    width:1.5px;
+    height:21px;
+    border-radius:2px;
+    background:linear-gradient(transparent,rgba(230,242,249,.62));
+    transform:rotate(14deg);
+    animation:rainDrop linear infinite;
+  }
+
+  @keyframes rainPlane{to{background-position:-40px 70px}}
+  @keyframes rainDrop{
+    to{transform:translate3d(-82px,116vh,0) rotate(14deg)}
+  }
+
+  /* 下雪 */
+  .weather-snow::before,
+  .weather-snow::after{background:transparent}
+
+  .snowflake{
+    position:absolute;
+    top:-7%;
+    color:rgba(255,255,255,.9);
+    text-shadow:0 0 6px rgba(255,255,255,.5);
+    animation:snowFall linear infinite;
+  }
+
+  @keyframes snowFall{
+    0%{transform:translate3d(0,-10px,0) rotate(0)}
+    50%{transform:translate3d(var(--sway),52vh,0) rotate(180deg)}
+    100%{transform:translate3d(calc(var(--sway)*-.35),108vh,0) rotate(360deg)}
+  }
+
+  /* 晴天 */
+  .weather-sunny::before{
+    inset:-30%;
+    background:
+      conic-gradient(
+        from 0deg at 78% 11%,
+        transparent 0 5deg,
+        rgba(255,226,145,.11) 5deg 9deg,
+        transparent 9deg 25deg
+      );
+    transform-origin:78% 11%;
+    animation:sunRotate 32s linear infinite;
+    mix-blend-mode:screen;
+  }
+
+  .weather-sunny::after{
+    background:
+      radial-gradient(circle at 78% 11%,rgba(255,233,164,.18),transparent 18%),
+      linear-gradient(110deg,transparent 0 35%,rgba(255,241,194,.055) 46%,transparent 58%);
+    animation:sunPulse 5s ease-in-out infinite;
+    mix-blend-mode:screen;
+  }
+
+  .dust{
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:rgba(255,230,157,.68);
+    box-shadow:0 0 6px rgba(255,221,127,.46);
+    animation:dustFloat ease-in-out infinite;
+  }
+
+  @keyframes sunRotate{to{transform:rotate(360deg)}}
+  @keyframes sunPulse{0%,100%{opacity:.35}50%{opacity:.72}}
+  @keyframes dustFloat{
+    0%,100%{transform:translateY(0) scale(.75);opacity:.15}
+    50%{transform:translateY(-28px) scale(1.1);opacity:.72}
+  }
+
+  /* 夜晚：可调强度，默认非常轻 */
+  .weather-night::before{
+    background:rgba(18,31,69,.16);
+    mix-blend-mode:multiply;
+  }
+
+  .weather-night::after{
+    background:
+      radial-gradient(circle at 80% 12%,
+        rgba(250,242,204,.52) 0 3.5%,
+        rgba(239,229,184,.15) 5%,
+        transparent 11%);
+  }
+
+  .star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    border-radius:50%;
+    background:#fff6cc;
+    box-shadow:0 0 5px rgba(255,245,190,.72);
+    animation:twinkle ease-in-out infinite;
+  }
+
+  @keyframes twinkle{
+    0%,100%{opacity:.2;transform:scale(.7)}
+    50%{opacity:.95;transform:scale(1.25)}
+  }
+
+  /* 雷暴 */
+  .weather-thunder::before{
+    background:rgba(18,29,61,.08);
+  }
+
+  .weather-thunder::after{
+    background:
+      radial-gradient(circle at 58% 6%,rgba(255,255,255,.82),transparent 42%);
+    opacity:0;
+  }
+
+  .weather-thunder.flash::after{
+    animation:lightningFlash 1.5s ease-out;
+  }
+
+  .lightning{
+    position:absolute;
+    top:-3%;
+    left:55%;
+    width:94px;
+    height:56%;
+    opacity:0;
+    filter:drop-shadow(0 0 9px rgba(220,237,255,.95));
+    animation:bolt 4.6s linear infinite;
+  }
+
+  .lightning svg{
+    width:100%;
+    height:100%;
+    fill:none;
+    stroke:#edf7ff;
+    stroke-width:3;
+    stroke-linejoin:round;
+  }
+
+  @keyframes bolt{
+    0%,72%,100%{opacity:0}
+    73%{opacity:1}
+    75%{opacity:.16}
+    77%{opacity:1}
+    80%{opacity:0}
+  }
+
+  @keyframes lightningFlash{
+    0%,100%{opacity:0}
+    9%{opacity:.88}
+    18%{opacity:.06}
+    28%{opacity:.68}
+    43%{opacity:0}
+  }
+
+  /* 控制区 */
+  .controls{
+    position:absolute;
+    z-index:100;
+    left:8px;
+    right:8px;
+    bottom:8px;
+    display:grid;
+    gap:7px;
+    padding:8px;
+    border:1px solid rgba(209,164,66,.42);
+    border-radius:16px;
+    background:rgba(17,10,7,.76);
+    backdrop-filter:blur(7px);
+    transition:.2s ease;
+  }
+
+  .controls.hidden{
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(12px);
+  }
+
+  .upload-row{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:7px;
+  }
+
+  .file-name{
+    min-width:0;
+    height:34px;
+    display:flex;
+    align-items:center;
+    padding:0 10px;
+    border:1px solid #6f4b1b;
+    border-radius:12px;
+    color:#bca063;
+    background:#130d09;
+    font-size:11px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+  }
+
+  .upload-btn,
+  .fit-btn{
+    height:34px;
+    padding:0 11px;
+    border:1px solid #8e6224;
+    border-radius:12px;
+    background:linear-gradient(#382115,#1a100b);
+    color:#e6c56e;
+    font-family:inherit;
+    cursor:pointer;
+  }
+
+  #fileInput{display:none}
+
+  .weather-buttons{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:5px;
+  }
+
+  .weather-buttons button{
+    height:34px;
+    border:1px solid #76501d;
+    border-radius:11px;
+    background:#20140d;
+    color:#b99c61;
+    font-family:inherit;
+    font-size:11px;
+    cursor:pointer;
+  }
+
+  .weather-buttons button.active{
+    color:#ffe49a;
+    border-color:#c69438;
+    background:linear-gradient(#8b2d25,#4d130f);
+  }
+
+  .toggle-controls{
+    position:absolute;
+    z-index:110;
+    right:10px;
+    top:10px;
+    width:42px;
+    height:38px;
+    border:1px solid rgba(203,158,59,.50);
+    border-radius:18px;
+    background:rgba(18,11,8,.70);
+    color:#e8c86f;
+    font-family:inherit;
+    cursor:pointer;
+    backdrop-filter:blur(6px);
+  }
+</style>
+</head>
+<body>
+<div class="preview">
+  <img id="backgroundImage" class="background-image" alt="游戏背景预览" />
+  <div id="emptyState" class="empty-state">请上传游戏背景图</div>
+
+  <div id="weatherLayer" class="weather-overlay weather-rain"></div>
+
+  <button class="toggle-controls" id="toggleControls">隐藏</button>
+
+  <section class="controls" id="controls">
+    <div class="upload-row">
+      <div class="file-name" id="fileName">未选择背景图</div>
+      <label class="upload-btn" for="fileInput">上传背景</label>
+      <button class="fit-btn" id="fitBtn">填满</button>
+      <input id="fileInput" type="file" accept="image/*" />
+    </div>
+
+    <div class="weather-buttons">
+      <button class="active" data-weather="rain">下雨</button>
+      <button data-weather="snow">下雪</button>
+      <button data-weather="sunny">晴天</button>
+      <button data-weather="night">夜晚</button>
+      <button data-weather="thunder">打雷</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const bgImage = document.getElementById("backgroundImage");
+const emptyState = document.getElementById("emptyState");
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+const weatherLayer = document.getElementById("weatherLayer");
+const controls = document.getElementById("controls");
+const fitBtn = document.getElementById("fitBtn");
+
+let thunderTimer = null;
+let fitMode = "cover";
+
+function clearWeather(){
+  weatherLayer.innerHTML = "";
+  clearInterval(thunderTimer);
+}
+
+function createRain(){
+  for(let i=0;i<72;i++){
+    const drop=document.createElement("span");
+    drop.className="rain-drop";
+    drop.style.left=`${Math.random()*115}%`;
+    drop.style.animationDuration=`${.58+Math.random()*.68}s`;
+    drop.style.animationDelay=`-${Math.random()*2}s`;
+    drop.style.opacity=`${.26+Math.random()*.48}`;
+    weatherLayer.appendChild(drop);
+  }
+}
+
+function createSnow(){
+  const symbols=["•","✦","❄"];
+  for(let i=0;i<56;i++){
+    const flake=document.createElement("span");
+    flake.className="snowflake";
+    flake.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    flake.style.left=`${Math.random()*100}%`;
+    flake.style.fontSize=`${7+Math.random()*13}px`;
+    flake.style.animationDuration=`${5+Math.random()*7}s`;
+    flake.style.animationDelay=`-${Math.random()*9}s`;
+    flake.style.setProperty("--sway",`${-38+Math.random()*76}px`);
+    flake.style.opacity=`${.42+Math.random()*.54}`;
+    weatherLayer.appendChild(flake);
+  }
+}
+
+function createSunny(){
+  for(let i=0;i<28;i++){
+    const dust=document.createElement("span");
+    dust.className="dust";
+    dust.style.left=`${8+Math.random()*84}%`;
+    dust.style.top=`${12+Math.random()*72}%`;
+    dust.style.animationDuration=`${3+Math.random()*4}s`;
+    dust.style.animationDelay=`-${Math.random()*4}s`;
+    weatherLayer.appendChild(dust);
+  }
+}
+
+function createNight(){
+  for(let i=0;i<30;i++){
+    const star=document.createElement("span");
+    star.className="star";
+    star.style.left=`${Math.random()*100}%`;
+    star.style.top=`${Math.random()*62}%`;
+    star.style.animationDuration=`${1.4+Math.random()*3}s`;
+    star.style.animationDelay=`-${Math.random()*3}s`;
+    weatherLayer.appendChild(star);
+  }
+}
+
+function createThunder(){
+  createRain();
+
+  const bolt=document.createElement("span");
+  bolt.className="lightning";
+  bolt.innerHTML=`<svg viewBox="0 0 100 300">
+    <polyline points="56,0 40,68 61,68 34,139 54,139 22,224 49,159 29,159 59,92 39,92 68,0"/>
+  </svg>`;
+  weatherLayer.appendChild(bolt);
+
+  const flash=()=>{
+    weatherLayer.classList.remove("flash");
+    void weatherLayer.offsetWidth;
+    weatherLayer.classList.add("flash");
+  };
+
+  flash();
+  thunderTimer=setInterval(flash,4600);
+}
+
+function setWeather(type){
+  clearWeather();
+  weatherLayer.className=`weather-overlay weather-${type}`;
+
+  if(type==="rain") createRain();
+  if(type==="snow") createSnow();
+  if(type==="sunny") createSunny();
+  if(type==="night") createNight();
+  if(type==="thunder") createThunder();
+
+  document.querySelectorAll("[data-weather]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.weather===type);
+  });
+}
+
+fileInput.addEventListener("change",()=>{
+  const file=fileInput.files && fileInput.files[0];
+  if(!file) return;
+
+  const reader=new FileReader();
+
+  reader.onload=event=>{
+    bgImage.onload=()=>{
+      bgImage.classList.add("show");
+      emptyState.classList.add("hidden");
+    };
+
+    bgImage.onerror=()=>{
+      alert("背景图读取失败，请换一张 JPG 或 PNG 图片。");
+    };
+
+    bgImage.src=event.target.result;
+    fileName.textContent=file.name;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+fitBtn.addEventListener("click",()=>{
+  fitMode = fitMode === "cover" ? "contain" : "cover";
+  bgImage.style.objectFit = fitMode;
+  fitBtn.textContent = fitMode === "cover" ? "填满" : "完整";
+});
+
+document.querySelectorAll("[data-weather]").forEach(btn=>{
+  btn.addEventListener("click",()=>setWeather(btn.dataset.weather));
+});
+
+document.getElementById("toggleControls").addEventListener("click",event=>{
+  controls.classList.toggle("hidden");
+  event.currentTarget.textContent = controls.classList.contains("hidden") ? "显示" : "隐藏";
+});
+
+setWeather("rain");
+</script>
+</body>
+</html>

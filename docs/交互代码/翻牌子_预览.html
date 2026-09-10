@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="dpuD7PJr27IHiFs2cvkrHd">
+<head data-page-node-id="471Ih3gOPzVdQaVFBMB3LP">
+<meta charset="UTF-8" data-page-node-id="hUACLAjYg3PdGob2YuH1iA" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" data-page-node-id="cXwmcbImd93lO4JG72F9V0" />
+<title>宫廷绿头牌翻牌</title>
+<style>
+  :root{
+    --gold:#e6bd5b;
+    --gold-hi:#ffe9aa;
+    --gold-deep:#744918;
+    --red:#8b2d25;
+    --red-deep:#4e130f;
+    --wood:#3a2213;
+    --wood-2:#1b100a;
+    --green:#477657;
+    --green-2:#315640;
+    --green-3:#203e2d;
+    --jade:#dcebd7;
+    --ink:#f4e8bd;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#110a07;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  }
+
+  body{display:grid;place-items:center}
+
+  .stage{
+    position:relative;
+    width:min(100vw,430px);
+    height:min(100vh,932px);
+    min-height:720px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 42%,rgba(221,171,66,.12),transparent 34%),
+      linear-gradient(#2d2116,#130d09);
+  }
+
+  .mask{
+    position:absolute;
+    inset:0;
+    background:rgba(8,5,3,.72);
+    backdrop-filter:blur(2px);
+  }
+
+  .panel{
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:50%;
+    height:min(86vh,800px);
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border:1px solid #8d6122;
+    border-radius:20px 20px 15px 15px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.035),transparent 16%),
+      linear-gradient(#2b1a10,#140d09);
+    box-shadow:
+      0 20px 48px rgba(0,0,0,.52),
+      inset 0 0 0 2px rgba(239,201,95,.05);
+  }
+
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid rgba(224,178,76,.15);
+    border-radius:15px 15px 11px 11px;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  .header{
+    flex:0 0 auto;
+    height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    border-bottom:1px solid #75501d;
+    background:
+      radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),
+      linear-gradient(180deg,#422714,#21140d);
+  }
+
+  .header h1{
+    margin:0;
+    color:#f3d176;
+    font-size:25px;
+    letter-spacing:.23em;
+    text-indent:.23em;
+  }
+
+  .header small{
+    position:absolute;
+    bottom:8px;
+    color:#aa8c56;
+    font-size:10px;
+    letter-spacing:.18em;
+  }
+
+  .close{
+    position:absolute;
+    right:13px;
+    top:14px;
+    width:36px;
+    height:36px;
+    border:1px solid #996a24;
+    border-radius:50%;
+    background:linear-gradient(#332012,#18100b);
+    color:#efcf72;
+    font-size:21px;
+    cursor:pointer;
+  }
+
+  .intro{
+    flex:0 0 auto;
+    padding:10px 14px 8px;
+    text-align:center;
+    color:#bda164;
+    font-size:12px;
+    line-height:1.6;
+    background:#130c09;
+    border-bottom:1px solid #5d3c14;
+  }
+
+  .intro b{
+    color:#f0cc70;
+    font-size:14px;
+  }
+
+  .tray-area{
+    flex:1 1 auto;
+    padding:14px 12px 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  .tray{
+    position:relative;
+    width:100%;
+    height:100%;
+    max-height:585px;
+    border-radius:22px 22px 28px 28px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.04),transparent 24%),
+      linear-gradient(#4a2b16,#25140b);
+    border:2px solid #8a5b1e;
+    box-shadow:
+      inset 0 0 0 4px rgba(225,180,78,.06),
+      inset 0 -18px 34px rgba(0,0,0,.42),
+      0 10px 22px rgba(0,0,0,.34);
+    overflow:hidden;
+  }
+
+  .tray::before{
+    content:"";
+    position:absolute;
+    left:14px;
+    right:14px;
+    top:14px;
+    bottom:20px;
+    border:1px solid rgba(211,159,56,.22);
+    border-radius:16px 16px 22px 22px;
+    pointer-events:none;
+  }
+
+  .tray-lip{
+    position:absolute;
+    left:8px;
+    right:8px;
+    bottom:8px;
+    height:54px;
+    border-radius:12px 12px 22px 22px;
+    background:
+      linear-gradient(180deg,#5a3419,#2b170c);
+    border:1px solid #714617;
+    box-shadow:
+      inset 0 5px 10px rgba(255,255,255,.03),
+      0 -4px 8px rgba(0,0,0,.18);
+  }
+
+  .tray-lip::before{
+    content:"";
+    position:absolute;
+    left:24px;
+    right:24px;
+    top:7px;
+    height:2px;
+    background:linear-gradient(90deg,transparent,#d2a347,transparent);
+    opacity:.6;
+  }
+
+  .rack{
+    position:absolute;
+    left:22px;
+    right:22px;
+    top:34px;
+    bottom:70px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px 8px;
+    align-content:center;
+    perspective:1200px;
+  }
+
+  .牌-slot{
+    position:relative;
+    height:182px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+
+  .牌-slot::after{
+    content:"";
+    position:absolute;
+    left:10%;
+    right:10%;
+    bottom:2px;
+    height:18px;
+    border-radius:50%;
+    background:rgba(0,0,0,.30);
+    filter:blur(5px);
+  }
+
+  .green牌{
+    position:relative;
+    z-index:2;
+    width:70px;
+    height:166px;
+    border:0;
+    padding:0;
+    cursor:pointer;
+    transform-origin:center bottom;
+    transition:
+      transform .24s cubic-bezier(.2,.8,.2,1),
+      filter .24s ease;
+    background:transparent;
+  }
+
+  .牌-body{
+    position:absolute;
+    inset:0;
+    border-radius:14px 14px 20px 20px;
+    overflow:hidden;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 36% 24%,rgba(255,255,255,.17),transparent 18%),
+      linear-gradient(145deg,var(--green),var(--green-2) 58%,var(--green-3));
+    border:2px solid #b68b3a;
+    box-shadow:
+      0 8px 16px rgba(0,0,0,.34),
+      inset 0 0 0 3px rgba(229,244,217,.08);
+  }
+
+  .牌-body::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid rgba(227,239,213,.22);
+    border-radius:9px 9px 15px 15px;
+  }
+
+  .牌-head{
+    position:absolute;
+    left:50%;
+    top:-11px;
+    width:34px;
+    height:24px;
+    transform:translateX(-50%);
+    border-radius:12px 12px 5px 5px;
+    background:
+      linear-gradient(145deg,#5c8968,#355940);
+    border:2px solid #b68b3a;
+    box-shadow:0 3px 7px rgba(0,0,0,.28);
+  }
+
+  .牌-head::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:3px;
+    width:8px;
+    height:8px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:#172d20;
+    border:1px solid rgba(230,244,219,.35);
+  }
+
+  .牌-text{
+    position:absolute;
+    inset:15px 8px 13px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    writing-mode:vertical-rl;
+    text-orientation:upright;
+  }
+
+  .牌-name{
+    color:#f3e5b8;
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-shadow:0 2px 3px rgba(0,0,0,.45);
+  }
+
+  .牌-rank{
+    color:#d3c28d;
+    font-size:11px;
+    letter-spacing:.1em;
+  }
+
+  .牌-palace{
+    position:absolute;
+    left:50%;
+    bottom:9px;
+    transform:translateX(-50%);
+    width:max-content;
+    max-width:58px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#d8c99a;
+    font-size:8px;
+  }
+
+  .green牌:hover{
+    transform:translateY(-8px) rotate(-1deg);
+    filter:brightness(1.08);
+  }
+
+  .green牌.selected{
+    transform:translateY(-22px) scale(1.08);
+    filter:
+      brightness(1.12)
+      drop-shadow(0 0 12px rgba(239,200,92,.46));
+  }
+
+  .green牌.selected .牌-body{
+    border-color:#f0ca68;
+    box-shadow:
+      0 0 0 4px rgba(230,184,72,.12),
+      0 12px 22px rgba(0,0,0,.38),
+      inset 0 0 0 3px rgba(255,236,168,.11);
+  }
+
+  .selected-check{
+    position:absolute;
+    right:-5px;
+    top:8px;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#ffe69d;
+    background:#8d2d25;
+    border:1px solid #c79739;
+    opacity:0;
+    transform:scale(.6);
+    transition:.2s ease;
+  }
+
+  .green牌.selected .selected-check{
+    opacity:1;
+    transform:scale(1);
+  }
+
+  .page-info{
+    position:absolute;
+    left:50%;
+    bottom:22px;
+    transform:translateX(-50%);
+    color:#bea367;
+    font-size:11px;
+    letter-spacing:.12em;
+    z-index:4;
+  }
+
+  .controls{
+    flex:0 0 auto;
+    padding:10px 12px 12px;
+    display:grid;
+    grid-template-columns:1fr 1fr 1.25fr;
+    gap:8px;
+    background:#100b08;
+    border-top:1px solid #684617;
+  }
+
+  .control-btn{
+    height:42px;
+    border:1px solid #7c5520;
+    border-radius:15px;
+    background:linear-gradient(#2b1a10,#17100b);
+    color:#c6a55f;
+    font-family:inherit;
+    font-size:13px;
+    cursor:pointer;
+  }
+
+  .control-btn.primary{
+    color:#ffe49a;
+    border-color:#b48330;
+    background:linear-gradient(#8b2d25,#4f130f);
+    box-shadow:0 5px 12px rgba(0,0,0,.26);
+  }
+
+  .control-btn:disabled{
+    opacity:.38;
+    cursor:not-allowed;
+  }
+
+  .confirm-layer{
+    position:absolute;
+    inset:0;
+    z-index:30;
+    display:grid;
+    place-items:center;
+    background:rgba(7,4,3,.58);
+    opacity:0;
+    pointer-events:none;
+    transition:.3s ease;
+  }
+
+  .confirm-layer.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .confirm-card{
+    width:82%;
+    padding:21px 18px 18px;
+    border:1px solid #946524;
+    border-radius:18px;
+    text-align:center;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.04),transparent 35%),
+      linear-gradient(#2d1b10,#160e0a);
+    box-shadow:0 16px 34px rgba(0,0,0,.45);
+  }
+
+  .confirm-牌{
+    width:64px;
+    height:145px;
+    margin:0 auto 12px;
+    border-radius:13px 13px 18px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    writing-mode:vertical-rl;
+    color:#f4e6b9;
+    font-size:18px;
+    font-weight:700;
+    background:
+      radial-gradient(circle at 35% 24%,rgba(255,255,255,.17),transparent 18%),
+      linear-gradient(145deg,var(--green),var(--green-2) 58%,var(--green-3));
+    border:2px solid #c0933c;
+    box-shadow:0 8px 16px rgba(0,0,0,.34);
+  }
+
+  .confirm-card h2{
+    margin:0;
+    color:#f1cf72;
+    font-size:22px;
+  }
+
+  .confirm-card p{
+    margin:7px 0 14px;
+    color:#aa8e58;
+    font-size:12px;
+  }
+
+  .confirm-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+
+  .toast{
+    position:absolute;
+    z-index:40;
+    left:50%;
+    bottom:18px;
+    transform:translate(-50%,14px);
+    opacity:0;
+    padding:8px 14px;
+    border:1px solid #8b6123;
+    border-radius:16px;
+    background:rgba(18,11,8,.94);
+    color:#edce79;
+    font-size:12px;
+    transition:.2s ease;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  @keyframes pageOutLeft{
+    to{opacity:0;transform:translateX(-35px)}
+  }
+
+  @keyframes pageInRight{
+    from{opacity:0;transform:translateX(35px)}
+    to{opacity:1;transform:translateX(0)}
+  }
+
+  @keyframes pageOutRight{
+    to{opacity:0;transform:translateX(35px)}
+  }
+
+  @keyframes pageInLeft{
+    from{opacity:0;transform:translateX(-35px)}
+    to{opacity:1;transform:translateX(0)}
+  }
+
+  @media(max-height:760px){
+    .panel{height:89vh}
+    .rack{top:28px;bottom:64px}
+    .牌-slot{height:155px}
+    .green牌{width:62px;height:142px}
+    .牌-name{font-size:17px}
+  }
+</style>
+</head>
+<body data-page-node-id="6YLoL3Wn4fzM76q6BQ28TN">
+<div class="stage" data-page-node-id="ACwUtPf0seINmJ3d1tE9gh">
+  <div class="mask" data-page-node-id="0EzQtXVFe3PaVwBFvcycc2"></div>
+
+  <section class="panel" id="panel" data-page-node-id="VMSONZLOonWSXvMV5wfHlC">
+    <header class="header" data-page-node-id="7ehsxGBpCb69vvlPmFkucr">
+      <h1 data-page-node-id="XBdovX7bC5C5huxKyKP4LS">侍寝翻牌</h1>
+      <small data-page-node-id="a9zgGrEEdT7cD5qVEwDmFP">绿头牌明示 · 圣意择幸</small>
+      <button class="close" id="closeBtn" data-page-node-id="5xg4C50sLisoJbuUFjx3Nd">×</button>
+    </header>
+
+    <div class="intro" data-page-node-id="LK2TwgvWqkTnU1innr6Vv0">
+      今夜候旨妃嫔已列于宫廷托盘，请择一牌传召侍寝。
+    </div>
+
+    <div class="tray-area" data-page-node-id="sFv5987Nm45NBWmyEDnvzY">
+      <div class="tray" data-page-node-id="CAQICBz3K5WKJwoFi9zyNf">
+        <div class="rack" id="rack" data-page-node-id="5oiLlsFmCK1QCGBkxgQIkv"></div>
+        <div class="tray-lip" data-page-node-id="9ZmPh4i2xxE0fjLQ4WHBQj"></div>
+        <div class="page-info" id="pageInfo" data-page-node-id="CCGRhsswSpbpxZmy8SyOHc">第 1 / 2 盘</div>
+      </div>
+    </div>
+
+    <div class="controls" data-page-node-id="pQmszjvoDHWveyVkOfd2Ck">
+      <button class="control-btn" id="prevBtn" data-page-node-id="LudFIgNl6Purbk9VbL2UCQ">上一盘</button>
+      <button class="control-btn" id="nextBtn" data-page-node-id="YoWUL5S1Hqpu1SAGEAPfDF">下一盘</button>
+      <button class="control-btn primary" id="confirmBtn" disabled data-page-node-id="hDUguxZRDJ4syi5ZGHS3aQ">确认临幸</button>
+    </div>
+  </section>
+
+  <section class="confirm-layer" id="confirmLayer" data-page-node-id="lK2Rrp99vwxF4yqBvIufjI">
+    <div class="confirm-card" data-page-node-id="zjXmNvEUcGdHPWHtzdkS6O">
+      <div class="confirm-牌" id="confirm牌" data-page-node-id="5mTc9gfvqtny5pM0gXBSu8">徐珍淑</div>
+      <h2 id="confirmName" data-page-node-id="TJ9yGtJu3iuXBCXEboVWYC">徐珍淑 · 贵妃</h2>
+      <p id="confirmText" data-page-node-id="Pts9rEGsNQYsw24AjXyRkk">今夜传召翊坤宫徐贵妃侍寝？</p>
+
+      <div class="confirm-actions" data-page-node-id="EMRjh6XdtvQOvwR9xRGOqu">
+        <button class="control-btn" id="cancelBtn" data-page-node-id="MRPj0zIvIVGtWf68KVEJWs">再想想</button>
+        <button class="control-btn primary" id="summonBtn" data-page-node-id="cvRx9E5hy7F6epx7JA0G4x">传旨临幸</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" data-page-node-id="6X1qYorw4nNITwdHeQZGyQ"></div>
+</div>
+
+<script>
+const pages = [
+  [
+    {name:"徐珍淑",honorific:"珍",rank:"贵妃",palace:"翊坤宫"},
+    {name:"沈清漪",honorific:null,rank:"妃",palace:"储秀宫"},
+    {name:"柳如烟",honorific:"如",rank:"妃",palace:"景仁宫"},
+    {name:"苏婉宁",honorific:null,rank:"嫔",palace:"长春宫"},
+    {name:"陆昭仪",honorific:"昭",rank:"嫔",palace:"咸福宫"},
+    {name:"叶兰心",honorific:null,rank:"贵人",palace:"延禧宫"},
+    {name:"白芷柔",honorific:"芷",rank:"贵人",palace:"启祥宫"},
+    {name:"林月华",honorific:null,rank:"嫔",palace:"永寿宫"}
+  ],
+  [
+    {name:"贺兰雪",honorific:null,rank:"妃",palace:"承乾宫"},
+    {name:"许知意",honorific:"知",rank:"贵人",palace:"钟粹宫"},
+    {name:"姜晚棠",honorific:"晚",rank:"嫔",palace:"永和宫"},
+    {name:"顾明珠",honorific:null,rank:"皇后",palace:"坤宁宫"},
+    {name:"秦若仪",honorific:"若",rank:"常在",palace:"景阳宫"},
+    {name:"赵明珮",honorific:null,rank:"答应",palace:"储秀宫"},
+    {name:"温婉柔",honorific:"婉",rank:"贵人",palace:"延禧宫"},
+    {name:"谢清歌",honorific:null,rank:"嫔",palace:"咸福宫"}
+  ]
+];
+
+let currentPage = 0;
+let selected = null;
+
+const rack = document.getElementById("rack");
+const pageInfo = document.getElementById("pageInfo");
+const confirmBtn = document.getElementById("confirmBtn");
+const confirmLayer = document.getElementById("confirmLayer");
+const toast = document.getElementById("toast");
+
+function render(direction="none"){
+  if(direction !== "none"){
+    rack.style.animation = direction === "next"
+      ? "pageOutLeft .18s ease forwards"
+      : "pageOutRight .18s ease forwards";
+  }
+
+  setTimeout(()=>{
+    rack.innerHTML = "";
+
+    pages[currentPage].forEach(item=>{
+      const slot = document.createElement("div");
+      slot.className = "牌-slot";
+
+      const effectiveHonorific = item.honorific && item.honorific.length > 0 ? item.honorific : item.name.slice(0, 1);
+      const displayRank = `${effectiveHonorific}${item.rank}`;
+
+      const button = document.createElement("button");
+      button.className = "green牌";
+      button.innerHTML = `
+        <span class="牌-head"></span>
+        <span class="牌-body">
+          <span class="牌-text">
+            <span class="牌-name">${displayRank}</span>
+            <span class="牌-rank">${item.name}</span>
+          </span>
+          <span class="牌-palace">${item.palace}</span>
+        </span>
+        <span class="selected-check">✓</span>
+      `;
+
+      button.addEventListener("click",()=>{
+        document.querySelectorAll(".green牌").forEach(el=>el.classList.remove("selected"));
+        button.classList.add("selected");
+        const effectiveHonorific = item.honorific && item.honorific.length > 0 ? item.honorific : item.name.slice(0, 1);
+        selected = { ...item, displayRank: `${effectiveHonorific}${item.rank}` };
+        confirmBtn.disabled = false;
+      });
+
+      slot.appendChild(button);
+      rack.appendChild(slot);
+    });
+
+    pageInfo.textContent = `第 ${currentPage + 1} / ${pages.length} 盘`;
+    document.getElementById("prevBtn").disabled = currentPage === 0;
+    document.getElementById("nextBtn").disabled = currentPage === pages.length - 1;
+
+    if(direction !== "none"){
+      rack.style.animation = direction === "next"
+        ? "pageInRight .24s ease forwards"
+        : "pageInLeft .24s ease forwards";
+    }else{
+      rack.style.animation = "";
+    }
+  }, direction === "none" ? 0 : 180);
+}
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove("show"),1100);
+}
+
+document.getElementById("prevBtn").addEventListener("click",()=>{
+  if(currentPage === 0) return;
+  currentPage--;
+  selected = null;
+  confirmBtn.disabled = true;
+  render("prev");
+});
+
+document.getElementById("nextBtn").addEventListener("click",()=>{
+  if(currentPage === pages.length - 1) return;
+  currentPage++;
+  selected = null;
+  confirmBtn.disabled = true;
+  render("next");
+});
+
+confirmBtn.addEventListener("click",()=>{
+  if(!selected) return;
+
+  document.getElementById("confirm牌").textContent = selected.name;
+  document.getElementById("confirmName").textContent = `${selected.name} · ${selected.displayRank}`;
+  document.getElementById("confirmText").textContent =
+    `今夜传召${selected.palace}${selected.name}侍寝？`;
+
+  confirmLayer.classList.add("show");
+});
+
+document.getElementById("cancelBtn").addEventListener("click",()=>{
+  confirmLayer.classList.remove("show");
+});
+
+document.getElementById("summonBtn").addEventListener("click",()=>{
+  confirmLayer.classList.remove("show");
+  showToast(`已传旨：今夜临幸${selected.name}`);
+});
+
+document.getElementById("closeBtn").addEventListener("click",()=>{
+  document.getElementById("panel").style.display = "none";
+});
+
+render();
+</script>
+</body>
+</html>

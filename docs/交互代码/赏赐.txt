@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>御赐奖励弹窗</title>
+<style>
+  :root{
+    --gold:#e9c161;
+    --gold-hi:#ffe8a8;
+    --gold-mid:#bf8932;
+    --gold-deep:#724718;
+    --red:#8c2d25;
+    --red-deep:#4e130f;
+    --paper:#f1dfb4;
+    --paper-2:#d5b675;
+    --ink:#452a14;
+    --muted:#8b6e41;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#120b08;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  }
+
+  body{display:grid;place-items:center}
+
+  .stage{
+    position:relative;
+    width:min(100vw,430px);
+    height:min(100vh,932px);
+    min-height:720px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 30%,rgba(220,169,66,.12),transparent 34%),
+      linear-gradient(#2d2116,#130d09);
+  }
+
+  .mask{
+    position:absolute;
+    inset:0;
+    background:rgba(8,5,3,.68);
+    backdrop-filter:blur(2px);
+  }
+
+  .reward-panel{
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:50%;
+    height:min(80vh,735px);
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border:1px solid #8e6123;
+    border-radius:20px 20px 15px 15px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.035),transparent 16%),
+      linear-gradient(#2b1a10,#140d09);
+    box-shadow:
+      0 20px 48px rgba(0,0,0,.52),
+      inset 0 0 0 2px rgba(239,201,95,.05);
+    animation:panelIn .28s ease-out;
+  }
+
+  .reward-panel::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid rgba(224,178,76,.15);
+    border-radius:15px 15px 11px 11px;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  .header{
+    flex:0 0 auto;
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    border-bottom:1px solid #75501d;
+    background:
+      radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),
+      linear-gradient(180deg,#422714,#21140d);
+  }
+
+  .header h1{
+    margin:0;
+    color:#f3d176;
+    font-size:25px;
+    letter-spacing:.23em;
+    text-indent:.23em;
+  }
+
+  .header small{
+    position:absolute;
+    bottom:8px;
+    color:#aa8c56;
+    font-size:10px;
+    letter-spacing:.18em;
+  }
+
+  .close{
+    position:absolute;
+    right:13px;
+    top:15px;
+    width:36px;
+    height:36px;
+    border:1px solid #996a24;
+    border-radius:50%;
+    background:linear-gradient(#332012,#18100b);
+    color:#efcf72;
+    font-size:21px;
+    cursor:pointer;
+  }
+
+  .intro{
+    flex:0 0 auto;
+    padding:11px 15px 9px;
+    text-align:center;
+    color:#bda164;
+    font-size:12px;
+    line-height:1.6;
+    background:#130c09;
+    border-bottom:1px solid #5d3c14;
+  }
+
+  .intro b{
+    color:#f0cc70;
+    font-size:14px;
+  }
+
+  .reward-grid{
+    flex:1 1 auto;
+    padding:14px 13px 16px;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    overflow:auto;
+    align-content:center;
+  }
+
+  .reward-card{
+    position:relative;
+    min-height:205px;
+    border:1px solid #8b6328;
+    border-radius:15px;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.12),transparent 38%),
+      linear-gradient(145deg,var(--paper),var(--paper-2));
+    box-shadow:
+      0 8px 17px rgba(0,0,0,.27),
+      inset 0 0 0 2px rgba(255,248,216,.22);
+    cursor:pointer;
+    transition:.18s ease;
+  }
+
+  .reward-card:hover{
+    transform:translateY(-3px);
+    box-shadow:
+      0 12px 22px rgba(0,0,0,.32),
+      inset 0 0 0 2px rgba(255,248,216,.28);
+  }
+
+  .reward-card.selected{
+    border-color:#d2a647;
+    box-shadow:
+      0 0 0 3px rgba(236,191,81,.15),
+      0 12px 22px rgba(0,0,0,.34),
+      inset 0 0 0 2px rgba(255,248,216,.32);
+  }
+
+  .reward-visual{
+    height:112px;
+    position:relative;
+    display:grid;
+    place-items:center;
+    border-bottom:1px solid rgba(121,82,28,.26);
+    background:
+      radial-gradient(circle at 50% 40%,rgba(255,243,204,.48),transparent 30%),
+      linear-gradient(145deg,rgba(153,102,42,.16),rgba(255,255,255,.05));
+  }
+
+  .reward-icon{
+    width:72px;
+    height:72px;
+    display:grid;
+    place-items:center;
+    color:#7c3e20;
+    font-size:34px;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 34% 28%,rgba(255,255,255,.62),transparent 18%),
+      linear-gradient(145deg,#f2dfaf,#c79a49);
+    border:2px solid #a66f24;
+    box-shadow:
+      0 7px 14px rgba(0,0,0,.20),
+      inset 0 0 0 3px rgba(255,255,255,.15);
+  }
+
+  .reward-icon svg{
+    width:44px;
+    height:44px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.7;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  .selected-mark{
+    position:absolute;
+    right:8px;
+    top:8px;
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#ffe6a0;
+    background:#8b2d25;
+    border:1px solid #c89538;
+    opacity:0;
+    transform:scale(.65);
+    transition:.18s ease;
+  }
+
+  .reward-card.selected .selected-mark{
+    opacity:1;
+    transform:scale(1);
+  }
+
+  .reward-copy{
+    padding:10px 11px 11px;
+  }
+
+  .reward-name{
+    color:#4a2d14;
+    font-size:17px;
+    font-weight:700;
+    text-align:center;
+  }
+
+  .reward-desc{
+    margin-top:5px;
+    color:#785d38;
+    font-size:10px;
+    line-height:1.5;
+    text-align:center;
+  }
+
+  .reward-value{
+    margin:7px auto 0;
+    width:max-content;
+    padding:3px 8px;
+    border-radius:9px;
+    color:#8d2d25;
+    background:rgba(255,248,221,.46);
+    border:1px solid rgba(127,84,28,.26);
+    font-size:9px;
+  }
+
+  .footer{
+    flex:0 0 auto;
+    padding:10px 12px 12px;
+    display:grid;
+    grid-template-columns:1fr 1.4fr;
+    gap:9px;
+    background:#100b08;
+    border-top:1px solid #684617;
+  }
+
+  .btn{
+    height:42px;
+    border:1px solid #7c5520;
+    border-radius:15px;
+    background:linear-gradient(#2b1a10,#17100b);
+    color:#c6a55f;
+    font-family:inherit;
+    font-size:14px;
+    cursor:pointer;
+  }
+
+  .btn.primary{
+    color:#ffe49a;
+    border-color:#b48330;
+    background:linear-gradient(#8b2d25,#4f130f);
+    box-shadow:0 5px 12px rgba(0,0,0,.26);
+  }
+
+  .btn:disabled{
+    opacity:.38;
+    cursor:not-allowed;
+  }
+
+  /* 国库选择层 */
+  .treasury-layer{
+    position:absolute;
+    inset:0;
+    z-index:30;
+    display:grid;
+    place-items:end center;
+    padding:12px;
+    background:rgba(7,4,3,.58);
+    opacity:0;
+    pointer-events:none;
+    transition:.25s ease;
+  }
+
+  .treasury-layer.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .treasury-sheet{
+    width:100%;
+    max-height:78%;
+    overflow:hidden;
+    border:1px solid #8e6224;
+    border-radius:18px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.05),transparent 28%),
+      linear-gradient(#2d1c11,#160e0a);
+    box-shadow:0 -10px 28px rgba(0,0,0,.40);
+    transform:translateY(22px);
+    transition:.25s ease;
+  }
+
+  .treasury-layer.show .treasury-sheet{
+    transform:translateY(0);
+  }
+
+  .sheet-head{
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    border-bottom:1px solid #6a4618;
+    color:#f0cf73;
+    font-size:19px;
+    letter-spacing:.12em;
+  }
+
+  .sheet-close{
+    position:absolute;
+    right:12px;
+    width:32px;
+    height:32px;
+    border:1px solid #8b6124;
+    border-radius:50%;
+    background:#1a110c;
+    color:#e8c76d;
+    font-size:18px;
+    cursor:pointer;
+  }
+
+  .treasure-list{
+    padding:12px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    max-height:420px;
+    overflow:auto;
+  }
+
+  .treasure{
+    position:relative;
+    min-height:118px;
+    padding:11px 8px 9px;
+    border:1px solid #74501d;
+    border-radius:13px;
+    background:#1d130d;
+    color:#c6a560;
+    cursor:pointer;
+    text-align:center;
+  }
+
+  .treasure.selected{
+    border-color:#c69638;
+    background:linear-gradient(#4a2117,#28130f);
+    color:#ffe49a;
+  }
+
+  .treasure-icon{
+    width:50px;
+    height:50px;
+    margin:0 auto 7px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    color:#f0ce75;
+    background:linear-gradient(145deg,#5a341b,#2c180d);
+    border:1px solid #966724;
+    font-size:25px;
+  }
+
+  .treasure-name{
+    font-size:13px;
+  }
+
+  .treasure-num{
+    margin-top:4px;
+    color:#9d8352;
+    font-size:9px;
+  }
+
+
+  .treasure{
+    cursor:default;
+  }
+
+  .treasure.selected{
+    border-color:#c69638;
+    background:linear-gradient(#4a2117,#28130f);
+    color:#ffe49a;
+    box-shadow:0 0 0 2px rgba(214,166,65,.10);
+  }
+
+  .quantity-control{
+    margin-top:9px;
+    display:grid;
+    grid-template-columns:30px 1fr 30px;
+    gap:5px;
+    align-items:center;
+  }
+
+  .qty-btn{
+    width:30px;
+    height:28px;
+    border:1px solid #76501d;
+    border-radius:9px;
+    background:linear-gradient(#2b1a10,#17100b);
+    color:#e3c26c;
+    font-family:inherit;
+    font-size:17px;
+    cursor:pointer;
+  }
+
+  .qty-btn:disabled{
+    opacity:.34;
+    cursor:not-allowed;
+  }
+
+  .qty-value{
+    height:28px;
+    display:grid;
+    place-items:center;
+    border:1px solid #5e3e17;
+    border-radius:9px;
+    color:#ffe49a;
+    background:#100b08;
+    font-size:13px;
+  }
+
+  .selection-summary{
+    display:flex;
+    justify-content:center;
+    gap:22px;
+    padding:8px 12px;
+    border-top:1px solid #5f4018;
+    color:#aa8e58;
+    font-size:11px;
+    background:#120c08;
+  }
+
+  .selection-summary b{
+    color:#f0cd70;
+    font-size:13px;
+  }
+
+  .sheet-footer{
+    padding:10px 12px 12px;
+    display:grid;
+    grid-template-columns:1fr 1.2fr;
+    gap:8px;
+    border-top:1px solid #684617;
+  }
+
+  .toast{
+    position:absolute;
+    left:50%;
+    bottom:18px;
+    z-index:50;
+    transform:translate(-50%,14px);
+    opacity:0;
+    padding:8px 14px;
+    border:1px solid #8b6123;
+    border-radius:16px;
+    background:rgba(18,11,8,.94);
+    color:#edce79;
+    font-size:12px;
+    transition:.2s ease;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  @keyframes panelIn{
+    from{opacity:0;transform:translateY(-47%) scale(.97)}
+    to{opacity:1;transform:translateY(-50%) scale(1)}
+  }
+
+  @media(max-height:760px){
+    .reward-panel{height:88vh}
+    .reward-card{min-height:185px}
+    .reward-visual{height:96px}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="mask"></div>
+
+  <section class="reward-panel" id="rewardPanel">
+    <header class="header">
+      <h1>御赐嘉赏</h1>
+      <small>圣恩所至 · 荣宠加身</small>
+      <button class="close" id="closeBtn">×</button>
+    </header>
+
+    <div class="intro">
+      请选择一项赏赐，赐予 <b>徐珍淑 · 贵妃</b>。
+    </div>
+
+    <div class="reward-grid">
+      <article class="reward-card" data-type="ink">
+        <div class="reward-visual">
+          <div class="reward-icon">
+            <svg viewBox="0 0 48 48">
+              <path d="M10 35c8-9 15-15 27-23"/>
+              <path d="M31 10l7 7"/>
+              <path d="M8 39c6 1 10 0 14-4"/>
+              <path d="M14 29l5 5"/>
+            </svg>
+          </div>
+          <span class="selected-mark">✓</span>
+        </div>
+        <div class="reward-copy">
+          <div class="reward-name">御赐墨宝</div>
+          <div class="reward-desc">御笔亲题，可提升忠诚与声望。</div>
+          <div class="reward-value">忠诚 +8</div>
+        </div>
+      </article>
+
+      <article class="reward-card" data-type="silver">
+        <div class="reward-visual">
+          <div class="reward-icon">
+            <svg viewBox="0 0 48 48">
+              <path d="M10 18c4-6 24-6 28 0l-4 15c-6 5-14 5-20 0z"/>
+              <path d="M15 18h18"/>
+              <path d="M19 12h10"/>
+            </svg>
+          </div>
+          <span class="selected-mark">✓</span>
+        </div>
+        <div class="reward-copy">
+          <div class="reward-name">赏银百两</div>
+          <div class="reward-desc">从国库支取白银，体面而实用。</div>
+          <div class="reward-value">国库 -100两</div>
+        </div>
+      </article>
+
+      <article class="reward-card" data-type="gold">
+        <div class="reward-visual">
+          <div class="reward-icon">
+            <svg viewBox="0 0 48 48">
+              <path d="M8 20c5-8 27-8 32 0l-5 14c-7 5-15 5-22 0z"/>
+              <path d="M14 20h20"/>
+              <path d="M18 13h12"/>
+              <path d="M18 27h12"/>
+            </svg>
+          </div>
+          <span class="selected-mark">✓</span>
+        </div>
+        <div class="reward-copy">
+          <div class="reward-name">赏金百两</div>
+          <div class="reward-desc">厚赏黄金，彰显圣眷与荣宠。</div>
+          <div class="reward-value">国库 -100两</div>
+        </div>
+      </article>
+
+      <article class="reward-card" data-type="treasure">
+        <div class="reward-visual">
+          <div class="reward-icon">
+            <svg viewBox="0 0 48 48">
+              <path d="M8 19h32v20H8z"/>
+              <path d="M7 19l6-10h22l6 10"/>
+              <path d="M18 27h12"/>
+              <path d="M24 19v20"/>
+            </svg>
+          </div>
+          <span class="selected-mark">✓</span>
+        </div>
+        <div class="reward-copy">
+          <div class="reward-name">国库珍宝</div>
+          <div class="reward-desc">打开国库，从库存珍宝中任选其一。</div>
+          <div class="reward-value" id="treasureValue">尚未选择</div>
+        </div>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <button class="btn" id="cancelBtn">取消</button>
+      <button class="btn primary" id="confirmBtn" disabled>确认赏赐</button>
+    </footer>
+  </section>
+
+  <section class="treasury-layer" id="treasuryLayer">
+    <div class="treasury-sheet">
+      <div class="sheet-head">
+        国库珍宝
+        <button class="sheet-close" id="treasuryClose">×</button>
+      </div>
+
+      <div class="treasure-list" id="treasureList">
+        <article class="treasure" data-name="白玉如意" data-stock="3">
+          <div class="treasure-icon">玉</div>
+          <div class="treasure-name">白玉如意</div>
+          <div class="treasure-num">库存 3</div>
+          <div class="quantity-control">
+            <button class="qty-btn minus" type="button">−</button>
+            <span class="qty-value">0</span>
+            <button class="qty-btn plus" type="button">＋</button>
+          </div>
+        </article>
+
+        <article class="treasure" data-name="金丝凤钗" data-stock="2">
+          <div class="treasure-icon">凤</div>
+          <div class="treasure-name">金丝凤钗</div>
+          <div class="treasure-num">库存 2</div>
+          <div class="quantity-control">
+            <button class="qty-btn minus" type="button">−</button>
+            <span class="qty-value">0</span>
+            <button class="qty-btn plus" type="button">＋</button>
+          </div>
+        </article>
+
+        <article class="treasure" data-name="南珠璎珞" data-stock="5">
+          <div class="treasure-icon">珠</div>
+          <div class="treasure-name">南珠璎珞</div>
+          <div class="treasure-num">库存 5</div>
+          <div class="quantity-control">
+            <button class="qty-btn minus" type="button">−</button>
+            <span class="qty-value">0</span>
+            <button class="qty-btn plus" type="button">＋</button>
+          </div>
+        </article>
+
+        <article class="treasure" data-name="蜀锦云裳" data-stock="1">
+          <div class="treasure-icon">锦</div>
+          <div class="treasure-name">蜀锦云裳</div>
+          <div class="treasure-num">库存 1</div>
+          <div class="quantity-control">
+            <button class="qty-btn minus" type="button">−</button>
+            <span class="qty-value">0</span>
+            <button class="qty-btn plus" type="button">＋</button>
+          </div>
+        </article>
+
+        <article class="treasure" data-name="沉香雕盒" data-stock="4">
+          <div class="treasure-icon">香</div>
+          <div class="treasure-name">沉香雕盒</div>
+          <div class="treasure-num">库存 4</div>
+          <div class="quantity-control">
+            <button class="qty-btn minus" type="button">−</button>
+            <span class="qty-value">0</span>
+            <button class="qty-btn plus" type="button">＋</button>
+          </div>
+        </article>
+
+        <article class="treasure" data-name="夜明珠" data-stock="1">
+          <div class="treasure-icon">明</div>
+          <div class="treasure-name">夜明珠</div>
+          <div class="treasure-num">库存 1</div>
+          <div class="quantity-control">
+            <button class="qty-btn minus" type="button">−</button>
+            <span class="qty-value">0</span>
+            <button class="qty-btn plus" type="button">＋</button>
+          </div>
+        </article>
+      </div>
+
+      <div class="selection-summary">
+        <span>已选 <b id="selectedKinds">0</b> 种</span>
+        <span>共 <b id="selectedCount">0</b> 件</span>
+      </div>
+
+      <div class="sheet-footer">
+        <button class="btn" id="backBtn">返回</button>
+        <button class="btn primary" id="chooseTreasureBtn" disabled>选定珍宝</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+let selectedType = null;
+const selectedTreasures = new Map();
+
+const rewardCards = document.querySelectorAll(".reward-card");
+const confirmBtn = document.getElementById("confirmBtn");
+const treasuryLayer = document.getElementById("treasuryLayer");
+const treasureValue = document.getElementById("treasureValue");
+const chooseTreasureBtn = document.getElementById("chooseTreasureBtn");
+const toast = document.getElementById("toast");
+const selectedKinds = document.getElementById("selectedKinds");
+const selectedCount = document.getElementById("selectedCount");
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove("show"),1200);
+}
+
+rewardCards.forEach(card=>{
+  card.addEventListener("click",()=>{
+    rewardCards.forEach(item=>item.classList.remove("selected"));
+    card.classList.add("selected");
+    selectedType = card.dataset.type;
+
+    if(selectedType === "treasure"){
+      treasuryLayer.classList.add("show");
+      confirmBtn.disabled = selectedTreasures.size === 0;
+    }else{
+      confirmBtn.disabled = false;
+    }
+  });
+});
+
+function updateTreasureSummary(){
+  let kinds = 0;
+  let total = 0;
+
+  document.querySelectorAll(".treasure").forEach(item=>{
+    const name = item.dataset.name;
+    const count = selectedTreasures.get(name) || 0;
+    const stock = Number(item.dataset.stock);
+
+    item.querySelector(".qty-value").textContent = count;
+    item.querySelector(".minus").disabled = count <= 0;
+    item.querySelector(".plus").disabled = count >= stock;
+    item.classList.toggle("selected", count > 0);
+
+    if(count > 0){
+      kinds++;
+      total += count;
+    }
+  });
+
+  selectedKinds.textContent = kinds;
+  selectedCount.textContent = total;
+  chooseTreasureBtn.disabled = total === 0;
+}
+
+document.querySelectorAll(".treasure").forEach(item=>{
+  const name = item.dataset.name;
+  const stock = Number(item.dataset.stock);
+
+  item.querySelector(".plus").addEventListener("click",()=>{
+    const current = selectedTreasures.get(name) || 0;
+    if(current >= stock) return;
+    selectedTreasures.set(name,current + 1);
+    updateTreasureSummary();
+  });
+
+  item.querySelector(".minus").addEventListener("click",()=>{
+    const current = selectedTreasures.get(name) || 0;
+    if(current <= 1){
+      selectedTreasures.delete(name);
+    }else{
+      selectedTreasures.set(name,current - 1);
+    }
+    updateTreasureSummary();
+  });
+});
+
+chooseTreasureBtn.addEventListener("click",()=>{
+  if(selectedTreasures.size === 0) return;
+
+  const summary = [...selectedTreasures.entries()]
+    .map(([name,count])=>`${name}×${count}`)
+    .join("、");
+
+  treasureValue.textContent = summary;
+  treasuryLayer.classList.remove("show");
+  confirmBtn.disabled = false;
+});
+
+document.getElementById("treasuryClose").addEventListener("click",()=>{
+  treasuryLayer.classList.remove("show");
+});
+
+document.getElementById("backBtn").addEventListener("click",()=>{
+  treasuryLayer.classList.remove("show");
+});
+
+confirmBtn.addEventListener("click",()=>{
+  const labels = {
+    ink:"御赐墨宝",
+    silver:"赏银百两",
+    gold:"赏金百两",
+    treasure:[...selectedTreasures.entries()]
+      .map(([name,count])=>`${name}×${count}`)
+      .join("、") || "国库珍宝"
+  };
+
+  if(!selectedType) return;
+  showToast(`已赏赐：${labels[selectedType]}`);
+});
+
+document.getElementById("cancelBtn").addEventListener("click",()=>{
+  showToast("已取消赏赐");
+});
+
+updateTreasureSummary();
+
+document.getElementById("closeBtn").addEventListener("click",()=>{
+  document.getElementById("rewardPanel").style.display = "none";
+});
+</script>
+</body>
+</html>

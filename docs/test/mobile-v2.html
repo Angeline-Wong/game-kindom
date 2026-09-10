@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>长春宫 · 手机竖版 V2</title>
+<style>
+:root{--gold:#e8c76f;--dark:#160d08;--paper:#f2dfac;--ink:#563513}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#080503;font-family:"STKaiti","KaiTi","Microsoft YaHei",serif}
+body{display:grid;place-items:center}button{font:inherit}
+.game{position:relative;width:min(100vw,430px);height:100dvh;min-height:760px;max-height:932px;overflow:hidden;color:var(--gold);background:#160d08;box-shadow:0 0 70px #000}
+.bg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,3,1,.15),rgba(7,3,1,.42) 45%,rgba(7,3,1,.88)),url("./assets/palace.png") center/cover}
+.header{position:absolute;z-index:5;top:15px;width:100%;text-align:center;text-shadow:0 2px 8px #000}
+.header small{font-size:10px;letter-spacing:4px}.header h1{margin:5px 0 2px;font-size:32px;letter-spacing:10px;text-indent:10px}.header p{margin:0;font-size:13px;letter-spacing:3px}
+.close{position:absolute;right:13px;top:4px;width:40px;height:40px;border:1px solid #c89e4c;border-radius:50%;background:#f1d992;color:#704617;font-size:28px;line-height:32px}
+.hero{position:absolute;z-index:2;top:82px;left:0;width:100%;height:345px}
+.role{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 15px 20px #000)}
+.name-card{position:absolute;left:18px;bottom:34px;display:flex;gap:7px;writing-mode:vertical-rl;padding:12px 8px;border-inline:2px solid #d2aa4d;background:rgba(18,8,4,.72)}
+.name-card b{font-size:22px;letter-spacing:6px}.name-card span{font-size:13px;letter-spacing:3px}
+.actions{position:absolute;z-index:6;top:405px;left:13px;right:13px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.actions button{display:grid;justify-items:center;gap:4px;padding:0;border:0;background:none;color:#ead18e}
+.actions b{display:grid;place-items:center;width:45px;height:45px;border:2px solid #b78c3c;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff4c9,#cfaa62);color:#765019;font-size:17px;box-shadow:0 0 14px rgba(229,190,91,.55)}
+.actions span{font-size:11px;white-space:nowrap;text-shadow:0 2px 4px #000}
+.profile{position:absolute;z-index:4;top:482px;left:13px;right:13px;bottom:65px;overflow:auto;padding:18px 18px 14px;border:1px solid #b98635;border-radius:6px;background:linear-gradient(120deg,rgba(248,234,191,.97),rgba(215,181,108,.96));color:var(--ink);box-shadow:0 18px 35px #000}
+.profile:before,.profile:after{content:"";position:absolute;left:-4px;right:-4px;height:8px;border-radius:50%;background:linear-gradient(#e5c67d,#a76f23)}.profile:before{top:-4px}.profile:after{bottom:-4px}
+.profile h2{margin:0;text-align:center;font-size:21px;letter-spacing:4px}.profile h2 em{font-size:11px;font-style:normal;color:#99703b}
+.bio{margin:8px 0;font-size:13px;line-height:1.55;text-align:center}.rule{height:1px;margin:8px 0 12px;background:linear-gradient(90deg,transparent,#9c6c2e,transparent)}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+dl{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:9px}dl div{padding-left:7px;border-left:2px solid rgba(137,88,26,.32)}dt{font-size:10px;color:#8a6a3e}dd{margin:2px 0 0;font-size:12px}
+.favor{margin:0 0 7px;font-size:12px}.favor span{float:right;color:#9d3229}.stat label{display:flex;justify-content:space-between;font-size:11px}.bar{height:6px;margin:2px 0 6px;border-radius:6px;background:#9d875f;overflow:hidden}.bar i{display:block;height:100%;width:var(--v);background:linear-gradient(90deg,#8f5d22,#d6a848)}
+.tabs{position:absolute;z-index:9;left:0;right:0;bottom:0;height:58px;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(12,6,3,.92);border-top:1px solid #8f6826}
+.tabs button{border:0;border-right:1px solid rgba(143,104,38,.38);background:none;color:#d6bb71;font-size:14px}.tabs .active{background:linear-gradient(90deg,#b8862e,#765019);color:#fff}
+.toast{position:absolute;z-index:20;top:105px;left:50%;opacity:0;transform:translate(-50%,-8px);padding:8px 16px;border:1px solid #d3aa54;border-radius:4px;background:rgba(25,11,6,.92);white-space:nowrap;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-height:820px){.hero{top:70px;height:292px}.actions{top:342px}.profile{top:414px}.bio{display:none}.header h1{font-size:27px}}
+</style>
+</head>
+<body>
+<main class="game">
+  <div class="bg"></div>
+  <header class="header"><small>紫宸纪事 · 后宫人物</small><h1>长 春 宫</h1><p>西侧殿 · 人物档案</p><button class="close">×</button></header>
+  <section class="hero"><img class="role" src="./assets/role-mobile.png" alt="程若兮"><div class="name-card"><b>程若兮</b><span>贵人</span></div></section>
+  <nav class="actions">
+    <button data-action="宠幸"><b>♥</b><span>宠幸</span></button><button data-action="闲聊"><b>聊</b><span>闲聊</span></button>
+    <button data-action="赏赐"><b>赏</b><span>赏赐</span></button><button data-action="晋升"><b>升</b><span>晋升</span></button>
+    <button data-action="搬迁"><b>迁</b><span>搬迁</span></button><button data-action="问责"><b>!</b><span>问责</span></button>
+  </nav>
+  <article class="profile">
+    <h2>人物小传 <em>卷一</em></h2><p class="bio">江南程氏嫡女，温婉娴静，善琴棋书画，性情柔顺，颇得圣心。</p><div class="rule"></div>
+    <div class="details">
+      <dl><div><dt>入宫时间</dt><dd>永和三年三月初七</dd></div><div><dt>年龄</dt><dd>十八岁</dd></div><div><dt>身份</dt><dd>贵人</dd></div><div><dt>居所</dt><dd>长春宫西侧殿</dd></div></dl>
+      <div class="stat"><p class="favor">宠爱 <span>♥ ♥ ♥ ♥ ♡</span></p>
+        <label>容貌 <span>92</span></label><div class="bar"><i style="--v:92%"></i></div>
+        <label>才艺 <span>78</span></label><div class="bar"><i style="--v:78%"></i></div>
+        <label>心机 <span>66</span></label><div class="bar"><i style="--v:66%"></i></div>
+        <label>忠诚 <span>85</span></label><div class="bar"><i style="--v:85%"></i></div>
+      </div>
+    </div>
+  </article>
+  <nav class="tabs"><button class="active">属性</button><button>履历</button><button>关系</button><button>赏赐记录</button></nav>
+  <div class="toast"></div>
+</main>
+<script src="./demo.js"></script>
+</body>
+</html>

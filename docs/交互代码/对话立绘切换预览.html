@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="ABjWOoZXjDHwrvB4By5ZOQ">
+<head data-page-node-id="Fr5aSR0dIbptHNpkn9m0Qq">
+<meta charset="UTF-8" data-page-node-id="y6EbdwAlwFpVWC6kHIiRBh" />
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="wePiORLAo8M2XFWi4jXgpp" />
+<title>对话立绘切换预览（妃子 ↔ 皇帝）</title>
+<style>
+  :root {
+    --gold-1: #f2d98f;
+    --gold-2: #c79a43;
+    --paper: #fbf5e8;
+    --paper-2: #f4ead5;
+    --ink: #3b2717;
+    --line: #c8aa72;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: STKaiti, KaiTi, 'Noto Serif SC', serif;
+    background: #1a120a;
+    color: var(--ink);
+    padding: 18px 12px;
+    display: grid;
+    place-items: center;
+  }
+  h1 {
+    color: #f1d995;
+    text-align: center;
+    margin: 0 0 18px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-size: 22px;
+  }
+  .stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    width: 100%;
+    max-width: 1080px;
+  }
+  .frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 520 / 680;
+    overflow: hidden;
+    border-radius: 18px;
+    background:
+      linear-gradient(rgba(20, 12, 8, 0.18), rgba(15, 9, 5, 0.45)),
+      linear-gradient(180deg, #2a1a10 0%, #160c07 100%);
+    box-shadow: 0 18px 40px #000c;
+  }
+  .frame-label {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    z-index: 9;
+    padding: 4px 14px;
+    color: #f0d491;
+    background: #2a1a0ccc;
+    border: 1px solid #876326;
+    border-radius: 999px;
+    font: 13px/1.6 KaiTi, STKaiti, serif;
+    letter-spacing: 2px;
+  }
+  .character-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .character-slot {
+    position: absolute;
+    top: 18%;
+    width: 52%;
+    height: 68%;
+    overflow: hidden;
+    transition: transform .28s ease, opacity .28s ease, filter .28s ease;
+  }
+  .character-slot.left { left: -2%; }
+  .character-slot.right { right: -2%; }
+  .character-slot.is-speaker {
+    z-index: 3;
+    transform: translateY(-1.2%);
+    opacity: 1;
+    filter: drop-shadow(0 14px 18px #000c);
+  }
+  .character-slot.is-listener {
+    z-index: 2;
+    transform: translateY(2%) scale(.94);
+    opacity: .42;
+    filter: drop-shadow(0 6px 8px #0006) saturate(.78);
+  }
+  .character-placeholder {
+    position: absolute;
+    inset: 8% 8% 0;
+    background-repeat: no-repeat;
+    background-size: 120% auto;
+    background-position: center bottom;
+    border-radius: 46% 46% 14% 14% / 30% 30% 8% 8%;
+    filter: drop-shadow(0 10px 13px #0009);
+  }
+  .story-stack {
+    position: absolute;
+    z-index: 30;
+    left: 0;
+    right: 0;
+    bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 16px;
+    pointer-events: none;
+  }
+  .dialogue-section, .choice-panel { pointer-events: auto; }
+  .nameplate {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    width: 58%;
+    min-width: 205px;
+    height: 46px;
+    margin-left: 10px;
+    margin-bottom: -8px;
+    padding: 0 28px 0 42px;
+    color: #4a3014;
+    background: linear-gradient(90deg, #f5dea0, #e4c46d 58%, #cfa343e0 78%, #cfa34300 100%);
+    border-radius: 14px 0 0 0;
+    box-shadow: 0 3px 8px #432a1024;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: .16em;
+  }
+  .nameplate::before {
+    content: '◆';
+    position: absolute;
+    left: 17px;
+    color: #9f7027;
+    font-size: 13px;
+  }
+  .dialogue-box {
+    position: relative;
+    min-height: 138px;
+    padding: 31px 56px 38px 24px;
+    background: linear-gradient(#fffceff7, #f7efd9fa);
+    border: 2px solid #d7bd82;
+    border-radius: 15px;
+    box-shadow:
+      inset 0 0 0 1px #ffffffbf,
+      inset 0 0 20px #a6823f1a,
+      0 7px 18px #301e0c2e;
+  }
+  .dialogue-box::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid #977b4857;
+    border-radius: 10px;
+    pointer-events: none;
+  }
+  .dialogue-text {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.65;
+    letter-spacing: .04em;
+  }
+  .choice-panel { display: flex; flex-direction: column; gap: 10px; padding: 0 12px; }
+  .choice-btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 18px;
+    color: #563614;
+    background: linear-gradient(180deg, #ffffffcc, #f9efd3f0);
+    border: 1px solid #bd9858;
+    border-radius: 11px;
+    box-shadow: inset 0 0 0 2px #ffffff8c, 0 3px 8px #24180c24;
+    font: 20px/1.2 STKaiti, KaiTi, serif;
+    letter-spacing: .12em;
+    cursor: pointer;
+  }
+  .skip-btn {
+    position: absolute;
+    z-index: 60;
+    top: 12px;
+    right: 16px;
+    height: 30px;
+    padding: 0 11px;
+    color: #9a6a20;
+    background: #fff8e0c2;
+    border: 1px solid #b58533b8;
+    border-radius: 16px;
+    backdrop-filter: blur(3px);
+    box-shadow: inset 0 0 0 1px #ffffff6b;
+    font: 15px/28px STKaiti, KaiTi, serif;
+    letter-spacing: .14em;
+    cursor: pointer;
+  }
+  footer {
+    grid-column: 1 / -1;
+    color: #bda26a;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body data-page-node-id="gTKnqSfbTrUxDo5x1gge6R">
+  <h1 data-page-node-id="l3H3RlPwuAUoDwUJJbU6jv">对话立绘切换预览 · 妃子 ↔ 皇帝</h1>
+  <div class="stage" data-page-node-id="1cCUCI6Fk4oq3VcbrNbvTR">
+    <!-- 帧 1：妃子开场 -->
+    <section class="frame" id="frameOpening" data-page-node-id="99afVqDqcw8nOmgcQWoRLC">
+      <span class="frame-label" data-page-node-id="AyBdIfpzUYxhrvYzdghP9m">① 妃子开场</span>
+      <button class="skip-btn" data-page-node-id="xpG4rUW5EJc1sgErhI1TaK">跳过</button>
+      <div class="character-layer" aria-hidden="true" data-page-node-id="ZPdcGMbO0xyhgDHi3BNq7h">
+        <div class="character-slot left is-speaker" data-page-node-id="wDDPiB7vYzF9iQn9RtFxpf">
+          <div class="character-placeholder" style="background-image: url('../../src/assets/consort-portraits/consort-01.png')" data-page-node-id="w0Alddh4XjQlFTo4P68Ipg"></div>
+        </div>
+        <div class="character-slot right is-listener" data-page-node-id="o26E1JSZ9ECyOcHGScEIlx">
+          <div class="character-placeholder" style="background-image: url('../../src/assets/emperor-portraits/emperor-01.png')" data-page-node-id="AkvKeKPO1VXSAXr2h1Fs1r"></div>
+        </div>
+      </div>
+      <div class="story-stack" data-page-node-id="ZjtJT9YPCRMpxEdhir6ERE">
+        <section class="dialogue-section" data-page-node-id="CCWlhOEWrfBSrPMw9cLhw5">
+          <div class="dialogue-wrap" data-page-node-id="pIwlyFYw2Q0a2YCAiEuylC">
+            <div class="nameplate" data-page-node-id="BeCnQ08kJcXSk9WNAnE3DL">顾清漪</div>
+            <div class="dialogue-box" data-page-node-id="VhbjXC07nBDHKazlJD3lPz"><p class="dialogue-text" data-page-node-id="WSnicTFgcrNruD2fSyTpkc">臣妾今日抄经焚香，心里很是安宁。陛下若不嫌清静，便坐一会儿吧。</p></div>
+          </div>
+        </section>
+        <section class="choice-panel" data-page-node-id="IzVNvimnPglHGud8Va1mCG">
+          <button class="choice-btn" data-page-node-id="qthqxSqVTZBSwRwtZQmPun">留下片刻</button>
+          <button class="choice-btn" data-page-node-id="grLhtygrtY4QqLg0GuBGEa">宽慰几句</button>
+        </section>
+      </div>
+    </section>
+
+    <!-- 帧 2：皇帝回应 -->
+    <section class="frame" id="frameReply" data-page-node-id="xNIzryAjE86mZGEvXqbEiq">
+      <span class="frame-label" data-page-node-id="GFimBqDN4FMNNxpF4CRDbb">② 皇帝回应</span>
+      <button class="skip-btn" data-page-node-id="XxGmmrYThkOUDxkCKYzJQu">跳过</button>
+      <div class="character-layer" aria-hidden="true" data-page-node-id="5JbPo5nlud3pHGMPgJ7OHG">
+        <div class="character-slot left is-listener" data-page-node-id="0YxvkI7fqhsRo1mzRUTRzd">
+          <div class="character-placeholder" style="background-image: url('../../src/assets/consort-portraits/consort-01.png')" data-page-node-id="Dp6lAzGyedk2XNI1hmf1qM"></div>
+        </div>
+        <div class="character-slot right is-speaker" data-page-node-id="V1mbGXvg56UWWUYwrtNECR">
+          <div class="character-placeholder" style="background-image: url('../../src/assets/emperor-portraits/emperor-01.png')" data-page-node-id="3RHGNCCk739F4JlVeCwUpF"></div>
+        </div>
+      </div>
+      <div class="story-stack" data-page-node-id="6M30hVTWs5t2z1J6kGXj46">
+        <section class="dialogue-section" data-page-node-id="miz0Yw7J9WBeFO9v09A5jZ">
+          <div class="dialogue-wrap" data-page-node-id="S5UZuboGevH2P9zbx90HyL">
+            <div class="nameplate" data-page-node-id="xnhMpviZGbPqOVjPKcnvgJ">皇帝</div>
+            <div class="dialogue-box" data-page-node-id="4EZ6JGrezZDwxA2eXvWQLG"><p class="dialogue-text" data-page-node-id="qjAMhil8L32JPXsvIYGVYl">皇帝在她宫中坐了片刻，听她说起近日读的经书。</p></div>
+          </div>
+        </section>
+        <section class="choice-panel" data-page-node-id="ULlPpqygrfvyFzedIhyhNo">
+          <button class="choice-btn" data-page-node-id="FaeH9yo3vRDEaTrlI5pVBN">继续</button>
+        </section>
+      </div>
+    </section>
+  </div>
+  <footer data-page-node-id="D0nYHM8wmuqtuwhAulgVSF">两个窗口同时展示：当帧①皇帝高亮（右侧亮起）时，帧②会回到妃子高亮；点击选项后即可看到立绘位置与高亮的自动切换。</footer>
+</body>
+</html>

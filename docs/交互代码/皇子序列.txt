@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>皇嗣名册 V4</title>
+<style>
+  :root{
+    --gold:#efcb69;
+    --gold-2:#c99536;
+    --gold-3:#79511c;
+    --red:#8b2c28;
+    --red-dark:#51130f;
+    --panel:#21150e;
+    --panel-2:#120c08;
+    --paper:#ead7ad;
+    --paper-2:#cfb171;
+    --ink:#402915;
+    --muted:#8b6f43;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:transparent;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  }
+
+  body{
+    display:grid;
+    place-items:center;
+  }
+
+  .stage{
+    position:relative;
+    width:min(100vw,430px);
+    height:min(100vh,932px);
+    min-height:720px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 26%,rgba(221,171,62,.10),transparent 32%),
+      linear-gradient(#2b2117,#130e0a);
+  }
+
+  .mask{
+    position:absolute;
+    inset:0;
+    background:rgba(8,5,3,.64);
+    backdrop-filter:blur(2px);
+  }
+
+  .panel{
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:50%;
+    height:min(85vh,790px);
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border:1px solid #8b5f22;
+    border-radius:20px 20px 15px 15px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.04),transparent 16%),
+      linear-gradient(#2b1b10,#140d09);
+    box-shadow:
+      0 20px 48px rgba(0,0,0,.50),
+      inset 0 0 0 2px rgba(239,202,98,.05);
+    animation:panelIn .28s ease-out;
+  }
+
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid rgba(224,178,76,.15);
+    border-radius:15px 15px 11px 11px;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  .header{
+    flex:0 0 auto;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    border-bottom:1px solid #75501d;
+    background:
+      radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),
+      linear-gradient(180deg,#422714,#21140d);
+  }
+
+  .header h1{
+    margin:0;
+    color:#f2d176;
+    font-size:25px;
+    letter-spacing:.24em;
+    text-indent:.24em;
+  }
+
+  .header small{
+    position:absolute;
+    bottom:7px;
+    color:#a98b55;
+    font-size:10px;
+    letter-spacing:.16em;
+  }
+
+  .close-btn{
+    position:absolute;
+    right:13px;
+    top:13px;
+    width:36px;
+    height:36px;
+    border:1px solid #996a24;
+    border-radius:50%;
+    background:linear-gradient(#332012,#18100b);
+    color:#efcf72;
+    font-size:21px;
+    cursor:pointer;
+  }
+
+  .summary{
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    padding:7px 10px;
+    background:#120c09;
+    border-bottom:1px solid #5e3e15;
+  }
+
+  .summary div{
+    position:relative;
+    text-align:center;
+    padding:6px 2px;
+    color:#a68d59;
+    font-size:10px;
+  }
+
+  .summary div:not(:last-child)::after{
+    content:"";
+    position:absolute;
+    right:0;
+    top:20%;
+    bottom:20%;
+    width:1px;
+    background:linear-gradient(transparent,#704b1a,transparent);
+  }
+
+  .summary b{
+    display:block;
+    color:#f0c85d;
+    font-size:17px;
+  }
+
+  .filters{
+    flex:0 0 auto;
+    display:grid;
+    gap:7px;
+    padding:8px 9px 9px;
+    background:#18100c;
+    border-bottom:1px solid #5b3b14;
+  }
+
+  .rank-tabs{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+
+  .rank-tabs::-webkit-scrollbar{display:none}
+
+  .tab{
+    flex:0 0 auto;
+    min-width:54px;
+    height:28px;
+    border:1px solid #75501d;
+    border-radius:14px;
+    background:#21150e;
+    color:#b5975b;
+    font-family:inherit;
+    font-size:12px;
+    cursor:pointer;
+  }
+
+  .tab.active{
+    color:#ffe49b;
+    border-color:#c79839;
+    background:linear-gradient(#90312c,#561612);
+  }
+
+  .tool-row{
+    display:grid;
+    grid-template-columns:1fr 84px;
+    gap:7px;
+  }
+
+  .search{
+    height:32px;
+    display:flex;
+    align-items:center;
+    border:1px solid #73501e;
+    border-radius:16px;
+    background:#0f0a07;
+  }
+
+  .search span{
+    padding-left:10px;
+    color:#a98442;
+  }
+
+  .search input{
+    width:100%;
+    border:0;
+    outline:0;
+    padding:0 9px;
+    color:#efd68e;
+    background:transparent;
+    font-family:inherit;
+    font-size:13px;
+  }
+
+  .sort-trigger{
+    border:1px solid #805820;
+    border-radius:16px;
+    background:linear-gradient(#2c1c10,#17100b);
+    color:#d3af60;
+    font-family:inherit;
+    cursor:pointer;
+  }
+
+  .cards{
+    flex:1 1 auto;
+    overflow-y:auto;
+    padding:12px 10px 16px 19px;
+    display:grid;
+    gap:12px;
+    align-content:start;
+    scrollbar-width:thin;
+    scrollbar-color:#896226 transparent;
+  }
+
+  .card{
+    position:relative;
+    min-height:116px;
+    margin-left:26px;
+    padding:11px 10px 10px 65px;
+    border:1px solid #8b6328;
+    border-radius:14px 18px 18px 14px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.12),transparent 38%),
+      linear-gradient(90deg,var(--paper),var(--paper-2));
+    box-shadow:
+      0 7px 15px rgba(0,0,0,.25),
+      inset 0 0 0 2px rgba(255,248,216,.22);
+    cursor:pointer;
+    transition:.18s ease;
+    animation:cardIn .34s ease both;
+  }
+
+  .card:nth-child(even){transform:translateX(6px)}
+
+  .card:hover{
+    transform:translateY(-2px) translateX(2px);
+    box-shadow:
+      0 10px 20px rgba(0,0,0,.29),
+      inset 0 0 0 2px rgba(255,248,216,.30);
+  }
+
+  .card:nth-child(even):hover{
+    transform:translateY(-2px) translateX(8px);
+  }
+
+  .card.selected{
+    border-color:#d0a343;
+    box-shadow:
+      0 0 0 2px rgba(239,198,89,.14),
+      0 10px 20px rgba(0,0,0,.30),
+      inset 0 0 0 2px rgba(255,248,216,.32);
+  }
+
+  .portrait{
+    position:absolute;
+    left:-31px;
+    top:50%;
+    transform:translateY(-50%);
+    width:82px;
+    height:94px;
+    border-radius:42px 42px 14px 14px;
+    overflow:hidden;
+    border:2px solid #c6963a;
+    background:
+      radial-gradient(circle at 50% 26%,rgba(255,239,191,.58),transparent 24%),
+      linear-gradient(145deg,#6e5a3d,#2d2119);
+    box-shadow:0 6px 14px rgba(0,0,0,.28),0 0 0 3px rgba(91,55,18,.42);
+  }
+
+  .portrait::before{
+    content:attr(data-initial);
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    color:#f4dc99;
+    font-size:39px;
+    text-shadow:0 2px 5px #2b0f0a;
+  }
+
+  .quality{
+    position:absolute;
+    left:4px;
+    top:4px;
+    padding:2px 5px;
+    border:1px solid #b57f2a;
+    border-radius:8px;
+    background:rgba(83,18,15,.84);
+    color:#f1d47a;
+    font-size:9px;
+  }
+
+  .rank-ribbon{
+    position:absolute;
+    right:-1px;
+    top:9px;
+    min-width:50px;
+    height:22px;
+    padding:0 9px 0 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#f6dd92;
+    font-size:10px;
+    background:linear-gradient(90deg,#8c5f1f,#51300d);
+    border:1px solid #c18b31;
+    border-radius:12px 0 0 12px;
+  }
+
+  .name-row{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+    padding-right:52px;
+  }
+
+  .name{
+    color:#4a2d14;
+    font-size:18px;
+    font-weight:700;
+  }
+
+  .mother{
+    color:#7f633b;
+    font-size:10px;
+  }
+
+  .line{
+    height:1px;
+    margin:6px 0;
+    background:linear-gradient(90deg,#ae8643,transparent);
+  }
+
+  .stats{
+    display:flex;
+    gap:12px;
+    color:#7b603b;
+    font-size:10px;
+  }
+
+  .stats b{
+    color:#7c2e24;
+    font-size:13px;
+    margin-right:2px;
+  }
+
+  .status{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-top:7px;
+  }
+
+  .badge{
+    padding:2px 6px;
+    border:1px solid rgba(116,79,28,.32);
+    border-radius:10px;
+    background:rgba(255,248,220,.34);
+    color:#6d542f;
+    font-size:9px;
+  }
+
+  .badge.hot{
+    border-color:#b36b5a;
+    background:#efd1c7;
+    color:#872f29;
+  }
+
+  .detail-sheet,
+  .sort-sheet{
+    position:absolute;
+    left:12px;
+    right:12px;
+    bottom:12px;
+    z-index:30;
+    border:1px solid #8e6224;
+    border-radius:18px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.055),transparent 26%),
+      linear-gradient(#2d1c11,#160e0a);
+    box-shadow:
+      0 -10px 28px rgba(0,0,0,.38),
+      inset 0 0 0 2px rgba(239,201,95,.05);
+    transform:translateY(125%);
+    opacity:0;
+    transition:.24s ease;
+  }
+
+  .detail-sheet.show,
+  .sort-sheet.show{
+    transform:translateY(0);
+    opacity:1;
+  }
+
+  .detail-sheet{padding:14px 14px 16px}
+  .sort-sheet{padding:14px}
+
+  .sheet-handle{
+    width:42px;
+    height:4px;
+    margin:0 auto 10px;
+    border-radius:3px;
+    background:#8f6a2b;
+    opacity:.65;
+  }
+
+  .sheet-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  .sheet-title{
+    margin:0;
+    color:#f1cf72;
+    font-size:20px;
+  }
+
+  .sheet-sub{
+    margin-top:3px;
+    color:#a78b56;
+    font-size:11px;
+  }
+
+  .sheet-close{
+    width:32px;
+    height:32px;
+    border:1px solid #8b6124;
+    border-radius:50%;
+    background:#1a110c;
+    color:#e8c76d;
+    font-size:18px;
+    cursor:pointer;
+  }
+
+  .sheet-actions{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:13px;
+  }
+
+  .sheet-actions button{
+    min-height:38px;
+    border:1px solid #7c5520;
+    border-radius:12px;
+    background:linear-gradient(#2b1a10,#17100b);
+    color:#c6a55f;
+    font-family:inherit;
+    cursor:pointer;
+  }
+
+  .sheet-actions button.primary{
+    color:#ffe49a;
+    border-color:#b48330;
+    background:linear-gradient(#7f2a21,#4b140f);
+  }
+
+  .sort-title{
+    margin:0 0 10px;
+    text-align:center;
+    color:#f0cf73;
+    font-size:18px;
+  }
+
+  .sort-options{
+    display:grid;
+    gap:7px;
+  }
+
+  .sort-option{
+    min-height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 12px;
+    border:1px solid #6d4a1b;
+    border-radius:12px;
+    background:#1b120c;
+    color:#bda05e;
+    font-family:inherit;
+    cursor:pointer;
+  }
+
+  .sort-option.active{
+    color:#ffe39a;
+    border-color:#ba8733;
+    background:linear-gradient(#4a2117,#28130f);
+  }
+
+  .direction-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:10px;
+  }
+
+  .direction-row button{
+    min-height:38px;
+    border:1px solid #6f4c1c;
+    border-radius:12px;
+    background:#1a110b;
+    color:#b89a5a;
+    font-family:inherit;
+    cursor:pointer;
+  }
+
+  .direction-row button.active{
+    color:#ffe39a;
+    border-color:#b98230;
+    background:linear-gradient(#7d2921,#4a140f);
+  }
+
+  .toast{
+    position:absolute;
+    left:50%;
+    bottom:18px;
+    z-index:40;
+    transform:translate(-50%,14px);
+    opacity:0;
+    padding:8px 14px;
+    border:1px solid #8b6123;
+    border-radius:16px;
+    background:rgba(18,11,8,.94);
+    color:#edce79;
+    font-size:12px;
+    transition:.2s ease;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  @keyframes panelIn{
+    from{opacity:0;transform:translateY(-47%) scale(.97)}
+    to{opacity:1;transform:translateY(-50%) scale(1)}
+  }
+
+  @keyframes cardIn{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="mask"></div>
+
+  <section class="panel" id="panel">
+    <header class="header">
+      <h1>皇嗣名册</h1>
+      <small>宗室血脉 · 教养有序</small>
+      <button class="close-btn" id="closeBtn">×</button>
+    </header>
+
+    <div class="summary">
+      <div><b id="totalCount">10</b>皇嗣</div>
+      <div><b>4</b>已成年</div>
+      <div><b>2</b>可册封</div>
+    </div>
+
+    <div class="filters">
+      <div class="rank-tabs">
+        <button class="tab active" data-type="全部">全部</button>
+        <button class="tab" data-type="太子">太子</button>
+        <button class="tab" data-type="皇子">皇子</button>
+        <button class="tab" data-type="公主">公主</button>
+        <button class="tab" data-type="幼年">幼年</button>
+        <button class="tab" data-type="成年">成年</button>
+      </div>
+
+      <div class="tool-row">
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" placeholder="姓名 / 生母" />
+        </label>
+        <button class="sort-trigger" id="sortTrigger">序位 ↓</button>
+      </div>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="detail-sheet" id="detailSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div>
+        <h2 class="sheet-title" id="sheetTitle">萧景珩 · 三皇子</h2>
+        <div class="sheet-sub" id="sheetSub">生母徐贵妃 · 12岁 · 文才88 · 武艺76</div>
+      </div>
+      <button class="sheet-close" id="detailClose">×</button>
+    </div>
+
+    <div class="sheet-actions">
+      <button data-action="详情">详情</button>
+      <button data-action="召见">召见</button>
+      <button data-action="教导">教导</button>
+      <button data-action="赏赐">赏赐</button>
+      <button data-action="婚配">婚配</button>
+      <button class="primary" data-action="册封">册封</button>
+    </div>
+  </section>
+
+  <section class="sort-sheet" id="sortSheet">
+    <div class="sheet-handle"></div>
+    <h2 class="sort-title">排序方式</h2>
+
+    <div class="sort-options">
+      <button class="sort-option active" data-sort="order"><span>序位</span><span>✓</span></button>
+      <button class="sort-option" data-sort="age"><span>年龄</span><span></span></button>
+      <button class="sort-option" data-sort="favor"><span>宠爱</span><span></span></button>
+      <button class="sort-option" data-sort="talent"><span>资质</span><span></span></button>
+      <button class="sort-option" data-sort="mother"><span>生母</span><span></span></button>
+      <button class="sort-option" data-sort="type"><span>身份</span><span></span></button>
+    </div>
+
+    <div class="direction-row">
+      <button class="active" data-direction="desc">降序</button>
+      <button data-direction="asc">升序</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const typeWeight = {
+  "太子": 4,
+  "皇子": 3,
+  "公主": 2,
+  "幼年": 1
+};
+
+const heirs = [
+  {name:"萧承璟", title:"太子", type:"太子", order:1, age:18, mother:"顾皇后", favor:95, talent:94, literary:92, martial:88, status:["储君","监国历练"]},
+  {name:"萧景珩", title:"三皇子", type:"皇子", order:3, age:12, mother:"徐贵妃", favor:88, talent:86, literary:88, martial:76, status:["聪慧过人","可册封"]},
+  {name:"萧明昭", title:"长公主", type:"公主", order:2, age:16, mother:"顾皇后", favor:84, talent:90, literary:91, martial:62, status:["待择驸马"]},
+  {name:"萧怀瑾", title:"二皇子", type:"皇子", order:2, age:15, mother:"沈妃", favor:81, talent:82, literary:78, martial:89, status:["擅长骑射"]},
+  {name:"萧清和", title:"二公主", type:"公主", order:4, age:10, mother:"柳妃", favor:76, talent:84, literary:86, martial:54, status:["温婉知礼"]},
+  {name:"萧允安", title:"四皇子", type:"皇子", order:5, age:8, mother:"苏嫔", favor:72, talent:79, literary:75, martial:73, status:["幼年","上书房"]},
+  {name:"萧令仪", title:"三公主", type:"公主", order:6, age:7, mother:"陆嫔", favor:69, talent:77, literary:82, martial:49, status:["幼年"]},
+  {name:"萧晏宁", title:"五皇子", type:"皇子", order:7, age:5, mother:"叶贵人", favor:65, talent:74, literary:68, martial:71, status:["幼年","体弱"]},
+  {name:"萧昭华", title:"四公主", type:"公主", order:8, age:19, mother:"贺兰妃", favor:61, talent:88, literary:84, martial:66, status:["已成年","可和亲"]},
+  {name:"萧修远", title:"六皇子", type:"皇子", order:9, age:20, mother:"白贵人", favor:58, talent:80, literary:83, martial:79, status:["已成年","可册封"]}
+];
+
+let currentType = "全部";
+let currentSort = "order";
+let currentDirection = "desc";
+let selected = null;
+
+const cards = document.getElementById("cards");
+const searchInput = document.getElementById("searchInput");
+const detailSheet = document.getElementById("detailSheet");
+const sortSheet = document.getElementById("sortSheet");
+const sortTrigger = document.getElementById("sortTrigger");
+const toast = document.getElementById("toast");
+
+function sortLabel(){
+  const map = {
+    order:"序位",
+    age:"年龄",
+    favor:"宠爱",
+    talent:"资质",
+    mother:"生母",
+    type:"身份"
+  };
+  return map[currentSort];
+}
+
+function compare(a,b){
+  let av;
+  let bv;
+
+  if(currentSort === "type"){
+    av = typeWeight[a.type] || 0;
+    bv = typeWeight[b.type] || 0;
+  }else{
+    av = a[currentSort];
+    bv = b[currentSort];
+  }
+
+  if(typeof av === "string"){
+    return currentDirection === "asc"
+      ? av.localeCompare(bv,"zh-CN")
+      : bv.localeCompare(av,"zh-CN");
+  }
+
+  return currentDirection === "asc" ? av-bv : bv-av;
+}
+
+function matchType(item){
+  if(currentType === "全部") return true;
+  if(currentType === "幼年") return item.age < 12;
+  if(currentType === "成年") return item.age >= 16;
+  return item.type === currentType;
+}
+
+function getData(){
+  const keyword = searchInput.value.trim();
+
+  return heirs
+    .filter(matchType)
+    .filter(item => !keyword || item.name.includes(keyword) || item.mother.includes(keyword))
+    .sort(compare);
+}
+
+function render(){
+  const data = getData();
+  document.getElementById("totalCount").textContent = data.length;
+  sortTrigger.textContent = `${sortLabel()} ${currentDirection === "asc" ? "↑" : "↓"}`;
+
+  cards.innerHTML = "";
+
+  data.forEach((item,index)=>{
+    const card = document.createElement("article");
+    card.className = "card" + (selected?.name === item.name ? " selected" : "");
+    card.style.animationDelay = `${index * 45}ms`;
+
+    card.innerHTML = `
+      <div class="portrait" data-initial="${item.name.slice(-1)}">
+        <span class="quality">${item.age >= 16 ? "成年" : "幼年"}</span>
+      </div>
+      <span class="rank-ribbon">${item.title}</span>
+
+      <div class="name-row">
+        <span class="name">${item.name}</span>
+        <span class="mother">生母：${item.mother}</span>
+      </div>
+
+      <div class="line"></div>
+
+      <div class="stats">
+        <span><b>${item.age}</b>岁</span>
+        <span><b>${item.favor}</b>宠爱</span>
+        <span><b>${item.talent}</b>资质</span>
+      </div>
+
+      <div class="status">
+        ${item.status.map((status,i)=>`
+          <span class="badge ${i === 0 && (status.includes("储君") || status.includes("可册封")) ? "hot" : ""}">
+            ${status}
+          </span>
+        `).join("")}
+      </div>
+    `;
+
+    card.onclick = ()=>{
+      selected = item;
+      render();
+
+      document.getElementById("sheetTitle").textContent = `${item.name} · ${item.title}`;
+      document.getElementById("sheetSub").textContent =
+        `生母${item.mother} · ${item.age}岁 · 文才${item.literary} · 武艺${item.martial}`;
+
+      sortSheet.classList.remove("show");
+      detailSheet.classList.add("show");
+    };
+
+    cards.appendChild(card);
+  });
+}
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>toast.classList.remove("show"),1100);
+}
+
+document.querySelectorAll(".tab").forEach(button=>{
+  button.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(item=>item.classList.remove("active"));
+    button.classList.add("active");
+    currentType = button.dataset.type;
+    detailSheet.classList.remove("show");
+    render();
+  };
+});
+
+searchInput.oninput = ()=>{
+  detailSheet.classList.remove("show");
+  render();
+};
+
+sortTrigger.onclick = ()=>{
+  detailSheet.classList.remove("show");
+  sortSheet.classList.toggle("show");
+};
+
+document.querySelectorAll(".sort-option").forEach(button=>{
+  button.onclick = ()=>{
+    currentSort = button.dataset.sort;
+
+    document.querySelectorAll(".sort-option").forEach(item=>{
+      item.classList.remove("active");
+      item.lastElementChild.textContent = "";
+    });
+
+    button.classList.add("active");
+    button.lastElementChild.textContent = "✓";
+    render();
+  };
+});
+
+document.querySelectorAll("[data-direction]").forEach(button=>{
+  button.onclick = ()=>{
+    currentDirection = button.dataset.direction;
+
+    document.querySelectorAll("[data-direction]").forEach(item=>{
+      item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    render();
+  };
+});
+
+document.querySelectorAll("[data-action]").forEach(button=>{
+  button.onclick = ()=>{
+    if(selected){
+      showToast(`${selected.name} · ${button.dataset.action}`);
+    }
+  };
+});
+
+document.getElementById("detailClose").onclick = ()=>{
+  detailSheet.classList.remove("show");
+};
+
+document.getElementById("closeBtn").onclick = ()=>{
+  detailSheet.classList.remove("show");
+  sortSheet.classList.remove("show");
+  document.getElementById("panel").style.display = "none";
+};
+
+render();
+</script>
+</body>
+</html>

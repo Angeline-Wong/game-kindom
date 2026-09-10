@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>紫宸纪事 · 设置 Demo</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070403}button,input{font:inherit}button{cursor:pointer}
+    body{display:grid;place-items:center;font-family:KaiTi,STKaiti,"Microsoft YaHei",serif}.game{position:relative;width:min(100vw,430px);height:min(100dvh,932px);min-height:680px;overflow:hidden;color:#ead18c;background:#100704;box-shadow:0 0 70px #000;isolation:isolate}
+    .bg{position:absolute;inset:0;z-index:-3;background:linear-gradient(180deg,#080302b5,#130704e8 42%,#070302f8),url('./assets/palace.png') center/cover;filter:saturate(.68)}.glow{position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at 50% 10%,#f4c76220,transparent 35%);pointer-events:none}
+    .top{position:relative;height:104px;padding-top:max(18px,env(safe-area-inset-top));border-bottom:1px solid #906526;background:linear-gradient(180deg,#170b06f4,#0c0503e8);text-align:center}.top small{color:#a88b55;font-size:9px;letter-spacing:3px}.top h1{margin:5px 0 2px;color:#f0d487;font-size:29px;font-weight:400;letter-spacing:7px}.top p{margin:0;color:#8f7447;font-size:9px;letter-spacing:2px}.back{position:absolute;left:15px;top:max(26px,env(safe-area-inset-top));width:39px;height:39px;border:1px solid #9d702c;border-radius:50%;color:#edce75;background:#1e0d07;font-size:27px;line-height:34px}.version{position:absolute;right:15px;top:max(35px,calc(env(safe-area-inset-top) + 9px));color:#8b7044;font-size:8px;letter-spacing:1px}
+    .tabs{height:48px;display:grid;grid-template-columns:repeat(4,1fr);padding:0 12px;background:#0d0503e8;border-bottom:1px solid #5f401c}.tabs button{position:relative;border:0;color:#8f7448;background:transparent;font-size:12px;letter-spacing:2px}.tabs button.active{color:#f1d27c}.tabs button.active:after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,#c59035,transparent)}
+    .content{height:calc(100% - 222px);overflow:auto;padding:14px 14px 28px;scrollbar-width:none}.content::-webkit-scrollbar{display:none}.panel{display:none}.panel.active{display:block}.section{margin-bottom:12px;border:1px solid #76501f;background:linear-gradient(145deg,#2c170eeb,#130a06f3);box-shadow:0 9px 18px #0008,inset 0 0 28px #a65b1710}.section-title{height:39px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;color:#e7c873;border-bottom:1px solid #68451d;background:linear-gradient(90deg,#55231380,transparent);font-size:15px;letter-spacing:3px}.section-title small{color:#806b45;font-size:8px;letter-spacing:1px}.row{min-height:57px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:9px 13px;border-bottom:1px solid #49301880}.row:last-child{border-bottom:0}.row b{display:block;color:#d9be7c;font-size:13px;font-weight:400;letter-spacing:1px}.row p{margin:4px 0 0;color:#806e4d;font:9px/1.45 "Microsoft YaHei",sans-serif}.value{color:#b99750;font-size:10px}
+    .switch{position:relative;width:43px;height:23px;border:1px solid #765526;border-radius:20px;background:#100805}.switch:before{content:"";position:absolute;left:3px;top:3px;width:15px;height:15px;border-radius:50%;background:#806637;transition:.18s}.switch.on{border-color:#c49338;background:#59231b;box-shadow:0 0 10px #d5962435}.switch.on:before{left:23px;background:#eed17a;box-shadow:0 0 8px #f1ca63}
+    .slider-row{grid-template-columns:95px 1fr 27px}.slider{appearance:none;width:100%;height:4px;border-radius:5px;background:linear-gradient(90deg,#c28e35 var(--v),#392514 var(--v));outline:none}.slider::-webkit-slider-thumb{appearance:none;width:17px;height:17px;border:2px solid #f0cf77;border-radius:50%;background:#713026;box-shadow:0 0 8px #000}.slider-value{text-align:right;color:#e3c570;font-size:10px}
+    .choice{display:flex;gap:5px}.choice button{min-width:43px;height:27px;padding:0 8px;border:1px solid #66471e;color:#8d7549;background:#160b07;font-size:10px}.choice button.active{color:#f1d384;border-color:#b28130;background:#5d241a;box-shadow:inset 0 0 10px #c28e2829}
+    .save-card{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:10px;min-height:70px;padding:10px 12px;border-bottom:1px solid #49301880}.save-card:last-child{border:0}.seal{display:grid;place-items:center;width:42px;height:42px;border:1px solid #ba8734;border-radius:50%;color:#f0d17a;background:#72271e;font-size:18px}.save-card b{display:block;color:#e4c67a;font-size:13px}.save-card p{margin:3px 0 0;color:#806d49;font:9px/1.4 "Microsoft YaHei",sans-serif}.save-card button,.danger{height:30px;padding:0 11px;border:1px solid #98702e;color:#d9bb70;background:#201008;font-size:10px}.danger{color:#d88d78;border-color:#7d342d;background:#35100d}.notice{display:none;margin:0 14px 10px;padding:8px 10px;border:1px solid #a57b31;color:#ead084;background:#251108ed;text-align:center;font-size:10px}.notice.show{display:block}
+    .footer{position:absolute;left:0;right:0;bottom:0;height:70px;display:grid;grid-template-columns:1fr 1.4fr;gap:10px;padding:10px 15px max(10px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#100704eb,#070302);border-top:1px solid #755020}.footer button{border:1px solid #7f5923;color:#b99a5b;background:#180b06;font-size:13px;letter-spacing:2px}.footer .primary{color:#f3d88d;border-color:#bc8733;background:linear-gradient(#7d2c22,#40110d);box-shadow:inset 0 0 0 2px #e3b74d18}
+    @media(max-height:760px){.top{height:88px;padding-top:11px}.top h1{font-size:24px}.tabs{height:43px}.content{height:calc(100% - 201px)}.row{min-height:51px}.footer{height:70px}}
+  </style>
+</head>
+<body>
+  <main class="game"><div class="bg"></div><div class="glow"></div>
+    <header class="top"><button class="back" aria-label="返回游戏">‹</button><small>紫宸纪事 · 御前设定</small><h1>游戏设置</h1><p>声画 · 阅读 · 存档 · 辅助</p><span class="version">版本 0.1.0</span></header>
+    <nav class="tabs"><button class="active" data-tab="sound">声画</button><button data-tab="reading">阅读</button><button data-tab="save">存档</button><button data-tab="assist">辅助</button></nav>
+    <div class="content">
+      <section class="panel active" id="sound">
+        <article class="section"><div class="section-title">声音设置<small>宫乐与交互反馈</small></div>
+          <label class="row slider-row"><span><b>背景音乐</b><p>场景宫乐音量</p></span><input class="slider" type="range" min="0" max="100" value="72"><span class="slider-value">72</span></label>
+          <label class="row slider-row"><span><b>环境音效</b><p>风雨、宫铃与脚步</p></span><input class="slider" type="range" min="0" max="100" value="65"><span class="slider-value">65</span></label>
+          <label class="row slider-row"><span><b>交互音效</b><p>按钮、圣旨与提示</p></span><input class="slider" type="range" min="0" max="100" value="80"><span class="slider-value">80</span></label>
+        </article>
+        <article class="section"><div class="section-title">画面设置<small>适配当前设备</small></div>
+          <div class="row"><span><b>画面品质</b><p>影响光影、粒子和人物清晰度</p></span><div class="choice"><button>流畅</button><button class="active">精致</button><button>极致</button></div></div>
+          <div class="row"><span><b>天气特效</b><p>雨雪、落花与光尘动画</p></span><button class="switch on" aria-label="天气特效"></button></div>
+          <div class="row"><span><b>省电模式</b><p>降低动态效果与刷新频率</p></span><button class="switch" aria-label="省电模式"></button></div>
+        </article>
+      </section>
+      <section class="panel" id="reading">
+        <article class="section"><div class="section-title">剧情阅读<small>对话显示习惯</small></div>
+          <div class="row"><span><b>文字速度</b><p>调整剧情逐字显示速度</p></span><div class="choice"><button>慢</button><button class="active">适中</button><button>快</button></div></div>
+          <div class="row"><span><b>自动播放</b><p>剧情结束后自动进入下一句</p></span><button class="switch" aria-label="自动播放"></button></div>
+          <div class="row"><span><b>属性变化提示</b><p>显示“宠爱 +8”等结算结果</p></span><button class="switch on" aria-label="属性变化提示"></button></div>
+          <div class="row"><span><b>二次确认</b><p>重大处置与消耗操作再次询问</p></span><button class="switch on" aria-label="二次确认"></button></div>
+        </article>
+        <article class="section"><div class="section-title">界面显示<small>字号与信息密度</small></div>
+          <div class="row"><span><b>剧情字号</b><p>只影响对话与事件文本</p></span><div class="choice"><button>小</button><button class="active">标准</button><button>大</button></div></div>
+          <div class="row"><span><b>简化动态背景</b><p>弹窗开启时弱化场景动画</p></span><button class="switch on" aria-label="简化动态背景"></button></div>
+        </article>
+      </section>
+      <section class="panel" id="save">
+        <article class="section"><div class="section-title">存档管理<small>本机存储</small></div>
+          <div class="save-card"><span class="seal">自</span><div><b>自动存档</b><p>永和7年 九月26日 · 丑时 01:05</p></div><button>读取</button></div>
+          <div class="save-card"><span class="seal">壹</span><div><b>存档一</b><p>养心殿 · 萧承曜 28岁</p></div><button>覆盖</button></div>
+          <div class="save-card"><span class="seal">贰</span><div><b>空白存档位</b><p>尚未建立存档</p></div><button>保存</button></div>
+        </article>
+        <article class="section"><div class="section-title">数据管理<small>谨慎操作</small></div><div class="row"><span><b>导出存档</b><p>生成本地备份文件</p></span><button class="danger">导出</button></div><div class="row"><span><b>重置游戏</b><p>清除当前进度并重新开始</p></span><button class="danger">重置</button></div></article>
+      </section>
+      <section class="panel" id="assist">
+        <article class="section"><div class="section-title">辅助功能<small>阅读与操作支持</small></div>
+          <div class="row"><span><b>高对比文字</b><p>增强正文与背景的明暗差异</p></span><button class="switch" aria-label="高对比文字"></button></div>
+          <div class="row"><span><b>减少动态效果</b><p>关闭摇晃、闪光与大幅转场</p></span><button class="switch" aria-label="减少动态效果"></button></div>
+          <div class="row"><span><b>长按提示</b><p>长按按钮显示用途说明</p></span><button class="switch on" aria-label="长按提示"></button></div>
+          <div class="row"><span><b>新手引导</b><p>显示宫廷系统的操作说明</p></span><button class="switch on" aria-label="新手引导"></button></div>
+        </article>
+        <article class="section"><div class="section-title">其他<small>游戏信息</small></div><div class="row"><span><b>制作人员</b><p>查看游戏制作名单</p></span><span class="value">查看 ›</span></div><div class="row"><span><b>隐私与条款</b><p>本地存档与数据说明</p></span><span class="value">查看 ›</span></div></article>
+      </section>
+    </div>
+    <div class="notice">设置已保存，将在返回游戏后生效。</div>
+    <footer class="footer"><button class="reset">恢复默认</button><button class="primary save">保存设置</button></footer>
+  </main>
+  <script>
+    const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+    $$('.tabs button').forEach(button=>button.onclick=()=>{$$('.tabs button').forEach(x=>x.classList.toggle('active',x===button));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===button.dataset.tab));$('.content').scrollTop=0});
+    $$('.switch').forEach(button=>button.onclick=()=>button.classList.toggle('on'));
+    $$('.choice').forEach(group=>$$('button',group).forEach(button=>button.onclick=()=>$$('button',group).forEach(x=>x.classList.toggle('active',x===button))));
+    $$('.slider').forEach(slider=>{const update=()=>{slider.style.setProperty('--v',slider.value+'%');slider.nextElementSibling.textContent=slider.value};slider.oninput=update;update()});
+    $('.save').onclick=()=>{const notice=$('.notice');notice.classList.add('show');setTimeout(()=>notice.classList.remove('show'),1800)};
+    $('.reset').onclick=()=>location.reload();$('.back').onclick=()=>history.length>1?history.back():null;
+  </script>
+</body>
+</html>

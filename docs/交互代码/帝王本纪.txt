@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>皇帝历史本纪</title>
+<style>
+  :root{
+    --gold:#efca66;
+    --gold-2:#c99536;
+    --gold-3:#76501c;
+    --red:#8d2c28;
+    --red-dark:#51130f;
+    --paper:#f0dfb8;
+    --paper-2:#d7bc82;
+    --ink:#442a14;
+    --muted:#82683e;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:transparent;
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  }
+
+  body{
+    display:grid;
+    place-items:center;
+  }
+
+  .stage{
+    position:relative;
+    width:min(100vw,430px);
+    height:min(100vh,932px);
+    min-height:720px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 26%,rgba(220,170,63,.10),transparent 34%),
+      linear-gradient(#2b2117,#130e0a);
+  }
+
+  .mask{
+    position:absolute;
+    inset:0;
+    background:rgba(8,5,3,.66);
+    backdrop-filter:blur(2px);
+  }
+
+  .panel{
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:50%;
+    height:min(86vh,800px);
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border:1px solid #8b5f22;
+    border-radius:20px 20px 15px 15px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.04),transparent 16%),
+      linear-gradient(#2b1b10,#140d09);
+    box-shadow:
+      0 20px 48px rgba(0,0,0,.50),
+      inset 0 0 0 2px rgba(239,202,98,.05);
+    animation:panelIn .28s ease-out;
+  }
+
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid rgba(224,178,76,.15);
+    border-radius:15px 15px 11px 11px;
+    pointer-events:none;
+    z-index:2;
+  }
+
+  .header{
+    position:relative;
+    flex:0 0 auto;
+    height:74px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:1px solid #75501d;
+    background:
+      radial-gradient(circle at 50% 0,rgba(245,207,106,.17),transparent 48%),
+      linear-gradient(180deg,#422714,#21140d);
+  }
+
+  .header h1{
+    margin:0;
+    color:#f2d176;
+    font-size:25px;
+    letter-spacing:.23em;
+    text-indent:.23em;
+  }
+
+  .header small{
+    position:absolute;
+    bottom:8px;
+    color:#a98b55;
+    font-size:10px;
+    letter-spacing:.18em;
+  }
+
+  .close-btn{
+    position:absolute;
+    right:13px;
+    top:14px;
+    width:36px;
+    height:36px;
+    border:1px solid #996a24;
+    border-radius:50%;
+    background:linear-gradient(#332012,#18100b);
+    color:#efcf72;
+    font-size:21px;
+    cursor:pointer;
+  }
+
+  .emperor-summary{
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:74px 1fr;
+    gap:10px;
+    padding:10px 12px;
+    background:#130c09;
+    border-bottom:1px solid #5e3e15;
+  }
+
+  .seal{
+    width:66px;
+    height:66px;
+    border-radius:18px;
+    display:grid;
+    place-items:center;
+    color:#ffe39a;
+    font-size:24px;
+    background:
+      radial-gradient(circle at 35% 28%,rgba(255,255,255,.10),transparent 18%),
+      linear-gradient(145deg,#8b2d26,#4b140f);
+    border:2px solid #c79839;
+    box-shadow:0 6px 14px rgba(0,0,0,.28);
+  }
+
+  .summary-copy h2{
+    margin:1px 0 3px;
+    color:#f0cf73;
+    font-size:20px;
+  }
+
+  .summary-copy p{
+    margin:0;
+    color:#a98e5a;
+    font-size:11px;
+    line-height:1.6;
+  }
+
+  .metrics{
+    margin-top:7px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+  }
+
+  .metric{
+    padding:5px 4px;
+    text-align:center;
+    border:1px solid #4f3413;
+    border-radius:9px;
+    background:#0f0a07;
+    color:#9f8654;
+    font-size:9px;
+  }
+
+  .metric b{
+    display:block;
+    color:#e8c260;
+    font-size:13px;
+  }
+
+  .filters{
+    flex:0 0 auto;
+    padding:8px 9px;
+    display:grid;
+    gap:7px;
+    background:#18100c;
+    border-bottom:1px solid #5b3b14;
+  }
+
+  .category-tabs{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+
+  .category-tabs::-webkit-scrollbar{display:none}
+
+  .tab{
+    flex:0 0 auto;
+    min-width:56px;
+    height:28px;
+    border:1px solid #75501d;
+    border-radius:14px;
+    background:#21150e;
+    color:#b5975b;
+    font-family:inherit;
+    font-size:12px;
+    cursor:pointer;
+  }
+
+  .tab.active{
+    color:#ffe49b;
+    border-color:#c79839;
+    background:linear-gradient(#90312c,#561612);
+  }
+
+  .search-row{
+    display:grid;
+    grid-template-columns:1fr 82px;
+    gap:7px;
+  }
+
+  .search{
+    height:32px;
+    display:flex;
+    align-items:center;
+    border:1px solid #73501e;
+    border-radius:16px;
+    background:#0f0a07;
+  }
+
+  .search span{
+    padding-left:10px;
+    color:#a98442;
+  }
+
+  .search input{
+    width:100%;
+    border:0;
+    outline:0;
+    padding:0 9px;
+    color:#efd68e;
+    background:transparent;
+    font-family:inherit;
+    font-size:13px;
+  }
+
+  .year-btn{
+    border:1px solid #805820;
+    border-radius:16px;
+    background:linear-gradient(#2c1c10,#17100b);
+    color:#d3af60;
+    font-family:inherit;
+    cursor:pointer;
+  }
+
+  .annals{
+    flex:1 1 auto;
+    overflow-y:auto;
+    padding:14px 12px 20px 20px;
+    scrollbar-width:thin;
+    scrollbar-color:#896226 transparent;
+  }
+
+  .timeline{
+    position:relative;
+    padding-left:28px;
+  }
+
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:10px;
+    top:8px;
+    bottom:8px;
+    width:2px;
+    background:linear-gradient(#d1a345,#8a5d21);
+  }
+
+  .year-group{
+    position:relative;
+    margin-bottom:16px;
+  }
+
+  .year-marker{
+    position:absolute;
+    left:-27px;
+    top:3px;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#c69639;
+    border:3px solid #f0dfae;
+    box-shadow:0 0 0 2px rgba(123,82,28,.22);
+  }
+
+  .year-title{
+    margin:0 0 7px;
+    color:#f0cb6f;
+    font-size:16px;
+    letter-spacing:.08em;
+  }
+
+  .year-note{
+    margin-bottom:8px;
+    color:#9e8454;
+    font-size:10px;
+  }
+
+  .event{
+    position:relative;
+    margin-bottom:8px;
+    padding:10px 11px 9px;
+    border:1px solid #876027;
+    border-radius:12px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.08),transparent 36%),
+      linear-gradient(90deg,var(--paper),var(--paper-2));
+    color:var(--ink);
+    cursor:pointer;
+    box-shadow:
+      0 5px 12px rgba(0,0,0,.22),
+      inset 0 0 0 2px rgba(255,248,216,.18);
+    transition:.16s ease;
+  }
+
+  .event:hover{
+    transform:translateY(-1px);
+    border-color:#c2953a;
+  }
+
+  .event-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+
+  .event-title{
+    color:#4b2d14;
+    font-size:14px;
+    font-weight:700;
+  }
+
+  .event-tag{
+    flex:0 0 auto;
+    padding:2px 7px;
+    border-radius:9px;
+    color:#f7dd91;
+    background:linear-gradient(#8b2d26,#52140f);
+    border:1px solid #b7812d;
+    font-size:9px;
+  }
+
+  .event p{
+    margin:6px 0 0;
+    color:#765c38;
+    font-size:11px;
+    line-height:1.55;
+  }
+
+  .event.positive{
+    border-left:4px solid #b48732;
+  }
+
+  .event.negative{
+    border-left:4px solid #8d3029;
+  }
+
+  .event.major{
+    border-left:4px solid #d3aa4c;
+  }
+
+  .detail-sheet{
+    position:absolute;
+    left:12px;
+    right:12px;
+    bottom:12px;
+    z-index:30;
+    padding:14px 14px 16px;
+    border:1px solid #8e6224;
+    border-radius:18px;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.055),transparent 26%),
+      linear-gradient(#2d1c11,#160e0a);
+    box-shadow:
+      0 -10px 28px rgba(0,0,0,.38),
+      inset 0 0 0 2px rgba(239,201,95,.05);
+    transform:translateY(125%);
+    opacity:0;
+    transition:.24s ease;
+  }
+
+  .detail-sheet.show{
+    transform:translateY(0);
+    opacity:1;
+  }
+
+  .sheet-handle{
+    width:42px;
+    height:4px;
+    margin:0 auto 10px;
+    border-radius:3px;
+    background:#8f6a2b;
+    opacity:.65;
+  }
+
+  .sheet-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  .sheet-title{
+    margin:0;
+    color:#f1cf72;
+    font-size:19px;
+  }
+
+  .sheet-sub{
+    margin-top:3px;
+    color:#a78b56;
+    font-size:11px;
+  }
+
+  .sheet-close{
+    width:32px;
+    height:32px;
+    border:1px solid #8b6124;
+    border-radius:50%;
+    background:#1a110c;
+    color:#e8c76d;
+    font-size:18px;
+    cursor:pointer;
+  }
+
+  .sheet-body{
+    margin-top:11px;
+    padding:10px;
+    border:1px solid #5f4018;
+    border-radius:11px;
+    background:#120c08;
+    color:#c5a866;
+    font-size:12px;
+    line-height:1.7;
+  }
+
+  .toast{
+    position:absolute;
+    left:50%;
+    bottom:18px;
+    z-index:40;
+    transform:translate(-50%,14px);
+    opacity:0;
+    padding:8px 14px;
+    border:1px solid #8b6123;
+    border-radius:16px;
+    background:rgba(18,11,8,.94);
+    color:#edce79;
+    font-size:12px;
+    transition:.2s ease;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  @keyframes panelIn{
+    from{opacity:0;transform:translateY(-47%) scale(.97)}
+    to{opacity:1;transform:translateY(-50%) scale(1)}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="mask"></div>
+
+  <section class="panel" id="panel">
+    <header class="header">
+      <h1>帝王本纪</h1>
+      <small>永和朝 · 萧承曜本纪</small>
+      <button class="close-btn" id="closeBtn">×</button>
+    </header>
+
+    <section class="emperor-summary">
+      <div class="seal">曜</div>
+      <div class="summary-copy">
+        <h2>大曜皇帝 · 萧承曜</h2>
+        <p>在位三年，励精图治，整饬吏治，内修宫政，外定边患。</p>
+
+        <div class="metrics">
+          <div class="metric"><b>3年</b>在位</div>
+          <div class="metric"><b>18</b>大事</div>
+          <div class="metric"><b>92</b>国威</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="filters">
+      <div class="category-tabs">
+        <button class="tab active" data-type="全部">全部</button>
+        <button class="tab" data-type="朝政">朝政</button>
+        <button class="tab" data-type="战争">战争</button>
+        <button class="tab" data-type="后宫">后宫</button>
+        <button class="tab" data-type="皇嗣">皇嗣</button>
+        <button class="tab" data-type="灾异">灾异</button>
+      </div>
+
+      <div class="search-row">
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" placeholder="搜索事件" />
+        </label>
+
+        <button class="year-btn" id="yearBtn">全部年份</button>
+      </div>
+    </section>
+
+    <section class="annals">
+      <div class="timeline" id="timeline"></div>
+    </section>
+  </section>
+
+  <section class="detail-sheet" id="detailSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div>
+        <h2 class="sheet-title" id="sheetTitle">整饬吏治</h2>
+        <div class="sheet-sub" id="sheetSub">永和三年 · 朝政</div>
+      </div>
+      <button class="sheet-close" id="sheetClose">×</button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const annals = [
+  {
+    year:"永和三年",
+    note:"帝在位第三年",
+    events:[
+      {title:"整饬吏治",type:"朝政",tone:"major",brief:"下诏清查地方官吏，裁撤冗员，严惩贪墨。",detail:"永和三年二月，帝命都察院巡按诸省，凡贪墨、渎职者皆依法论处。是年共罢黜官员一百二十七人，擢用清廉能吏四十三人，朝野称颂。"},
+      {title:"北境大捷",type:"战争",tone:"positive",brief:"骠骑将军霍去病击退北境来犯之敌。",detail:"永和三年五月，北境敌军越界侵扰。帝命霍去病率精骑出塞，连战三捷，斩敌万余，收复失地七城。"},
+      {title:"册立贵妃",type:"后宫",tone:"major",brief:"晋徐珍淑为贵妃，协理六宫。",detail:"永和三年十月，因徐珍淑诞育皇嗣、品行端方，帝下旨晋封贵妃，并命其协理六宫事务。"}
+    ]
+  },
+  {
+    year:"永和二年",
+    note:"国政渐稳，边患初平",
+    events:[
+      {title:"诞下三皇子",type:"皇嗣",tone:"positive",brief:"徐妃诞下三皇子萧景珩。",detail:"永和二年四月，徐妃诞下三皇子，母子平安。帝大赦宫中，赏赐翊坤宫。"},
+      {title:"黄河水患",type:"灾异",tone:"negative",brief:"黄河决口，三郡受灾。",detail:"永和二年七月，黄河决口，三郡受灾。帝减免赋税，开仓赈济，并命工部修筑堤坝。"},
+      {title:"开设经筵",type:"朝政",tone:"positive",brief:"设经筵日讲，广纳群臣谏言。",detail:"永和二年九月，帝命翰林院每日进讲经史，鼓励群臣直言进谏，以明治道。"}
+    ]
+  },
+  {
+    year:"永和元年",
+    note:"新君登基，百废待兴",
+    events:[
+      {title:"登基改元",type:"朝政",tone:"major",brief:"萧承曜即皇帝位，改元永和。",detail:"先帝崩逝，皇太子萧承曜于太和殿即位，颁布大赦，改年号为永和。"},
+      {title:"平定京营之乱",type:"战争",tone:"negative",brief:"京营将领谋乱，三日而定。",detail:"永和元年三月，京营部分将领图谋不轨。帝亲自坐镇，调禁军平乱，三日内局势平定。"},
+      {title:"初选后妃",type:"后宫",tone:"positive",brief:"开选秀女，充实六宫。",detail:"永和元年六月，礼部主持选秀，择品貌端庄、家世清白者入宫。"}
+    ]
+  }
+];
+
+let currentType = "全部";
+let currentYear = "全部年份";
+
+const timeline = document.getElementById("timeline");
+const searchInput = document.getElementById("searchInput");
+const detailSheet = document.getElementById("detailSheet");
+const toast = document.getElementById("toast");
+
+function render(){
+  const keyword = searchInput.value.trim();
+  timeline.innerHTML = "";
+
+  annals.forEach(group=>{
+    if(currentYear !== "全部年份" && group.year !== currentYear) return;
+
+    const filtered = group.events.filter(event=>{
+      const typeMatch = currentType === "全部" || event.type === currentType;
+      const keywordMatch = !keyword || event.title.includes(keyword) || event.brief.includes(keyword);
+      return typeMatch && keywordMatch;
+    });
+
+    if(!filtered.length) return;
+
+    const wrap = document.createElement("section");
+    wrap.className = "year-group";
+    wrap.innerHTML = `
+      <span class="year-marker"></span>
+      <h3 class="year-title">${group.year}</h3>
+      <div class="year-note">${group.note}</div>
+    `;
+
+    filtered.forEach(event=>{
+      const item = document.createElement("article");
+      item.className = `event ${event.tone}`;
+      item.innerHTML = `
+        <div class="event-head">
+          <span class="event-title">${event.title}</span>
+          <span class="event-tag">${event.type}</span>
+        </div>
+        <p>${event.brief}</p>
+      `;
+
+      item.onclick = ()=>{
+        document.getElementById("sheetTitle").textContent = event.title;
+        document.getElementById("sheetSub").textContent = `${group.year} · ${event.type}`;
+        document.getElementById("sheetBody").textContent = event.detail;
+        detailSheet.classList.add("show");
+      };
+
+      wrap.appendChild(item);
+    });
+
+    timeline.appendChild(wrap);
+  });
+
+  if(!timeline.children.length){
+    timeline.innerHTML = `<div style="text-align:center;color:#9f8555;padding:35px 0">暂无符合条件的史录</div>`;
+  }
+}
+
+document.querySelectorAll(".tab").forEach(button=>{
+  button.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(item=>item.classList.remove("active"));
+    button.classList.add("active");
+    currentType = button.dataset.type;
+    detailSheet.classList.remove("show");
+    render();
+  };
+});
+
+searchInput.oninput = ()=>{
+  detailSheet.classList.remove("show");
+  render();
+};
+
+document.getElementById("yearBtn").onclick = ()=>{
+  const years = ["全部年份","永和三年","永和二年","永和元年"];
+  const currentIndex = years.indexOf(currentYear);
+  currentYear = years[(currentIndex + 1) % years.length];
+  document.getElementById("yearBtn").textContent = currentYear;
+  render();
+};
+
+document.getElementById("sheetClose").onclick = ()=>{
+  detailSheet.classList.remove("show");
+};
+
+document.getElementById("closeBtn").onclick = ()=>{
+  document.getElementById("panel").style.display = "none";
+  detailSheet.classList.remove("show");
+};
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+.posthumous-overlay { position: fixed; inset: 0; z-index: 220; }
+.posthumous-overlay select { display: block; width: 100%; margin: 12px 0 20px; padding: 12px; color: #dec58c; background: #18140f; border: 1px solid #8e7445; border-radius: 6px; font: inherit; }
